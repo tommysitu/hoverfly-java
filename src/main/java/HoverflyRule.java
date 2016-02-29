@@ -2,16 +2,19 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 import org.junit.rules.ExternalResource;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 
 public class HoverflyRule extends ExternalResource {
 
@@ -38,6 +41,12 @@ public class HoverflyRule extends ExternalResource {
         tearDownDatabaseIfExists();
 
         final Path pathToHoverfly = Paths.get(hoverflyUrl.toURI());
+
+        if(!pathToHoverfly.toFile().canExecute()) {
+            final Set<PosixFilePermission> perms = newHashSet(OWNER_EXECUTE);
+            Files.setPosixFilePermissions(Paths.get(hoverflyUrl.toURI()), perms);
+        }
+
         final Path directoryOfBinary = pathToHoverfly.getParent();
         final Path binaryName = pathToHoverfly.getFileName();
 
@@ -52,7 +61,7 @@ public class HoverflyRule extends ExternalResource {
     @Override
     protected void after() {
         hoverflyProcess.destroy();
-        if(databaseUrl.isPresent()) {
+        if (databaseUrl.isPresent()) {
             try {
                 tearDownDatabaseIfExists();
             } catch (IOException e) {
@@ -64,7 +73,7 @@ public class HoverflyRule extends ExternalResource {
     private void tearDownDatabaseIfExists() throws IOException {
         databaseUrl = getResource(HOVERFLY_DB_PATH);
 
-        if(databaseUrl.isPresent()) {
+        if (databaseUrl.isPresent()) {
             Files.delete(Paths.get(databaseUrl.get().getPath()));
         }
     }
