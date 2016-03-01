@@ -41,12 +41,6 @@ public class HoverflyRule extends ExternalResource {
         tearDownDatabaseIfExists();
 
         final Path pathToHoverfly = Paths.get(hoverflyUrl.toURI());
-
-        if (!pathToHoverfly.toFile().canExecute()) {
-            final Set<PosixFilePermission> perms = newHashSet(OWNER_EXECUTE);
-            Files.setPosixFilePermissions(Paths.get(hoverflyUrl.toURI()), perms);
-        }
-
         final Path directoryOfBinary = pathToHoverfly.getParent();
         final Path binaryName = pathToHoverfly.getFileName();
 
@@ -72,5 +66,8 @@ public class HoverflyRule extends ExternalResource {
 
     private void tearDownDatabaseIfExists() throws IOException {
         databaseUrl = getResource(HOVERFLY_DB_PATH);
+        if (databaseUrl.isPresent()) {
+            Files.delete(Paths.get(databaseUrl.get().getPath()));
+        }
     }
 }
