@@ -3,11 +3,15 @@ package io.specto.hoverfly.junit;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Optional;
 
 public class HoverflyRuleUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRuleUtils.class);
 
     private static final String DARWIN = "darwin";
     private static final String WINDOWS = "windows";
@@ -25,6 +29,7 @@ public class HoverflyRuleUtils {
 
     public static URL getBinaryUrl() {
         final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType());
+        LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
         return getResource(binaryPath).get();
     }
 
