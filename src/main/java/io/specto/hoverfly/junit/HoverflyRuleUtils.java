@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Optional;
 
-public class HoverflyRuleUtils {
+class HoverflyRuleUtils {
 
     private static final String DARWIN = "darwin";
     private static final String WINDOWS = "windows";
