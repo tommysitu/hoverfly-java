@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <name>Hoverfly JUnit</name>
+    <description>JUnit rule which spins up and manages hoverfly</description>
+    <url>https://github.com/SpectoLabs/hoverfly-junit</url>
 
     <groupId>io.specto</groupId>
     <artifactId>hoverfly-junit</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:SpectoLabs/hoverfly-junit.git</developerConnection>
+        <connection>scm:git:git@github.com:SpectoLabs/hoverfly-junit.git</connection>
+        <url>git@github.com:SpectoLabs/hoverfly-junit</url>
+        <tag>hoverfly-junit-0.1.0</tag>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
@@ -32,6 +44,32 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <!-- Template location -->
+                    <header>license-header.txt</header>
+                    <properties>
+                        <!-- Values to be substituted in template -->
+                        <inceptionYear>2016</inceptionYear>
+                        <currentYear>2016</currentYear>
+                    </properties>
+                    <strictCheck>true</strictCheck>
+                    <includes>
+                        <include>src/main/**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>format</goal>
                         </goals>
                     </execution>
                 </executions>
