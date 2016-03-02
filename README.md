@@ -32,7 +32,7 @@ If you want to set them statically you can do so through the fluent builder:
 
 ```
 HoverflyRule.builder("test-service.json")
-    .withAdminPort(EXPECTED_ADMIN_PORT)
-    .withProxyPort(EXPECTED_PROXY_PORT)
+    .withAdminPort(8888)
+    .withProxyPort(8999)
     .build();
 ```
