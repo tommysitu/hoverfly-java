@@ -11,26 +11,17 @@ import java.util.Optional;
 
 public class HoverflyRuleUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRuleUtils.class);
-
     private static final String DARWIN = "darwin";
     private static final String WINDOWS = "windows";
     private static final String LINUX = "linux";
     private static final String ARCH_AMD64 = "amd64";
     private static final String ARCH_386 = "386";
-    private static final String BINARY_PATH = "hoverfly_%s_%s";
 
     public static Optional<URL> getResource(String resourceName) {
         ClassLoader loader = MoreObjects.firstNonNull(
                 Thread.currentThread().getContextClassLoader(),
                 Resources.class.getClassLoader());
         return Optional.ofNullable(loader.getResource(resourceName));
-    }
-
-    public static URL getBinaryUrl() {
-        final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType());
-        LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
-        return getResource(binaryPath).get();
     }
 
     public static String getOs() {
@@ -45,7 +36,7 @@ public class HoverflyRuleUtils {
         }
     }
 
-    private static String getArchitectureType() {
+    public static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
     }
 }
