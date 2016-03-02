@@ -8,6 +8,7 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.StartedProcess;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -33,6 +34,7 @@ public class HoverflyRule extends ExternalResource {
     private final int proxyPort;
     private final int adminPort;
     private StartedProcess startedProcess;
+    private Path binaryPath;
 
     private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) {
         serviceDataUrl = getResource(serviceDataResourceName)
@@ -60,18 +62,18 @@ public class HoverflyRule extends ExternalResource {
         final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType());
         LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
 
-        final Path temporaryHoverflyPath = extractBinary(binaryPath);
+        this.binaryPath = extractBinary(binaryPath);
 
-        LOGGER.info("Executing binary at " + temporaryHoverflyPath);
+        LOGGER.info("Executing binary at " + this.binaryPath);
 
         startedProcess = new ProcessExecutor()
-                .command("./" + temporaryHoverflyPath.getFileName(),
+                .command("./" + this.binaryPath.getFileName(),
                         "-import", serviceDataUrl.getPath(),
                         "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
                 .redirectOutput(Slf4jStream.of(LOGGER).asInfo())
-                .directory(temporaryHoverflyPath.getParent().toFile())
+                .directory(this.binaryPath.getParent().toFile())
                 .start();
 
         waitForHoverflyToStart();
@@ -116,6 +118,10 @@ public class HoverflyRule extends ExternalResource {
     protected void after() {
         LOGGER.info("Destroying hoverfly process");
         startedProcess.getProcess().destroy();
+        final File database = binaryPath.getParent().resolve("requests.db").toFile();
+        if (database.exists()) database.delete();
+        final File binary = binaryPath.toFile();
+        if (binary.exists()) database.delete();
     }
 
     public static class Builder {
