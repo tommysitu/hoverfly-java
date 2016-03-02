@@ -4,6 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Optional;
 
@@ -36,5 +38,13 @@ public class HoverflyRuleUtils {
 
     public static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
+    }
+
+    public static int findUnusedPort() {
+        try(final ServerSocket serverSocket = new ServerSocket(0)){
+            return serverSocket.getLocalPort();
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot find available port", e);
+        }
     }
 }

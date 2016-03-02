@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static io.specto.hoverfly.junit.HoverflyRuleUtils.findUnusedPort;
 import static io.specto.hoverfly.junit.HoverflyRuleUtils.getResource;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
@@ -38,14 +39,16 @@ public class HoverflyRule extends ExternalResource {
         serviceDataUrl = getResource(serviceDataResourceName)
                 .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourceName));
 
-        this.proxyPort = proxyPort;
-        this.adminPort = adminPort;
+        this.proxyPort = proxyPort == 0 ? findUnusedPort() : proxyPort;
+        this.adminPort = adminPort == 0 ? findUnusedPort() : adminPort;
 
         LOGGER.info("Setting proxy host to " + "localhost");
         System.setProperty("http.proxyHost", "localhost");
 
-        LOGGER.info("Setting proxy proxyPort to " + proxyPort);
-        System.setProperty("http.proxyPort", String.valueOf(proxyPort));
+        LOGGER.info("Setting proxy proxyPort to " + this.proxyPort);
+        System.setProperty("http.proxyPort", String.valueOf(this.proxyPort));
+
+        LOGGER.info("Setting admin port to " + this.adminPort);
     }
 
     @Override
@@ -118,8 +121,8 @@ public class HoverflyRule extends ExternalResource {
     }
 
     public static class Builder {
-        private int proxyPort = 8500;
-        private int adminPort = 8888;
+        private int proxyPort = 0;
+        private int adminPort = 0;
         private final String serviceDataResourceName;
 
         public Builder(final String serviceDataResourceName) {
