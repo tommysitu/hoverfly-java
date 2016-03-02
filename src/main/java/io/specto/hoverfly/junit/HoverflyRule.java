@@ -27,19 +27,25 @@ public class HoverflyRule extends ExternalResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private static final String BINARY_PATH = "hoverfly_%s_%s";
     private static final int BOOT_TIMEOUT_SECONDS = 3;
+    private static final String HEALTH_CHECK_URL = "http://localhost:%s/stats";
 
     private final URL serviceDataUrl;
+    private final int proxyPort;
+    private final int adminPort;
     private StartedProcess startedProcess;
 
-    public HoverflyRule(final String serviceDataResourceName) {
+    private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) {
         serviceDataUrl = getResource(serviceDataResourceName)
                 .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourceName));
+
+        this.proxyPort = proxyPort;
+        this.adminPort = adminPort;
 
         LOGGER.info("Setting proxy host to " + "localhost");
         System.setProperty("http.proxyHost", "localhost");
 
-        LOGGER.info("Setting proxy port to " + "8500");
-        System.setProperty("http.proxyPort", "8500");
+        LOGGER.info("Setting proxy proxyPort to " + proxyPort);
+        System.setProperty("http.proxyPort", String.valueOf(proxyPort));
     }
 
     @Override
@@ -53,7 +59,12 @@ public class HoverflyRule extends ExternalResource {
         LOGGER.info("Executing binary at " + temporaryHoverflyPath);
 
         startedProcess = new ProcessExecutor()
-                .command("./" + temporaryHoverflyPath.getFileName(), "-import", serviceDataUrl.getPath(), "-wipedb")
+                .command("./" + temporaryHoverflyPath.getFileName(),
+                        "-import", serviceDataUrl.getPath(),
+                        "-wipedb",
+                        "-pp", String.valueOf(proxyPort),
+                        "-ap", String.valueOf(adminPort))
+
                 .redirectOutput(Slf4jStream.of(LOGGER).asInfo())
                 .directory(temporaryHoverflyPath.getParent().toFile())
                 .start();
@@ -64,22 +75,26 @@ public class HoverflyRule extends ExternalResource {
     private void waitForHoverflyToStart() {
         final Instant now = Instant.now();
         Stream.generate(this::hoverflyHasStarted)
-                .peek(b -> LOGGER.debug(b ? "Hoverfly is now healthy." : "Hoverfly is not healthy"))
-                .anyMatch(b -> b.equals(true) || Duration.between(now, Instant.now()).getSeconds() > BOOT_TIMEOUT_SECONDS);
+                .peek(b -> {
+                    if(Duration.between(now, Instant.now()).getSeconds() > BOOT_TIMEOUT_SECONDS) {
+                        throw new IllegalStateException("Hoverfly has not become healthy within " + BOOT_TIMEOUT_SECONDS + " seconds");
+                    }
+                })
+                .anyMatch(b -> b.equals(true));
     }
 
     private boolean hoverflyHasStarted() {
-
         boolean healthy = false;
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8888/state").openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL(String.format(HEALTH_CHECK_URL, adminPort)).openConnection();
             con.setRequestMethod("GET");
+            LOGGER.debug("Hoverfly health check status code is: " + String.valueOf(con.getResponseCode()));
             healthy = con.getResponseCode() == 200;
-            if(!healthy) {
-                Thread.sleep(100);
+            if (!healthy) {
+                Thread.sleep(1000);
             }
         } catch (IOException | InterruptedException e) {
-            LOGGER.trace("Exception curling health check", e);
+            LOGGER.debug("Exception curling health check", e);
         }
         return healthy;
     }
@@ -96,5 +111,33 @@ public class HoverflyRule extends ExternalResource {
     protected void after() {
         LOGGER.info("Destroying hoverfly process");
         startedProcess.getProcess().destroy();
+    }
+
+    public static Builder builder(final String serviceData) {
+        return new Builder(serviceData);
+    }
+
+    public static class Builder {
+        private int proxyPort = 8500;
+        private int adminPort = 8888;
+        private final String serviceDataResourceName;
+
+        public Builder(final String serviceDataResourceName) {
+            this.serviceDataResourceName = serviceDataResourceName;
+        }
+
+        public Builder withProxyPort(int proxyPort) {
+            this.proxyPort = proxyPort;
+            return this;
+        }
+
+        public Builder withAdminPort(int adminPort) {
+            this.adminPort = adminPort;
+            return this;
+        }
+
+        public HoverflyRule build() {
+            return new HoverflyRule(serviceDataResourceName, proxyPort, adminPort);
+        }
     }
 }

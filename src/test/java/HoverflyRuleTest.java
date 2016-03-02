@@ -1,10 +1,7 @@
 import io.specto.hoverfly.junit.HoverflyRule;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -20,10 +17,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 public class HoverflyRuleTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRuleTest.class);
-
     @Rule
-    public HoverflyRule hoverflyRule = new HoverflyRule("test-service.json");
+    public HoverflyRule hoverflyRule = HoverflyRule.builder("test-service.json").build();
 
     private RestTemplate restTemplate;
 

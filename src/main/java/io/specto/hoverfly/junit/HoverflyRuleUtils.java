@@ -3,8 +3,6 @@ package io.specto.hoverfly.junit;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Resources;
 import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Optional;

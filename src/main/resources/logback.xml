@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration scan="false" debug="true">
-    <property name="LOG_LEVEL" value="info"/>
+    <property name="LOG_LEVEL" value="INFO"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
