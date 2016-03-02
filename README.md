@@ -30,7 +30,7 @@ HoverflyRule.builder("test-service.json").build()
 The admin and proxy port will default to zero, which means they will be randomized as unused ports. This can be helpful when running your tests on a CI server.
 If you want to set them statically you can do so through the fluent builder:
 
-```
+```java
 HoverflyRule.builder("test-service.json")
     .withAdminPort(8888)
     .withProxyPort(8999)
