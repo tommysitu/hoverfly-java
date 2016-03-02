@@ -18,8 +18,7 @@ import java.time.Instant;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static io.specto.hoverfly.junit.HoverflyRuleUtils.findUnusedPort;
-import static io.specto.hoverfly.junit.HoverflyRuleUtils.getResource;
+import static io.specto.hoverfly.junit.HoverflyRuleUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 
@@ -51,10 +50,14 @@ public class HoverflyRule extends ExternalResource {
         LOGGER.info("Setting admin port to " + this.adminPort);
     }
 
+    public static Builder builder(final String serviceData) {
+        return new Builder(serviceData);
+    }
+
     @Override
     protected void before() throws Throwable {
 
-        final String binaryPath = String.format(BINARY_PATH, HoverflyRuleUtils.getOs(), HoverflyRuleUtils.getArchitectureType());
+        final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType());
         LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
 
         final Path temporaryHoverflyPath = extractBinary(binaryPath);
@@ -67,7 +70,6 @@ public class HoverflyRule extends ExternalResource {
                         "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
-
                 .redirectOutput(Slf4jStream.of(LOGGER).asInfo())
                 .directory(temporaryHoverflyPath.getParent().toFile())
                 .start();
@@ -79,7 +81,7 @@ public class HoverflyRule extends ExternalResource {
         final Instant now = Instant.now();
         Stream.generate(this::hoverflyHasStarted)
                 .peek(b -> {
-                    if(Duration.between(now, Instant.now()).getSeconds() > BOOT_TIMEOUT_SECONDS) {
+                    if (Duration.between(now, Instant.now()).getSeconds() > BOOT_TIMEOUT_SECONDS) {
                         throw new IllegalStateException("Hoverfly has not become healthy within " + BOOT_TIMEOUT_SECONDS + " seconds");
                     }
                 })
@@ -116,14 +118,10 @@ public class HoverflyRule extends ExternalResource {
         startedProcess.getProcess().destroy();
     }
 
-    public static Builder builder(final String serviceData) {
-        return new Builder(serviceData);
-    }
-
     public static class Builder {
+        private final String serviceDataResourceName;
         private int proxyPort = 0;
         private int adminPort = 0;
-        private final String serviceDataResourceName;
 
         public Builder(final String serviceDataResourceName) {
             this.serviceDataResourceName = serviceDataResourceName;
