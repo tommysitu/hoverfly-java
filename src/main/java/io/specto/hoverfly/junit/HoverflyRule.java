@@ -5,15 +5,17 @@ import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.ProcessExecutor;
-import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.StartedProcess;
-import org.zeroturnaround.exec.stream.slf4j.Slf4jOutputStream;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static io.specto.hoverfly.junit.HoverflyRuleUtils.getResource;
@@ -24,6 +26,7 @@ public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private static final String BINARY_PATH = "hoverfly_%s_%s";
+    private static final int BOOT_TIMEOUT_SECONDS = 3;
 
     private final URL serviceDataUrl;
     private StartedProcess startedProcess;
@@ -54,6 +57,31 @@ public class HoverflyRule extends ExternalResource {
                 .redirectOutput(Slf4jStream.of(LOGGER).asInfo())
                 .directory(temporaryHoverflyPath.getParent().toFile())
                 .start();
+
+        waitForHoverflyToStart();
+    }
+
+    private void waitForHoverflyToStart() {
+        final Instant now = Instant.now();
+        Stream.generate(this::hoverflyHasStarted)
+                .peek(b -> LOGGER.debug(b ? "Hoverfly is now healthy." : "Hoverfly is not healthy"))
+                .anyMatch(b -> b.equals(true) || Duration.between(now, Instant.now()).getSeconds() > BOOT_TIMEOUT_SECONDS);
+    }
+
+    private boolean hoverflyHasStarted() {
+
+        boolean healthy = false;
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL("http://localhost:8888/state").openConnection();
+            con.setRequestMethod("GET");
+            healthy = con.getResponseCode() == 200;
+            if(!healthy) {
+                Thread.sleep(100);
+            }
+        } catch (IOException | InterruptedException e) {
+            LOGGER.trace("Exception curling health check", e);
+        }
+        return healthy;
     }
 
     private Path extractBinary(final String binaryPath) throws IOException {

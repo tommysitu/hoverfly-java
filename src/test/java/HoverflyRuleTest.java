@@ -39,8 +39,6 @@ public class HoverflyRuleTest {
                 .contentType(APPLICATION_JSON)
                 .body("{\"flightId\": \"1\"}");
 
-        LOGGER.info("Making request");
-
         // When
         final ResponseEntity<String> bookFlightResponse = restTemplate.exchange(bookFlightRequest, String.class);
 
