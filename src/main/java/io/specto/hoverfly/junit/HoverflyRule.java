@@ -13,6 +13,7 @@
 package io.specto.hoverfly.junit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class HoverflyRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
 
-        final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType());
+        final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
         LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
 
         this.binaryPath = extractBinary(binaryPath);
@@ -120,7 +121,7 @@ public class HoverflyRule extends ExternalResource {
 
     private Path extractBinary(final String binaryPath) throws IOException {
         final URL sourceHoverflyUrl = getResource(binaryPath).orElseThrow(() -> new IllegalArgumentException("Cannot find binary at path " + binaryPath));
-        final Path temporaryHoverflyPath = Files.createTempFile("hoverfly-binary", "");
+        final Path temporaryHoverflyPath = Files.createTempFile("hoverfly-binary", SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
         FileUtils.copyURLToFile(sourceHoverflyUrl, temporaryHoverflyPath.toFile());
         Files.setPosixFilePermissions(temporaryHoverflyPath, newHashSet(OWNER_EXECUTE, OWNER_READ));
         return temporaryHoverflyPath;
