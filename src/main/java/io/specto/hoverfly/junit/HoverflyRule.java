@@ -119,7 +119,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     private Path extractBinary(final String binaryPath) throws IOException {
-        final URL sourceHoverflyUrl = getResource(binaryPath).get();
+        final URL sourceHoverflyUrl = getResource(binaryPath).orElseThrow(() -> new IllegalArgumentException("Cannot find binary at path " + binaryPath));
         final Path temporaryHoverflyPath = Files.createTempFile("hoverfly-binary", "");
         FileUtils.copyURLToFile(sourceHoverflyUrl, temporaryHoverflyPath.toFile());
         Files.setPosixFilePermissions(temporaryHoverflyPath, newHashSet(OWNER_EXECUTE, OWNER_READ));
