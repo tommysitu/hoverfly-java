@@ -22,16 +22,16 @@ You can boot hoverfly once and share it across multiple tests by using a `classR
 public static HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test-service.json").build();
 ```
 
-### Visualized Service Json
+## Visualized Service Json
 
-This is looked for by the rule at the given location on the classpath.  It's simply json representing http requests and their corresponding responses which can be replayed by hoverfly.
+This is looked for by the rule at the given location on the classpath, or at the given URL.  It's simply json representing http requests and their corresponding responses which can be replayed by hoverfly.
 
 ```java
 public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("http://www.my-test.com/api/virtualization").build();
 public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl("http://www.my-test.com/api/virtualization").build();
 ```
 
-### Ports
+## Ports
 
 The admin and proxy port will default to zero, which means they will be randomized as unused ports. This can be helpful when running your tests on a CI server.
 If you want to set them statically you can do so through the fluent builder:
