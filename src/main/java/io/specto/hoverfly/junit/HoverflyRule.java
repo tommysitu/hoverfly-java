@@ -24,9 +24,11 @@ import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.stream.Stream;
@@ -40,18 +42,20 @@ public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private static final String BINARY_PATH = "hoverfly_%s_%s";
-    private static final int BOOT_TIMEOUT_SECONDS = 3;
+    private static final int BOOT_TIMEOUT_SECONDS = 10;
     private static final String HEALTH_CHECK_URL = "http://localhost:%s/stats";
 
-    private final URL serviceDataUrl;
+    private final Path serviceDataPath;
     private final int proxyPort;
     private final int adminPort;
     private StartedProcess startedProcess;
     private Path binaryPath;
 
-    private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) {
-        serviceDataUrl = getResource(serviceDataResourceName)
+    private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) throws URISyntaxException {
+        URL serviceDataUrl = getResource(serviceDataResourceName)
                 .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourceName));
+
+        serviceDataPath = Paths.get(serviceDataUrl.toURI());
 
         this.proxyPort = proxyPort == 0 ? findUnusedPort() : proxyPort;
         this.adminPort = adminPort == 0 ? findUnusedPort() : adminPort;
@@ -62,7 +66,7 @@ public class HoverflyRule extends ExternalResource {
         LOGGER.info("Setting proxy proxyPort to " + this.proxyPort);
         System.setProperty("http.proxyPort", String.valueOf(this.proxyPort));
 
-        LOGGER.info("Setting admin port to " + this.adminPort);
+        LOGGER.info("Setting admin port to " + this.adminPort + "\n");
     }
 
     public static Builder builder(final String serviceData) {
@@ -72,16 +76,16 @@ public class HoverflyRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
 
-        final String binaryPath = String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
-        LOGGER.info("Selecting the following binary based on the current operating system: " + binaryPath);
+        final String binaryName = String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
+        LOGGER.info("Selecting the following binary based on the current operating system: " + binaryName);
 
-        this.binaryPath = extractBinary(binaryPath);
+        this.binaryPath = extractBinary(binaryName);
 
         LOGGER.info("Executing binary at " + this.binaryPath);
 
         startedProcess = new ProcessExecutor()
-                .command("./" + this.binaryPath.getFileName(),
-                        "-import", serviceDataUrl.getPath(),
+                .command(this.binaryPath.toString(),
+                        "-import", serviceDataPath.toString(),
                         "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
@@ -119,12 +123,20 @@ public class HoverflyRule extends ExternalResource {
         return healthy;
     }
 
-    private Path extractBinary(final String binaryPath) throws IOException {
-        final URL sourceHoverflyUrl = getResource(binaryPath).orElseThrow(() -> new IllegalArgumentException("Cannot find binary at path " + binaryPath));
-        final Path temporaryHoverflyPath = Files.createTempFile("hoverfly-binary", SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
+    private Path extractBinary(final String binaryName) throws IOException {
+        final URL sourceHoverflyUrl = getResource(binaryName).orElseThrow(() -> new IllegalArgumentException("Cannot find binary at path " + binaryName));
+        final Path temporaryHoverflyPath = Files.createTempFile(binaryName, "");
         LOGGER.info("Storing binary in temporary directory " + temporaryHoverflyPath);
-        FileUtils.copyURLToFile(sourceHoverflyUrl, temporaryHoverflyPath.toFile());
-        Files.setPosixFilePermissions(temporaryHoverflyPath, newHashSet(OWNER_EXECUTE, OWNER_READ));
+        final File temporaryHoverflyFile = temporaryHoverflyPath.toFile();
+        FileUtils.copyURLToFile(sourceHoverflyUrl, temporaryHoverflyFile);
+        if(SystemUtils.IS_OS_WINDOWS){
+            temporaryHoverflyFile.setExecutable(true);
+            temporaryHoverflyFile.setReadable(true);
+            temporaryHoverflyFile.setWritable(true);
+        } else {
+            Files.setPosixFilePermissions(temporaryHoverflyPath, newHashSet(OWNER_EXECUTE, OWNER_READ));
+        }
+
         return temporaryHoverflyPath;
     }
 
@@ -158,7 +170,11 @@ public class HoverflyRule extends ExternalResource {
         }
 
         public HoverflyRule build() {
-            return new HoverflyRule(serviceDataResourceName, proxyPort, adminPort);
+            try {
+                return new HoverflyRule(serviceDataResourceName, proxyPort, adminPort);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("Unable to build rule", e);
+            }
         }
     }
 }
