@@ -1,8 +1,6 @@
 import io.specto.hoverfly.junit.HoverflyRule;
-import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,7 +12,7 @@ public class HoverflyRulePortConfigurationTest {
     private static final int EXPECTED_ADMIN_PORT = 8889;
     private static final int EXPECTED_PROXY_PORT = 8890;
     @Rule
-    public HoverflyRule hoverflyRule = HoverflyRule.builder("test-service.json")
+    public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test-service.json")
             .withAdminPort(EXPECTED_ADMIN_PORT)
             .withProxyPort(EXPECTED_PROXY_PORT)
             .build();

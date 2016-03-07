@@ -24,6 +24,7 @@ import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -44,19 +46,30 @@ public class HoverflyRule extends ExternalResource {
     private static final String BINARY_PATH = "hoverfly_%s_%s";
     private static final int BOOT_TIMEOUT_SECONDS = 10;
     private static final String HEALTH_CHECK_URL = "http://localhost:%s/stats";
-
-    private final Path serviceDataPath;
     private final int proxyPort;
     private final int adminPort;
+    private Optional<Path> serviceDataPath;
+    private Optional<URL> serviceDataURL;
     private StartedProcess startedProcess;
     private Path binaryPath;
 
     private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) throws URISyntaxException {
-        URL serviceDataUrl = getResource(serviceDataResourceName)
+        this(proxyPort, adminPort);
+
+        final URL locationOfResource = getResource(serviceDataResourceName)
                 .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourceName));
 
-        serviceDataPath = Paths.get(serviceDataUrl.toURI());
+        serviceDataPath = Optional.of(Paths.get(locationOfResource.toURI()));
+        this.serviceDataURL = Optional.empty();
+    }
 
+    private HoverflyRule(final URL url, final int proxyPort, final int adminPort) {
+        this(proxyPort, adminPort);
+        this.serviceDataURL = Optional.of(url);
+        this.serviceDataPath = Optional.empty();
+    }
+
+    private HoverflyRule(final int proxyPort, final int adminPort) {
         this.proxyPort = proxyPort == 0 ? findUnusedPort() : proxyPort;
         this.adminPort = adminPort == 0 ? findUnusedPort() : adminPort;
 
@@ -69,8 +82,16 @@ public class HoverflyRule extends ExternalResource {
         LOGGER.info("Setting admin port to " + this.adminPort + "\n");
     }
 
-    public static Builder builder(final String serviceData) {
-        return new Builder(serviceData);
+    public static Builder buildFromClassPathResource(final String serviceDataClasspath) {
+        return new Builder(serviceDataClasspath);
+    }
+
+    public static Builder buildFromUrl(final String serviceDataUrl) {
+        try {
+            return new Builder(new URL(serviceDataUrl));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Unable to build URL", e);
+        }
     }
 
     @Override
@@ -85,7 +106,7 @@ public class HoverflyRule extends ExternalResource {
 
         startedProcess = new ProcessExecutor()
                 .command(this.binaryPath.toString(),
-                        "-import", serviceDataPath.toString(),
+                        "-import", serviceDataURL.map(URL::toString).orElseGet(() -> serviceDataPath.get().toString()),
                         "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
@@ -151,12 +172,19 @@ public class HoverflyRule extends ExternalResource {
     }
 
     public static class Builder {
-        private final String serviceDataResourceName;
+        private final Optional<String> serviceDataClasspath;
+        private final Optional<URL> serviceDataURL;
         private int proxyPort = 0;
         private int adminPort = 0;
 
-        public Builder(final String serviceDataResourceName) {
-            this.serviceDataResourceName = serviceDataResourceName;
+        public Builder(final String serviceDataClasspath) {
+            this.serviceDataClasspath = Optional.of(serviceDataClasspath);
+            this.serviceDataURL = Optional.empty();
+        }
+
+        public Builder(final URL url) {
+            this.serviceDataClasspath = Optional.empty();
+            this.serviceDataURL = Optional.of(url);
         }
 
         public Builder withProxyPort(int proxyPort) {
@@ -171,7 +199,11 @@ public class HoverflyRule extends ExternalResource {
 
         public HoverflyRule build() {
             try {
-                return new HoverflyRule(serviceDataResourceName, proxyPort, adminPort);
+                if (serviceDataClasspath.isPresent()) {
+                    return new HoverflyRule(serviceDataClasspath.get(), proxyPort, adminPort);
+                } else {
+                    return new HoverflyRule(serviceDataURL.get(), proxyPort, adminPort);
+                }
             } catch (URISyntaxException e) {
                 throw new RuntimeException("Unable to build rule", e);
             }

@@ -15,10 +15,10 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-public class HoverflyRuleTest {
+public class ClasspathResourceHoverflyRuleTest {
 
     @Rule
-    public HoverflyRule hoverflyRule = HoverflyRule.builder("test-service.json").build();
+    public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test-service.json").build();
 
     private RestTemplate restTemplate;
 
