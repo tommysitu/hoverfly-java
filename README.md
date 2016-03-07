@@ -37,7 +37,7 @@ The admin and proxy port will default to zero, which means they will be randomiz
 If you want to set them statically you can do so through the fluent builder:
 
 ```java
-HoverflyRule.builder("test-service.json")
+HoverflyRule.buildFromClassPathResource("test-service.json")
     .withAdminPort(8888)
     .withProxyPort(8999)
     .build();
