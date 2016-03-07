@@ -36,8 +36,8 @@ public static HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResourc
 This is looked for by the rule at the given location on the classpath, or at the given URL.  It's simply json representing http requests and their corresponding responses which can be replayed by hoverfly.
 
 ```java
-public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("http://www.my-test.com/api/virtualization").build();
-public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl("http://www.my-test.com/api/virtualization").build();
+public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("http://raw.githubusercontent.com/SpectoLabs/hoverfly-junit/d0d41dfdcb250c6bb02ada63d304b4afddf5f2e4/src/test/resources/test-service.json").build();
+public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl("service.json").build();
 ```
 
 ## Ports
