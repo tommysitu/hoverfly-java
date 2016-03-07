@@ -17,6 +17,15 @@ The rule will attempt to detect the operating system and architecture type of th
 
 Currently the are only a few minor configurable options.
 
+## Performance
+
+You can boot hoverfly once and share it across multiple tests by using a `classRule`. 
+
+```java
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test-service.json").build();
+```
+
 ### Visualized Service Json
 
 This is looked for by the rule at the given location on the classpath.  It's simply json representing http requests and their corresponding responses which can be replayed by hoverfly.
