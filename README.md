@@ -12,6 +12,15 @@ public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test
 
 The rule will attempt to detect the operating system and architecture type of the host, and then extract and execute the correct hoverfly binary.  It will import the json into it's database and then and destroy the process at the end of the tests.
 
+## Maven
+
+You can get the rule from Maven Central
+
+```xml
+<groupId>io.specto</groupId>
+<artifactId>hoverfly-junit</artifactId>
+<version>0.1.1</version>
+```
 
 ## Performance
 
