@@ -55,10 +55,7 @@ public class HoverflyRule extends ExternalResource {
 
     private HoverflyRule(final String serviceDataResourcePath, final int proxyPort, final int adminPort) throws URISyntaxException {
         this(proxyPort, adminPort);
-
-        final URL locationOfResource = getResource(serviceDataResourcePath)
-                .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourcePath));
-
+        final URL locationOfResource = getResource(serviceDataResourcePath);
         serviceDataURI = Paths.get(locationOfResource.toURI()).toString();
     }
 
@@ -73,9 +70,17 @@ public class HoverflyRule extends ExternalResource {
 
         LOGGER.info("Setting proxy host to " + "localhost");
         System.setProperty("http.proxyHost", "localhost");
+        System.setProperty("https.proxyHost", "localhost");
 
         LOGGER.info("Setting proxy proxyPort to " + this.proxyPort);
         System.setProperty("http.proxyPort", String.valueOf(this.proxyPort));
+        System.setProperty("https.proxyPort", String.valueOf(this.proxyPort));
+
+        try {
+            setHoverflyTrustStore();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to set hoverfly trust store", e);
+        }
 
         LOGGER.info("Setting admin port to " + this.adminPort + "\n");
     }
@@ -143,7 +148,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     private Path extractBinary(final String binaryName) throws IOException {
-        final URL sourceHoverflyUrl = getResource(binaryName).orElseThrow(() -> new IllegalArgumentException("Cannot find binary at path " + binaryName));
+        final URL sourceHoverflyUrl = getResource(binaryName);
         final Path temporaryHoverflyPath = Files.createTempFile(binaryName, "");
         LOGGER.info("Storing binary in temporary directory " + temporaryHoverflyPath);
         final File temporaryHoverflyFile = temporaryHoverflyPath.toFile();

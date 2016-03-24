@@ -28,7 +28,7 @@ public class ApacheHttpClientTest {
     @Test
     public void shouldBeAbleToGetABookingUsingApacheHttpClientAndHoverfly() throws IOException {
         // Given
-        final HttpGet httpGet = new HttpGet("http://www.my-test.com/api/bookings/1");
+        final HttpGet httpGet = new HttpGet("https://www.my-test.com/api/bookings/1");
 
         // When
         final HttpResponse response = httpClient.execute(httpGet);
