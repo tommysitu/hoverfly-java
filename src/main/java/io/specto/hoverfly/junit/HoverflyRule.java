@@ -32,13 +32,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static io.specto.hoverfly.junit.HoverflyRuleUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
+import static java.util.Arrays.asList;
 
 public class HoverflyRule extends ExternalResource {
 
@@ -48,25 +49,22 @@ public class HoverflyRule extends ExternalResource {
     private static final String HEALTH_CHECK_URL = "http://localhost:%s/stats";
     private final int proxyPort;
     private final int adminPort;
-    private Optional<Path> serviceDataPath;
-    private Optional<URL> serviceDataURL;
+    private String serviceDataURI;
     private StartedProcess startedProcess;
     private Path binaryPath;
 
-    private HoverflyRule(final String serviceDataResourceName, final int proxyPort, final int adminPort) throws URISyntaxException {
+    private HoverflyRule(final String serviceDataResourcePath, final int proxyPort, final int adminPort) throws URISyntaxException {
         this(proxyPort, adminPort);
 
-        final URL locationOfResource = getResource(serviceDataResourceName)
-                .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourceName));
+        final URL locationOfResource = getResource(serviceDataResourcePath)
+                .orElseThrow(() -> new IllegalArgumentException("Service data not found at " + serviceDataResourcePath));
 
-        serviceDataPath = Optional.of(Paths.get(locationOfResource.toURI()));
-        this.serviceDataURL = Optional.empty();
+        serviceDataURI = Paths.get(locationOfResource.toURI()).toString();
     }
 
-    private HoverflyRule(final URL url, final int proxyPort, final int adminPort) {
+    private HoverflyRule(final URL serviceDataUrl, final int proxyPort, final int adminPort) {
         this(proxyPort, adminPort);
-        this.serviceDataURL = Optional.of(url);
-        this.serviceDataPath = Optional.empty();
+        serviceDataURI = serviceDataUrl.toString();
     }
 
     private HoverflyRule(final int proxyPort, final int adminPort) {
@@ -106,7 +104,7 @@ public class HoverflyRule extends ExternalResource {
 
         startedProcess = new ProcessExecutor()
                 .command(this.binaryPath.toString(),
-                        "-import", serviceDataURL.map(URL::toString).orElseGet(() -> serviceDataPath.get().toString()),
+                        "-import", serviceDataURI,
                         "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
@@ -155,7 +153,7 @@ public class HoverflyRule extends ExternalResource {
             temporaryHoverflyFile.setReadable(true);
             temporaryHoverflyFile.setWritable(true);
         } else {
-            Files.setPosixFilePermissions(temporaryHoverflyPath, newHashSet(OWNER_EXECUTE, OWNER_READ));
+            Files.setPosixFilePermissions(temporaryHoverflyPath, new HashSet<>(asList(OWNER_EXECUTE, OWNER_READ)));
         }
 
         return temporaryHoverflyPath;

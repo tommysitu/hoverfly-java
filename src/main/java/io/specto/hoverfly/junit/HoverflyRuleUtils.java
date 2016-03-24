@@ -12,8 +12,6 @@
  */
 package io.specto.hoverfly.junit;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.io.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.IOException;
@@ -29,14 +27,12 @@ class HoverflyRuleUtils {
     private static final String ARCH_AMD64 = "amd64";
     private static final String ARCH_386 = "386";
 
-    public static Optional<URL> getResource(String resourceName) {
-        ClassLoader loader = MoreObjects.firstNonNull(
-                Thread.currentThread().getContextClassLoader(),
-                Resources.class.getClassLoader());
-        return Optional.ofNullable(loader.getResource(resourceName));
+    static Optional<URL> getResource(String resourceName) {
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return Optional.ofNullable(classLoader.getResource(resourceName));
     }
 
-    public static String getOs() {
+    static String getOs() {
         if (SystemUtils.IS_OS_MAC) {
             return DARWIN;
         } else if (SystemUtils.IS_OS_WINDOWS) {
@@ -48,11 +44,11 @@ class HoverflyRuleUtils {
         }
     }
 
-    public static String getArchitectureType() {
+    static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
     }
 
-    public static int findUnusedPort() {
+    static int findUnusedPort() {
         try(final ServerSocket serverSocket = new ServerSocket(0)){
             return serverSocket.getLocalPort();
         } catch (IOException e) {
