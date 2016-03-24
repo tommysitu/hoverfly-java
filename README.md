@@ -51,3 +51,17 @@ HoverflyRule.buildFromClassPathResource("test-service.json")
     .withProxyPort(8999)
     .build();
 ```
+
+## Apache Http Client
+
+This doesn't respect JVM system properties for things such as the proxy and truststore settings.  Therefore when you build one you would need to:
+
+```java
+HttpClientBuilder.create().useSystemProperties().build()
+```
+
+Or on older versions you may need to:
+
+```java
+new SystemDefaultHttpClient()
+```

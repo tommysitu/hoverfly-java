@@ -12,14 +12,20 @@
  */
 package io.specto.hoverfly.junit;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.io.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.URL;
-import java.util.Optional;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 class HoverflyRuleUtils {
 
@@ -29,14 +35,16 @@ class HoverflyRuleUtils {
     private static final String ARCH_AMD64 = "amd64";
     private static final String ARCH_386 = "386";
 
-    public static Optional<URL> getResource(String resourceName) {
-        ClassLoader loader = MoreObjects.firstNonNull(
-                Thread.currentThread().getContextClassLoader(),
-                Resources.class.getClassLoader());
-        return Optional.ofNullable(loader.getResource(resourceName));
+    static URL getResource(String resourceName) {
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        final URL resource = classLoader.getResource(resourceName);
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource not found with name: " + resourceName);
+        }
+        return resource;
     }
 
-    public static String getOs() {
+    static String getOs() {
         if (SystemUtils.IS_OS_MAC) {
             return DARWIN;
         } else if (SystemUtils.IS_OS_WINDOWS) {
@@ -48,15 +56,37 @@ class HoverflyRuleUtils {
         }
     }
 
-    public static String getArchitectureType() {
+    static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
     }
 
-    public static int findUnusedPort() {
+    static int findUnusedPort() {
         try(final ServerSocket serverSocket = new ServerSocket(0)){
             return serverSocket.getLocalPort();
         } catch (IOException e) {
             throw new RuntimeException("Cannot find available port", e);
         }
+    }
+
+    static void setHoverflyTrustStore() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, KeyManagementException {
+        // load your key store as a stream and initialize a KeyStore
+        InputStream trustStream = getResource("hoverfly.jks").openStream();
+
+        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+        // load the stream to your store
+        trustStore.load(trustStream, "hoverfly".toCharArray());
+
+        // initialize a trust manager factory with the trusted store
+        TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustFactory.init(trustStore);
+
+        // get the trust managers from the factory
+        TrustManager[] trustManagers = trustFactory.getTrustManagers();
+
+        // initialize an ssl context to use these managers and set as default
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustManagers, null);
+        SSLContext.setDefault(sslContext);
     }
 }

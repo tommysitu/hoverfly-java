@@ -1,21 +1,16 @@
-import io.specto.hoverfly.junit.HoverflyRule;
+package io.specto.hoverfly.junit;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-public class URLHoverflyRuleTest {
+public class HttpsHoverflyRuleTest {
 
     @Rule
     public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl("http://raw.githubusercontent.com/SpectoLabs/hoverfly-junit/d0d41dfdcb250c6bb02ada63d304b4afddf5f2e4/src/test/resources/test-service.json").build();
@@ -28,22 +23,7 @@ public class URLHoverflyRuleTest {
     }
 
     @Test
-    public void shouldBeAbleToMakeABookingUsingHoverfly() throws URISyntaxException {
-        // Given
-        final RequestEntity<String> bookFlightRequest = RequestEntity.post(new URI("http://www.my-test.com/api/bookings"))
-                .contentType(APPLICATION_JSON)
-                .body("{\"flightId\": \"1\"}");
-
-        // When
-        final ResponseEntity<String> bookFlightResponse = restTemplate.exchange(bookFlightRequest, String.class);
-
-        // Then
-        assertThat(bookFlightResponse.getStatusCode()).isEqualTo(CREATED);
-        assertThat(bookFlightResponse.getHeaders().getLocation()).isEqualTo(new URI("http://localhost/api/bookings/1"));
-    }
-
-    @Test
-    public void shouldBeAbleToGetABookingUsingHoverfly() {
+    public void shouldBeAbleToGetABookingUsingHttps() {
         // When
         final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
 
