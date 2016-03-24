@@ -1,4 +1,5 @@
-import io.specto.hoverfly.junit.HoverflyRule;
+package io.specto.hoverfly.junit;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
