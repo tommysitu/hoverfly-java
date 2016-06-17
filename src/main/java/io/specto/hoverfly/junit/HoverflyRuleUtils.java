@@ -29,7 +29,7 @@ import java.security.cert.CertificateException;
 
 class HoverflyRuleUtils {
 
-    private static final String DARWIN = "darwin";
+    private static final String OSX = "OSX";
     private static final String WINDOWS = "windows";
     private static final String LINUX = "linux";
     private static final String ARCH_AMD64 = "amd64";
@@ -46,7 +46,7 @@ class HoverflyRuleUtils {
 
     static String getOs() {
         if (SystemUtils.IS_OS_MAC) {
-            return DARWIN;
+            return OSX;
         } else if (SystemUtils.IS_OS_WINDOWS) {
             return WINDOWS;
         } else if (SystemUtils.IS_OS_LINUX) {

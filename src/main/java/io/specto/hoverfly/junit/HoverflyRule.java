@@ -110,7 +110,6 @@ public class HoverflyRule extends ExternalResource {
         startedProcess = new ProcessExecutor()
                 .command(this.binaryPath.toString(),
                         "-import", serviceDataURI,
-                        "-wipedb",
                         "-pp", String.valueOf(proxyPort),
                         "-ap", String.valueOf(adminPort))
                 .redirectOutput(Slf4jStream.of(LOGGER).asInfo())
