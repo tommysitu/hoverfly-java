@@ -55,7 +55,7 @@ public class TearDownTest {
     }
 
     @AfterClass
-    public static void b_allHoverflyTempFilesShouldBeDeleted() throws IOException {
+    public static void allHoverflyTempFilesShouldBeDeleted() throws IOException {
 
         // Given
         // The executeTestToSetupHoverflyBinariesConfigAndTempData has completed successfully
