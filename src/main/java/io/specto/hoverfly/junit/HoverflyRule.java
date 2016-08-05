@@ -170,7 +170,11 @@ public class HoverflyRule extends ExternalResource {
         final File database = binaryPath.getParent().resolve("requests.db").toFile();
         if (database.exists()) database.delete();
         final File binary = binaryPath.toFile();
-        if (binary.exists()) database.delete();
+        if (binary.exists()) binary.delete();
+    }
+
+    public Path getBinaryPath() {
+        return binaryPath;
     }
 
     public static class Builder {
