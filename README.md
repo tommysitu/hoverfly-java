@@ -19,7 +19,7 @@ You can get the rule from Maven Central
 ```xml
 <groupId>io.specto</groupId>
 <artifactId>hoverfly-junit</artifactId>
-<version>0.1.4</version>
+<version>0.1.7</version>
 ```
 
 ## Performance
