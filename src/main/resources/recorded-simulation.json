@@ -3,36 +3,34 @@
     {
       "response": {
         "status": 200,
-        "body": "\u003ch1\u003eHello World\u003c/h1\u003e\n",
+        "body": "{\"stats\":{\"counters\":{\"capture\":0,\"modify\":0,\"simulate\":0,\"synthesize\":0}},\"recordsCount\":0}",
         "encodedBody": false,
         "headers": {
           "Content-Length": [
-            "21"
+            "92"
           ],
           "Content-Type": [
-            "text/html;charset=utf-8"
+            "application/json"
           ],
           "Date": [
-            "Tue, 06 Sep 2016 16:46:29 GMT"
+            "Tue, 06 Sep 2016 17:18:25 GMT"
           ],
           "Hoverfly": [
             "Was-Here"
-          ],
-          "Server": [
-            "Jetty(9.3.11.v20160721)"
           ]
         }
       },
       "request": {
-        "path": "",
+        "requestType": "recording",
+        "path": "/api/stats",
         "method": "GET",
-        "destination": "localhost:53349",
+        "destination": "localhost:56264",
         "scheme": "http",
         "query": "",
         "body": "",
         "headers": {
           "Accept": [
-            "text/plain, application/json, application/*+json, */*"
+            "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
           ],
           "Proxy-Connection": [
             "keep-alive"
@@ -46,33 +44,37 @@
     {
       "response": {
         "status": 200,
-        "body": "\u003c!doctype html\u003e\u003chtml lang=\"en\"\u003e\u003chead\u003e\u003ctitle\u003eHoverfly\u003c/title\u003e\u003cmeta charset=\"utf-8\"\u003e\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\"\u003e\u003clink rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\"\u003e\u003clink rel=\"shortcut icon\" href=\"/favicon.ico\"\u003e\u003clink href=\"/app.32dc9945fd902da8ed2cccdc8703129f.css\" rel=\"stylesheet\"\u003e\u003c/head\u003e\u003cbody\u003e\u003cdiv id=\"root\" style=\"height: 100%\"\u003e\u003c/div\u003e\u003cscript src=\"/js/vendor.1eddacda628f7c29d7e7.js\"\u003e\u003c/script\u003e\u003cscript src=\"/js/app.974a89a98c29d708d197.js\"\u003e\u003c/script\u003e\u003c/body\u003e\u003c/html\u003e",
+        "body": "\u003ch1\u003eHello World\u003c/h1\u003e\n",
         "encodedBody": false,
         "headers": {
           "Content-Length": [
-            "549"
+            "21"
           ],
           "Content-Type": [
-            "text/html; charset=utf-8"
+            "text/html;charset=utf-8"
           ],
           "Date": [
-            "Tue, 06 Sep 2016 16:46:29 GMT"
+            "Tue, 06 Sep 2016 17:18:25 GMT"
           ],
           "Hoverfly": [
             "Was-Here"
+          ],
+          "Server": [
+            "Jetty(9.3.11.v20160721)"
           ]
         }
       },
       "request": {
-        "path": "/stats",
+        "requestType": "recording",
+        "path": "",
         "method": "GET",
-        "destination": "localhost:53330",
+        "destination": "localhost:56287",
         "scheme": "http",
         "query": "",
         "body": "",
         "headers": {
           "Accept": [
-            "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
+            "text/plain, application/json, application/*+json, */*"
           ],
           "Proxy-Connection": [
             "keep-alive"

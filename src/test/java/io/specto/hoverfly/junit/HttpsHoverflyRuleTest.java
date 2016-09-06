@@ -4,11 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,29 +37,4 @@ public class HttpsHoverflyRuleTest {
                 "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}" +
                 "}");
     }
-
-
-    @Test
-    public void should() {
-        // Given
-
-        // When
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(final ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(final ClientHttpResponse response) throws IOException {
-
-            }
-        });
-
-        final ResponseEntity<String> forEntity = restTemplate.getForEntity("http://www.specto.io", String.class);
-        System.out.println(forEntity);
-    }
-
-
 }

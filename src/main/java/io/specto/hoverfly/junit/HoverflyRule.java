@@ -48,9 +48,9 @@ import static java.util.Arrays.asList;
 public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
-    private static final String BINARY_PATH = "hoverfly_%s_%s";
+    private static final String BINARY_PATH = "hoverfly_v0.8.1_%s_%s";
     private static final int BOOT_TIMEOUT_SECONDS = 10;
-    private static final String HEALTH_CHECK_URL = "http://localhost:%s/stats";
+    private static final String HEALTH_CHECK_URL = "http://localhost:%s/api/stats";
     private static final String RECORDS_URL = "http://localhost:%s/api/records";
     private final int proxyPort;
     private final int adminPort;
@@ -83,6 +83,8 @@ public class HoverflyRule extends ExternalResource {
 
         if (this.proxyLocalHost) {
             System.setProperty("http.nonProxyHosts", "");
+        } else {
+            System.setProperty("http.nonProxyHosts", "local|*.local|169.254/16|*.169.254/16");
         }
 
         LOGGER.info("Setting proxy proxyPort to " + this.proxyPort);

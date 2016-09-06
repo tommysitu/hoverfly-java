@@ -3,14 +3,14 @@
     {
       "response": {
         "status": 200,
-        "body": "\u003c!doctype html\u003e\u003chtml lang=\"en\"\u003e\u003chead\u003e\u003ctitle\u003eHoverfly\u003c/title\u003e\u003cmeta charset=\"utf-8\"\u003e\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\"\u003e\u003clink rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\"\u003e\u003clink rel=\"shortcut icon\" href=\"/favicon.ico\"\u003e\u003clink href=\"/app.32dc9945fd902da8ed2cccdc8703129f.css\" rel=\"stylesheet\"\u003e\u003c/head\u003e\u003cbody\u003e\u003cdiv id=\"root\" style=\"height: 100%\"\u003e\u003c/div\u003e\u003cscript src=\"/js/vendor.1eddacda628f7c29d7e7.js\"\u003e\u003c/script\u003e\u003cscript src=\"/js/app.974a89a98c29d708d197.js\"\u003e\u003c/script\u003e\u003c/body\u003e\u003c/html\u003e",
+        "body": "{\"stats\":{\"counters\":{\"capture\":0,\"modify\":0,\"simulate\":0,\"synthesize\":0}},\"recordsCount\":0}",
         "encodedBody": false,
         "headers": {
           "Content-Length": [
-            "549"
+            "92"
           ],
           "Content-Type": [
-            "text/html; charset=utf-8"
+            "application/json"
           ],
           "Date": [
             "${json-unit.ignore}"
@@ -18,10 +18,11 @@
           "Hoverfly": [
             "Was-Here"
           ]
-        }
-      },
+      }
+    },
       "request": {
-        "path": "/stats",
+        "requestType": "recording",
+        "path": "/api/stats",
         "method": "GET",
         "destination": "${json-unit.ignore}",
         "scheme": "http",
@@ -37,8 +38,8 @@
           "User-Agent": [
             "Java/1.8.0_40"
           ]
-        }
       }
+    }
     },
     {
       "response": {
@@ -64,6 +65,7 @@
         }
       },
       "request": {
+        "requestType": "recording",
         "path": "",
         "method": "GET",
         "destination": "${json-unit.ignore}",
