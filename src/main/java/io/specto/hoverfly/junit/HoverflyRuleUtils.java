@@ -10,6 +10,18 @@
  *
  * Copyright 2016-2016 SpectoLabs Ltd.
  */
+/*
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+  the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations under the License.
+
+  Copyright 2016-2016 SpectoLabs Ltd.
+ */
 package io.specto.hoverfly.junit;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -17,10 +29,14 @@ import org.apache.commons.lang3.SystemUtils;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -35,13 +51,23 @@ class HoverflyRuleUtils {
     private static final String ARCH_AMD64 = "amd64";
     private static final String ARCH_386 = "386";
 
-    static URL getResource(String resourceName) {
+    static URI findResourceOnClasspath(String resourceName) throws URISyntaxException {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final URL resource = classLoader.getResource(resourceName);
         if (resource == null) {
             throw new IllegalArgumentException("Resource not found with name: " + resourceName);
         }
-        return resource;
+        return resource.toURI();
+    }
+
+    static URI createFileRelativeToClasspath(String resourceName) throws IOException {
+        final File file = Paths.get(new File("").getAbsolutePath(), resourceName).toFile();
+        file.mkdirs();
+        if (!file.exists()) {
+            file.delete();
+        }
+        file.createNewFile();
+        return file.toURI();
     }
 
     static String getOs() {
@@ -68,9 +94,9 @@ class HoverflyRuleUtils {
         }
     }
 
-    static void setHoverflyTrustStore() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, KeyManagementException {
+    static void setHoverflyTrustStore() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, KeyManagementException, URISyntaxException {
         // load your key store as a stream and initialize a KeyStore
-        InputStream trustStream = getResource("hoverfly.jks").openStream();
+        InputStream trustStream = findResourceOnClasspath("hoverfly.jks").toURL().openStream();
 
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 

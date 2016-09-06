@@ -1,0 +1,87 @@
+{
+  "data": [
+    {
+      "response": {
+        "status": 200,
+        "body": "\u003ch1\u003eHello World\u003c/h1\u003e\n",
+        "encodedBody": false,
+        "headers": {
+          "Content-Length": [
+            "21"
+          ],
+          "Content-Type": [
+            "text/html;charset=utf-8"
+          ],
+          "Date": [
+            "Tue, 06 Sep 2016 16:46:29 GMT"
+          ],
+          "Hoverfly": [
+            "Was-Here"
+          ],
+          "Server": [
+            "Jetty(9.3.11.v20160721)"
+          ]
+        }
+      },
+      "request": {
+        "path": "",
+        "method": "GET",
+        "destination": "localhost:53349",
+        "scheme": "http",
+        "query": "",
+        "body": "",
+        "headers": {
+          "Accept": [
+            "text/plain, application/json, application/*+json, */*"
+          ],
+          "Proxy-Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "Java/1.8.0_40"
+          ]
+        }
+      }
+    },
+    {
+      "response": {
+        "status": 200,
+        "body": "\u003c!doctype html\u003e\u003chtml lang=\"en\"\u003e\u003chead\u003e\u003ctitle\u003eHoverfly\u003c/title\u003e\u003cmeta charset=\"utf-8\"\u003e\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\"\u003e\u003clink rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\"\u003e\u003clink rel=\"shortcut icon\" href=\"/favicon.ico\"\u003e\u003clink href=\"/app.32dc9945fd902da8ed2cccdc8703129f.css\" rel=\"stylesheet\"\u003e\u003c/head\u003e\u003cbody\u003e\u003cdiv id=\"root\" style=\"height: 100%\"\u003e\u003c/div\u003e\u003cscript src=\"/js/vendor.1eddacda628f7c29d7e7.js\"\u003e\u003c/script\u003e\u003cscript src=\"/js/app.974a89a98c29d708d197.js\"\u003e\u003c/script\u003e\u003c/body\u003e\u003c/html\u003e",
+        "encodedBody": false,
+        "headers": {
+          "Content-Length": [
+            "549"
+          ],
+          "Content-Type": [
+            "text/html; charset=utf-8"
+          ],
+          "Date": [
+            "Tue, 06 Sep 2016 16:46:29 GMT"
+          ],
+          "Hoverfly": [
+            "Was-Here"
+          ]
+        }
+      },
+      "request": {
+        "path": "/stats",
+        "method": "GET",
+        "destination": "localhost:53330",
+        "scheme": "http",
+        "query": "",
+        "body": "",
+        "headers": {
+          "Accept": [
+            "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
+          ],
+          "Proxy-Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "Java/1.8.0_40"
+          ]
+        }
+      }
+    }
+  ]
+}
