@@ -32,6 +32,7 @@ public class HoverflyRulePortConfigurationTest {
     @Test
     public void shouldSetProxyPortToWhatIsConfigured() {
         assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(EXPECTED_PROXY_PORT));
+        assertThat(hoverflyRule.getProxyPort()).isEqualTo(EXPECTED_PROXY_PORT);
     }
 
     @Test
