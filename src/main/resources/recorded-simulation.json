@@ -3,47 +3,6 @@
     {
       "response": {
         "status": 200,
-        "body": "{\"stats\":{\"counters\":{\"capture\":0,\"modify\":0,\"simulate\":0,\"synthesize\":0}},\"recordsCount\":0}",
-        "encodedBody": false,
-        "headers": {
-          "Content-Length": [
-            "92"
-          ],
-          "Content-Type": [
-            "application/json"
-          ],
-          "Date": [
-            "Wed, 07 Sep 2016 10:00:15 GMT"
-          ],
-          "Hoverfly": [
-            "Was-Here"
-          ]
-        }
-      },
-      "request": {
-        "requestType": "recording",
-        "path": "/api/stats",
-        "method": "GET",
-        "destination": "localhost:61578",
-        "scheme": "http",
-        "query": "",
-        "body": "",
-        "headers": {
-          "Accept": [
-            "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
-          ],
-          "Proxy-Connection": [
-            "keep-alive"
-          ],
-          "User-Agent": [
-            "Java/1.8.0_40"
-          ]
-        }
-      }
-    },
-    {
-      "response": {
-        "status": 200,
         "body": "\u003ch1\u003eHello World\u003c/h1\u003e\n",
         "encodedBody": false,
         "headers": {
@@ -54,7 +13,7 @@
             "text/html;charset=utf-8"
           ],
           "Date": [
-            "Wed, 07 Sep 2016 10:00:16 GMT"
+            "Wed, 07 Sep 2016 10:49:41 GMT"
           ],
           "Hoverfly": [
             "Was-Here"
@@ -68,13 +27,54 @@
         "requestType": "recording",
         "path": "",
         "method": "GET",
-        "destination": "localhost:61605",
+        "destination": "localhost:63287",
         "scheme": "http",
         "query": "",
         "body": "",
         "headers": {
           "Accept": [
             "text/plain, application/json, application/*+json, */*"
+          ],
+          "Proxy-Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "Java/1.8.0_40"
+          ]
+        }
+      }
+    },
+    {
+      "response": {
+        "status": 200,
+        "body": "{\"stats\":{\"counters\":{\"capture\":0,\"modify\":0,\"simulate\":0,\"synthesize\":0}},\"recordsCount\":0}",
+        "encodedBody": false,
+        "headers": {
+          "Content-Length": [
+            "92"
+          ],
+          "Content-Type": [
+            "application/json"
+          ],
+          "Date": [
+            "Wed, 07 Sep 2016 10:49:41 GMT"
+          ],
+          "Hoverfly": [
+            "Was-Here"
+          ]
+        }
+      },
+      "request": {
+        "requestType": "recording",
+        "path": "/api/stats",
+        "method": "GET",
+        "destination": "localhost:63258",
+        "scheme": "http",
+        "query": "",
+        "body": "",
+        "headers": {
+          "Accept": [
+            "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
           ],
           "Proxy-Connection": [
             "keep-alive"
