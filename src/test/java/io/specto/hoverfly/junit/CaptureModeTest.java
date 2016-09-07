@@ -2,17 +2,18 @@ package io.specto.hoverfly.junit;
 
 import com.google.common.io.Resources;
 import io.specto.hoverfly.webserver.WebServer;
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
-
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class CaptureModeTest {
 
@@ -38,10 +39,10 @@ public class CaptureModeTest {
 
     // We have to assert after the rule has executed because that's when the file is written to the filesystem
     @After
-    public void after() throws IOException {
+    public void after() throws IOException, JSONException {
         final String expectedSimulation = Resources.toString(Resources.getResource("expected-simulation.json"), Charset.defaultCharset());
         final String actualSimulation = Resources.toString(Resources.getResource("recorded-simulation.json"), Charset.defaultCharset());
-        assertThatJson(actualSimulation).isEqualTo(expectedSimulation);
+        JSONAssert.assertEquals(expectedSimulation, actualSimulation, JSONCompareMode.LENIENT);
     }
 
 }

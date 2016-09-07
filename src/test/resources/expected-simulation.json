@@ -12,9 +12,6 @@
           "Content-Type": [
             "application/json"
           ],
-          "Date": [
-            "${json-unit.ignore}"
-          ],
           "Hoverfly": [
             "Was-Here"
           ]
@@ -24,7 +21,6 @@
         "requestType": "recording",
         "path": "/api/stats",
         "method": "GET",
-        "destination": "${json-unit.ignore}",
         "scheme": "http",
         "query": "",
         "body": "",
@@ -53,9 +49,6 @@
           "Content-Type": [
             "text/html;charset=utf-8"
           ],
-          "Date": [
-            "${json-unit.ignore}"
-          ],
           "Hoverfly": [
             "Was-Here"
           ],
@@ -63,12 +56,11 @@
             "Jetty(9.3.11.v20160721)"
           ]
         }
-      },
+    },
       "request": {
         "requestType": "recording",
         "path": "",
         "method": "GET",
-        "destination": "${json-unit.ignore}",
         "scheme": "http",
         "query": "",
         "body": "",
@@ -82,8 +74,8 @@
           "User-Agent": [
             "Java/1.8.0_40"
           ]
-        }
       }
+    }
     }
   ]
 }
