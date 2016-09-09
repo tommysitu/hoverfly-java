@@ -19,7 +19,7 @@ You can get the rule from Maven Central
 ```xml
 <groupId>io.specto</groupId>
 <artifactId>hoverfly-junit</artifactId>
-<version>0.1.7</version>
+<version>0.1.8</version>
 ```
 
 ## Performance
@@ -64,4 +64,15 @@ Or on older versions you may need to:
 
 ```java
 new SystemDefaultHttpClient()
+```
+
+## Capturing
+
+Sometimes, it can be useful to write your tests against the real external dependency, recording it along the way.  Once you're happy, you can swap the real external service for your simulation.  This helps produce quick deterministic tests which are able to run in a sandbox.  Simply specify where you want the simulation to be output:
+
+```
+@Rule
+public HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("src/main/resources/recorded-simulation.json")
+    .proxyLocalHost()
+    .build();
 ```

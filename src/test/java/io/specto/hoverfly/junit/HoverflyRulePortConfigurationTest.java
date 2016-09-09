@@ -32,11 +32,12 @@ public class HoverflyRulePortConfigurationTest {
     @Test
     public void shouldSetProxyPortToWhatIsConfigured() {
         assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(EXPECTED_PROXY_PORT));
+        assertThat(hoverflyRule.getProxyPort()).isEqualTo(EXPECTED_PROXY_PORT);
     }
 
     @Test
     public void shouldChangeAdminPortToConfiguredPort() {
-        final ResponseEntity<String> health = restTemplate.getForEntity(String.format("http://localhost:%s/stats", EXPECTED_ADMIN_PORT), String.class);
+        final ResponseEntity<String> health = restTemplate.getForEntity(String.format("http://localhost:%s/api/stats", EXPECTED_ADMIN_PORT), String.class);
         assertThat(health.getStatusCode()).isEqualTo(OK);
     }
 

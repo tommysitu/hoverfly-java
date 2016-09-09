@@ -21,12 +21,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TearDownTest {
 
+    private static String hoverflyBinaryPath;
     @Rule
     public HoverflyRule hoverflyRule = HoverflyRule.buildFromClassPathResource("test-service.json").build();
-
     private HttpClient httpClient;
 
-    private static String hoverflyBinaryPath;
+    @AfterClass
+    public static void allHoverflyTempFilesShouldBeDeleted() throws IOException {
+        // Given
+        Path hoverflyBinaryPath = Paths.get(TearDownTest.hoverflyBinaryPath);
+
+        // Then
+        assertThat(Files.exists(hoverflyBinaryPath), is(false));
+    }
 
     @Before
     public void setUp() {
@@ -52,20 +59,5 @@ public class TearDownTest {
 
         // set the current hoverflyBinaryPath location for @AfterClass assertion
         TearDownTest.hoverflyBinaryPath = hoverflyRule.getBinaryPath().toString();
-    }
-
-    @AfterClass
-    public static void allHoverflyTempFilesShouldBeDeleted() throws IOException {
-
-        // Given
-        // The executeTestToSetupHoverflyBinariesConfigAndTempData has completed successfully
-
-        // When
-        Path hoverflyBinaryPath = Paths.get(TearDownTest.hoverflyBinaryPath);
-        Path hoverflyDatabasePath = hoverflyBinaryPath.getParent().resolve("requests.db");
-
-        // Then
-        assertThat(Files.exists(hoverflyBinaryPath), is(false));
-        assertThat(Files.exists(hoverflyDatabasePath), is(false));
     }
 }

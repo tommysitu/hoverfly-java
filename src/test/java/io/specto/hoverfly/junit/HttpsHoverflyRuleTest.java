@@ -1,14 +1,13 @@
 package io.specto.hoverfly.junit;
 
-import org.junit.Before;
+import io.specto.hoverfly.webserver.ImportTestWebServer;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.net.URI;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,14 +15,14 @@ import static org.springframework.http.HttpStatus.OK;
 
 public class HttpsHoverflyRuleTest {
 
+    private static URI webServerUri;
     @Rule
-    public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl("http://raw.githubusercontent.com/SpectoLabs/hoverfly-junit/d0d41dfdcb250c6bb02ada63d304b4afddf5f2e4/src/test/resources/test-service.json").build();
+    public HoverflyRule hoverflyRule = HoverflyRule.buildFromUrl(webServerUri.toString()).build();
+    private RestTemplate restTemplate = new RestTemplate();
 
-    private RestTemplate restTemplate;
-
-    @Before
-    public void setUp() {
-        restTemplate = new RestTemplate();
+    @BeforeClass
+    public static void setUp() throws Exception {
+        webServerUri = ImportTestWebServer.run();
     }
 
     @Test
@@ -41,29 +40,4 @@ public class HttpsHoverflyRuleTest {
                 "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}" +
                 "}");
     }
-
-
-    @Test
-    public void should() {
-        // Given
-
-        // When
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(final ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(final ClientHttpResponse response) throws IOException {
-
-            }
-        });
-
-        final ResponseEntity<String> forEntity = restTemplate.getForEntity("http://www.specto.io", String.class);
-        System.out.println(forEntity);
-    }
-
-
 }

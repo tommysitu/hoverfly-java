@@ -266,9 +266,17 @@
         </dependency>
 
         <dependency>
-            <groupId>io.specto</groupId>
-            <artifactId>hoverfly-junit</artifactId>
-            <version>0.1.4</version>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.3.11.v20160721</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.3.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
