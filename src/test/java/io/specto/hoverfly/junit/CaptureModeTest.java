@@ -1,7 +1,7 @@
 package io.specto.hoverfly.junit;
 
 import com.google.common.io.Resources;
-import io.specto.hoverfly.webserver.WebServer;
+import io.specto.hoverfly.webserver.CaptureModeTestWebServer;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +27,7 @@ public class CaptureModeTest {
 
     @Before
     public void setUp() throws Exception {
-        webServerBaseUrl = WebServer.run();
+        webServerBaseUrl = CaptureModeTestWebServer.run();
         restTemplate = new RestTemplate();
     }
 

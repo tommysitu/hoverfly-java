@@ -60,7 +60,8 @@ import static java.util.Arrays.asList;
 public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
-    private static final String BINARY_PATH = "hoverfly_v0.8.1_%s_%s";
+    private static final String BINARY_VERSION = "0.8.2";
+    private static final String BINARY_PATH = "hoverfly_v%s_%s_%s";
     private static final int BOOT_TIMEOUT_SECONDS = 10;
     private static final String HEALTH_CHECK_URL = "http://localhost:%s/api/stats";
     private static final String RECORDS_URL = "http://localhost:%s/api/records";
@@ -136,7 +137,7 @@ public class HoverflyRule extends ExternalResource {
             Files.deleteIfExists(path);
         }
 
-        final String binaryName = String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
+        final String binaryName = String.format(BINARY_PATH, BINARY_VERSION, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
         LOGGER.info("Selecting the following binary based on the current operating system: " + binaryName);
 
         this.binaryPath = extractBinary(binaryName);
