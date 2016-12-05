@@ -1,11 +1,12 @@
 package io.specto.hoverfly.otherpackage.junit;
 
+import io.specto.hoverfly.junit.HoverflyRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import static io.specto.hoverfly.otherpackage.junit.HoverflyConfig.configs;
+import static io.specto.hoverfly.junit.HoverflyConfig.configs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 

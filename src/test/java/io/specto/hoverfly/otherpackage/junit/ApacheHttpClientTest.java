@@ -1,5 +1,6 @@
 package io.specto.hoverfly.otherpackage.junit;
 
+import io.specto.hoverfly.junit.HoverflyRule;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;

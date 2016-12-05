@@ -1,4 +1,4 @@
-package io.specto.hoverfly.otherpackage.junit;
+package io.specto.hoverfly.junit;
 
 import org.junit.Test;
 

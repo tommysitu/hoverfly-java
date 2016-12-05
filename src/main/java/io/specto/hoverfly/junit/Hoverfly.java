@@ -10,7 +10,7 @@
  *
  * Copyright 2016-2016 SpectoLabs Ltd.
  */
-package io.specto.hoverfly.otherpackage.junit;
+package io.specto.hoverfly.junit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,8 +45,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.specto.hoverfly.otherpackage.junit.HoverflyMode.CAPTURE;
-import static io.specto.hoverfly.otherpackage.junit.HoverflyRuleUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.util.Arrays.asList;
@@ -71,8 +69,8 @@ class Hoverfly {
     Hoverfly(HoverflyConfig hoverflyConfig, HoverflyMode hoverflyMode) {
         this.hoverflyConfig = hoverflyConfig;
         this.hoverflyMode = hoverflyMode;
-        proxyPort = hoverflyConfig.getProxyPort() == 0 ? findUnusedPort() : hoverflyConfig.getProxyPort();
-        adminPort = hoverflyConfig.getAdminPort() == 0 ? findUnusedPort() : hoverflyConfig.getAdminPort();
+        proxyPort = hoverflyConfig.getProxyPort() == 0 ? HoverflyRuleUtils.findUnusedPort() : hoverflyConfig.getProxyPort();
+        adminPort = hoverflyConfig.getAdminPort() == 0 ? HoverflyRuleUtils.findUnusedPort() : hoverflyConfig.getAdminPort();
     }
 
     void start() throws IOException, URISyntaxException {
@@ -81,7 +79,7 @@ class Hoverfly {
 
         setProxySystemProperties();
 
-        final String binaryName = String.format(BINARY_PATH, BINARY_VERSION, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
+        final String binaryName = String.format(BINARY_PATH, BINARY_VERSION, HoverflyRuleUtils.getOs(), HoverflyRuleUtils.getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
         LOGGER.info("Selecting the following binary based on the current operating system: {}", binaryName);
         binaryPath = extractBinary(binaryName);
 
@@ -96,7 +94,7 @@ class Hoverfly {
         commands.add("-ap");
         commands.add(adminPort.toString());
 
-        if (hoverflyMode == CAPTURE) {
+        if (hoverflyMode == HoverflyMode.CAPTURE) {
             commands.add("-capture");
         }
 
@@ -200,7 +198,7 @@ class Hoverfly {
     }
 
     private Path extractBinary(final String binaryName) throws IOException {
-        final URI sourceHoverflyUrl = findResourceOnClasspath(binaryName);
+        final URI sourceHoverflyUrl = HoverflyRuleUtils.findResourceOnClasspath(binaryName);
         final Path temporaryHoverflyPath = Files.createTempFile(binaryName, "");
         LOGGER.info("Storing binary in temporary directory {}", temporaryHoverflyPath);
         final File temporaryHoverflyFile = temporaryHoverflyPath.toFile();
@@ -219,7 +217,7 @@ class Hoverfly {
     private void setTrustStore() {
         try {
             // load your key store as a stream and initialize a KeyStore
-            InputStream trustStream = findResourceOnClasspath("hoverfly.jks").toURL().openStream();
+            InputStream trustStream = HoverflyRuleUtils.findResourceOnClasspath("hoverfly.jks").toURL().openStream();
 
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
