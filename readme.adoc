@@ -1,3 +1,5 @@
+image::https://circleci.com/gh/SpectoLabs/hoverfly-junit.svg?style=svg["CircleCI", link="https://circleci.com/gh/SpectoLabs/hoverfly-junit"]
+
 == Hoverfly JUnit Rule
 
 A Java native language binding for http://hoverfly.io/[Hoverfly], which allows you to simulate http services in your unit tests.
