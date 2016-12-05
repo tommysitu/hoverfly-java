@@ -8,13 +8,13 @@
 
     <groupId>io.specto</groupId>
     <artifactId>hoverfly-junit</artifactId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.2.2</version>
 
     <scm>
         <developerConnection>scm:git:git@github.com:SpectoLabs/hoverfly-junit.git</developerConnection>
         <connection>scm:git:git@github.com:SpectoLabs/hoverfly-junit.git</connection>
         <url>git@github.com:SpectoLabs/hoverfly-junit.git</url>
-    <tag>HEAD</tag>
+    <tag>0.2.2</tag>
   </scm>
 
     <developers>
