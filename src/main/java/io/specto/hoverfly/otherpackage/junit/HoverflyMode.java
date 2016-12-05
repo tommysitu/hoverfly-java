@@ -22,7 +22,7 @@
 
   Copyright 2016-2016 SpectoLabs Ltd.
  */
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 public enum HoverflyMode {
     SIMULATE, CAPTURE

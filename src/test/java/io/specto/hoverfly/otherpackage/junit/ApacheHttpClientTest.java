@@ -1,4 +1,4 @@
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

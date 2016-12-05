@@ -10,7 +10,7 @@
  *
  * Copyright 2016-2016 SpectoLabs Ltd.
  */
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,8 +45,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.specto.hoverfly.junit.HoverflyMode.CAPTURE;
-import static io.specto.hoverfly.junit.HoverflyRuleUtils.*;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyMode.CAPTURE;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyRuleUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.util.Arrays.asList;

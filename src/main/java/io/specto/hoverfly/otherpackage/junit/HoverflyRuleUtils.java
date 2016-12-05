@@ -22,7 +22,7 @@
 
   Copyright 2016-2016 SpectoLabs Ltd.
  */
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.apache.commons.lang3.SystemUtils;
 

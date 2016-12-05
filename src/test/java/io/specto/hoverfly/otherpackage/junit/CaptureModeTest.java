@@ -1,4 +1,4 @@
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import com.google.common.io.Resources;
 import io.specto.hoverfly.webserver.CaptureModeTestWebServer;
@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.specto.hoverfly.junit.HoverflyConfig.configs;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyConfig.configs;
 import static java.nio.charset.Charset.defaultCharset;
 
 public class CaptureModeTest {

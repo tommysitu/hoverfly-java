@@ -1,11 +1,11 @@
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import static io.specto.hoverfly.junit.HoverflyConfig.configs;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyConfig.configs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -36,5 +36,12 @@ public class HoverflyRulePortConfigurationTest {
         final ResponseEntity<String> health = restTemplate.getForEntity(String.format("http://localhost:%s/api/stats", EXPECTED_ADMIN_PORT), String.class);
         assertThat(health.getStatusCode()).isEqualTo(OK);
     }
+
+    @Test
+    public void shouldBeAbleToGetPort() {
+        // Then
+        assertThat(hoverflyRule.getProxyPort()).isEqualTo(8890);
+    }
+
 
 }

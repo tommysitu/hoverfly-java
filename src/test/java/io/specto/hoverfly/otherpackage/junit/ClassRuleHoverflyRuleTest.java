@@ -1,4 +1,4 @@
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.junit.Before;
 import org.junit.ClassRule;

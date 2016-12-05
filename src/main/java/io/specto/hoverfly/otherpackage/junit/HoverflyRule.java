@@ -22,7 +22,7 @@
 
   Copyright 2016-2016 SpectoLabs Ltd.
  */
-package io.specto.hoverfly.junit;
+package io.specto.hoverfly.otherpackage.junit;
 
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
@@ -32,10 +32,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static io.specto.hoverfly.junit.HoverflyConfig.configs;
-import static io.specto.hoverfly.junit.HoverflyMode.CAPTURE;
-import static io.specto.hoverfly.junit.HoverflyMode.SIMULATE;
-import static io.specto.hoverfly.junit.HoverflyRuleUtils.findResourceOnClasspath;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyConfig.configs;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyMode.CAPTURE;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyMode.SIMULATE;
+import static io.specto.hoverfly.otherpackage.junit.HoverflyRuleUtils.findResourceOnClasspath;
 
 public class HoverflyRule extends ExternalResource {
 
@@ -106,5 +106,9 @@ public class HoverflyRule extends ExternalResource {
         } finally {
             hoverfly.stop();
         }
+    }
+
+    public int getProxyPort() {
+        return hoverfly.getProxyPort();
     }
 }
