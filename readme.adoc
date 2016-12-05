@@ -100,5 +100,5 @@ Sometimes, it can be useful to write your tests against the real external depend
 [source,java,indent=0]
 ----
 @Rule
-public HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("recorded-simulation.json", configs().proxyLocalHost(true));
+public HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("recorded-simulation.json");
 ----
