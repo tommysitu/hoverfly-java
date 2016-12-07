@@ -5,9 +5,9 @@ set -e
 git config --global user.email "circleci@specto.io"
 git config --global user.name "CircleCI"
 
-PROJECT_VERSION=$(cat gradle.properties | grep version | cut -d '=' -f 2)
+PROJECT_VERSION=($(cat gradle.properties | grep version | cut -d '=' -f 2))
 
-echo "Project version: ${PROJECT_VERSION}"
+echo "Project version: ${PROJECT_VERSION[0]}"
 echo "Is release?: ${IS_RELEASE}"
 echo "Release version: ${RELEASE_VERSION}"
 echo "Next dev version: ${NEXT_DEV_VERSION}"
@@ -15,7 +15,7 @@ echo "Next dev version: ${NEXT_DEV_VERSION}"
 sudo apt-get -yq update && sudo apt-get -yq install gnupg2
 echo ${GPG_PRIVATE_KEY} | base64 --decode -i | gpg2 --import
 
-if [[ "${PROJECT_VERSION}" == *"SNAPSHOT" ]]; then
+if [[ "${PROJECT_VERSION[0]}" == *"SNAPSHOT" ]]; then
     echo "Detected snapshot version"
 
     if [ "${IS_RELEASE}" = true ]; then
