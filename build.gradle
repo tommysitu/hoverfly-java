@@ -122,6 +122,14 @@ uploadArchives {
     }
 }
 
+license {
+    header = file('license-header.txt')
+    strictCheck true
+    include "src/main/**/*.java"
+    ext.inceptionYear = 2016
+    ext.currentYear = Calendar.getInstance().get(Calendar.YEAR)
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
