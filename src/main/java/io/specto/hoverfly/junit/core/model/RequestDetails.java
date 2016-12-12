@@ -20,7 +20,7 @@ public class RequestDetails {
     private final Map<String, List<String>> headers;
 
     @JsonCreator
-    private RequestDetails(@JsonProperty("path") String path,
+    public RequestDetails(@JsonProperty("path") String path,
                            @JsonProperty("method") String method,
                            @JsonProperty("destination") String destination,
                            @JsonProperty("scheme") String scheme,
@@ -66,49 +66,6 @@ public class RequestDetails {
 
     public Map<String, List<String>> getHeaders() {
         return headers;
-    }
-
-    public static Builder Builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-
-        private static final String SCHEME = "http";
-        private String path = "";
-        private String method = "";
-        private String destination;
-        private String body = "";
-        private String query = "";
-
-        public Builder withPath(final String path) {
-            this.path = path;
-            return this;
-        }
-
-        public Builder withMethod(final String method) {
-            this.method = method;
-            return this;
-        }
-
-        public Builder withDestination(final String destination) {
-            this.destination = destination;
-            return this;
-        }
-
-        public Builder withBody(final String body) {
-            this.body = body;
-            return this;
-        }
-
-        public RequestDetails build() {
-            return new RequestDetails(path, method, destination, SCHEME, query, body, Collections.emptyMap());
-        }
-
-        public Builder withQuery(final String query) {
-            this.query = query;
-            return this;
-        }
     }
 
     @Override

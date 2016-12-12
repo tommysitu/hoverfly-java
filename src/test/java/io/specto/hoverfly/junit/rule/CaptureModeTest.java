@@ -3,7 +3,10 @@ package io.specto.hoverfly.junit.rule;
 import com.google.common.io.Resources;
 import io.specto.hoverfly.webserver.CaptureModeTestWebServer;
 import org.json.JSONException;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.web.client.RestTemplate;
@@ -14,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.google.common.io.Resources.getResource;
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static java.nio.charset.Charset.defaultCharset;
 

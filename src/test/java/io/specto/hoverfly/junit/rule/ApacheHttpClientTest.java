@@ -44,6 +44,10 @@ public class ApacheHttpClientTest {
                 "\"time\":\"2011-09-01T12:30\"," +
                 "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}" +
                 "}");
+
+//
+//        HttpResponse httpResponse = httpClient.execute(new HttpGet("https://slack.com/api/auth.test"));
+//        assertThatJson(httpResponse.getStatusLine().getStatusCode()).isEqualTo(200);
     }
 
 }

@@ -15,6 +15,8 @@ package io.specto.hoverfly.junit.rule;
 import io.specto.hoverfly.junit.core.Hoverfly;
 import io.specto.hoverfly.junit.core.HoverflyConfig;
 import io.specto.hoverfly.junit.core.HoverflyMode;
+import io.specto.hoverfly.junit.core.model.Simulation;
+import io.specto.hoverfly.junit.dsl.SimulationBuilder;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -25,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.CAPTURE;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
 import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.fileRelativeToTestResources;
@@ -35,13 +38,14 @@ public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private final Hoverfly hoverfly;
-    private final URI simulation;
+    private final URI simulationResource;
     private final HoverflyMode hoverflyMode;
+    private Simulation simulation;
 
-    private HoverflyRule(final URI simulation, final HoverflyMode hoverflyMode, final HoverflyConfig hoverflyConfig) {
+    private HoverflyRule(final URI simulationResource, final HoverflyMode hoverflyMode, final HoverflyConfig hoverflyConfig) {
         this.hoverflyMode = hoverflyMode;
         this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
-        this.simulation = simulation;
+        this.simulationResource = simulationResource;
     }
 
     /**
@@ -51,7 +55,7 @@ public class HoverflyRule extends ExternalResource {
      * @return HoverflyRule
      */
     public static HoverflyRule inCaptureMode(String recordedFilename) {
-        return inCaptureMode(recordedFilename, HoverflyConfig.configs());
+        return inCaptureMode(recordedFilename, configs());
     }
 
     public static HoverflyRule inCaptureMode(String recordedFilename, HoverflyConfig hoverflyConfig) {
@@ -59,7 +63,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     public static HoverflyRule inSimulationMode(String resourceNameOnClasspath) {
-        return inSimulationMode(resourceNameOnClasspath, HoverflyConfig.configs());
+        return inSimulationMode(resourceNameOnClasspath, configs());
     }
 
     public static HoverflyRule inSimulationMode(String resourceNameOnClasspath, HoverflyConfig hoverflyConfig) {
@@ -67,7 +71,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     public static HoverflyRule inSimulationMode(URL webResourceUrl) {
-        return inSimulationMode(webResourceUrl, HoverflyConfig.configs());
+        return inSimulationMode(webResourceUrl, configs());
     }
 
     public static HoverflyRule inSimulationMode(URL webResourceUrl, HoverflyConfig hoverflyConfig) {
@@ -76,6 +80,16 @@ public class HoverflyRule extends ExternalResource {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public static HoverflyRule inSimulationMode() {
+        return new HoverflyRule(null, SIMULATE, configs());
+    }
+
+
+    public void simulate(SimulationBuilder simulationBuilder) {
+        simulation = simulationBuilder.build();
+        hoverfly.importSimulation(simulation);
     }
 
     @Override
@@ -90,8 +104,8 @@ public class HoverflyRule extends ExternalResource {
     protected void before() throws Throwable {
         hoverfly.start();
 
-        if (hoverflyMode == SIMULATE) {
-            hoverfly.importSimulation(simulation);
+        if (hoverflyMode == SIMULATE && simulationResource != null) {
+            hoverfly.importSimulation(simulationResource);
         }
     }
 
@@ -99,7 +113,7 @@ public class HoverflyRule extends ExternalResource {
     protected void after() {
         try {
             if (hoverflyMode == CAPTURE) {
-                hoverfly.exportSimulation(simulation);
+                hoverfly.exportSimulation(simulationResource);
             }
         } finally {
             hoverfly.stop();
