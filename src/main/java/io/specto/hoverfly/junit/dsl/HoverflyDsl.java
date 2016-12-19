@@ -1,10 +1,11 @@
 package io.specto.hoverfly.junit.dsl;
 
-import java.util.HashSet;
-
 public class HoverflyDsl {
 
-    public static HoverflyStubService service(String baseUrl) {
-        return new HoverflyStubService(baseUrl, new HashSet<>());
+    private HoverflyDsl() {
+    }
+
+    public static PairsBuilder service(final String baseUrl) {
+        return new PairsBuilder(baseUrl, null);
     }
 }

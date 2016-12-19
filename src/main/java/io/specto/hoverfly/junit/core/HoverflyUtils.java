@@ -33,7 +33,7 @@ class HoverflyUtils {
         return String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
     }
 
-    static String getOs() {
+    private static String getOs() {
         if (SystemUtils.IS_OS_MAC) {
             return OSX;
         } else if (SystemUtils.IS_OS_WINDOWS) {
@@ -45,7 +45,7 @@ class HoverflyUtils {
         }
     }
 
-    static String getArchitectureType() {
+    private static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
     }
 
