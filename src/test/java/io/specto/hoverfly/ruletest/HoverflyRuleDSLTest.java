@@ -15,7 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
-import static io.specto.hoverfly.junit.dsl.ResponseBuilder.response;
+import static io.specto.hoverfly.junit.dsl.ResponseCreators.*;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
@@ -33,33 +33,25 @@ public class HoverflyRuleDSLTest {
 
         hoverflyRule.setSimulation(
                 service("www.my-test.com")
+
                         .post("/api/bookings").body("{\"flightId\": \"1\"}")
-                        .willReturn(response()
-                                .status(201)
-                                .header("Location", "http://localhost/api/bookings/1")
-                        )
+                        .willReturn(created("http://localhost/api/bookings/1"))
+
                         .get("/api/bookings/1")
-                        .willReturn(response()
-                                .status(200)
-                                .body("{\"bookingId\":\"1\",\"origin\":\"London\",\"destination\":\"Singapore\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}}")
-                                .header("Content-Type", "application/json")
-                        )
+                        .willReturn(success("{\"bookingId\":\"1\",\"origin\":\"London\",\"destination\":\"Singapore\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}}", "application/json"))
+
                         .service("www.other-service.com")
+
                         .put("/api/bookings/1").body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
-                        .willReturn(response()
-                                .status(200)
-                        )
+                        .willReturn(success())
+
                         .delete("/api/bookings/1")
-                        .willReturn(response()
-                                .status(204)
-                        )
+                        .willReturn(noContent())
+
                         .get("/api/bookings").query("destination=new%20york")
 //                            .queryParam("class", "business", "premium")
 //                            .queryParam("destination", "new york"))
-                        .willReturn(response()
-                                .status(200)
-                                .body("{\"bookingId\":\"2\",\"origin\":\"London\",\"destination\":\"New York\",\"class\":\"BUSINESS\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}}")
-                        ));
+                        .willReturn(success("{\"bookingId\":\"2\",\"origin\":\"London\",\"destination\":\"New York\",\"class\":\"BUSINESS\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}}", "application/json")));
 
     }
 
