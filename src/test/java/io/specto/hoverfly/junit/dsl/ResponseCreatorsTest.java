@@ -55,4 +55,51 @@ public class ResponseCreatorsTest {
                 .hasNoHeaders();
     }
 
+    @Test
+    public void shouldBuildBadRequest() {
+        // When
+        final Response response = ResponseCreators.badRequest().build();
+
+        // Then
+        assertThat(response)
+                .hasStatus(400)
+                .hasNoBody()
+                .hasNoHeaders();
+    }
+
+    @Test
+    public void shouldBuildServerError() {
+        // When
+        final Response response = ResponseCreators.serverError().build();
+
+        // Then
+        assertThat(response)
+                .hasStatus(500)
+                .hasNoBody()
+                .hasNoHeaders();
+    }
+
+    @Test
+    public void shouldBuildUnauthorised() {
+        // When
+        final Response response = ResponseCreators.unauthorised().build();
+
+        // Then
+        assertThat(response)
+                .hasStatus(401)
+                .hasNoBody()
+                .hasNoHeaders();
+    }
+
+    @Test
+    public void shouldBuildForbidden() {
+        // When
+        final Response response = ResponseCreators.forbidden().build();
+
+        // Then
+        assertThat(response)
+                .hasStatus(403)
+                .hasNoBody()
+                .hasNoHeaders();
+    }
 }

@@ -20,6 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+/**
+ * Utils for Hoverfly
+ */
 class HoverflyUtils {
 
     private static final String OSX = "OSX";
@@ -29,10 +32,19 @@ class HoverflyUtils {
     private static final String ARCH_386 = "386";
     private static final String BINARY_PATH = "hoverfly_%s_%s";
 
+    /**
+     * Calculates the binary to used based on OS and architecture
+     *
+     * @return
+     */
     static String getBinaryName() {
         return String.format(BINARY_PATH, getOs(), getArchitectureType()) + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
     }
 
+    /**
+     * Gets the correct operating system
+     * @return {@link HoverflyUtils#OSX} | {@link HoverflyUtils#WINDOWS} | {@link HoverflyUtils#LINUX}
+     */
     private static String getOs() {
         if (SystemUtils.IS_OS_MAC) {
             return OSX;
@@ -45,10 +57,18 @@ class HoverflyUtils {
         }
     }
 
+    /**
+     * Detects whether the application is 64 bits
+     * @return {@link HoverflyUtils#ARCH_AMD64} | {@link HoverflyUtils#ARCH_386}
+     */
     private static String getArchitectureType() {
         return SystemUtils.OS_ARCH.contains("64") ? ARCH_AMD64 : ARCH_386;
     }
 
+    /**
+     * Looks for an unused port on the current machine
+     * @return port number
+     */
     static int findUnusedPort() {
         try (final ServerSocket serverSocket = new ServerSocket(0)) {
             return serverSocket.getLocalPort();
@@ -57,6 +77,11 @@ class HoverflyUtils {
         }
     }
 
+    /**
+     * Looks for a resource on the classpath with the given name
+     * @param resourceName name of the resource
+     * @return URI pointing to the resource
+     */
     static URI findResourceOnClasspath(String resourceName) {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final URL resource = classLoader.getResource(resourceName);

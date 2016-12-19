@@ -12,7 +12,8 @@ import java.util.Map;
 
 public class RequestMatcherBuilder {
 
-    private final PairsBuilder invoker;
+    private static final String TEMPLATE = "template";
+    private final StubServiceBuilder invoker;
     private final String method;
     private final String scheme;
     private final String destination;
@@ -22,7 +23,7 @@ public class RequestMatcherBuilder {
     private String body = "";
     private String query = "";
 
-    private RequestMatcherBuilder(final PairsBuilder invoker, final String method, final String scheme, final String destination, final String path) {
+    private RequestMatcherBuilder(final StubServiceBuilder invoker, final String method, final String scheme, final String destination, final String path) {
         this.invoker = invoker;
         this.method = method;
         this.scheme = scheme;
@@ -30,7 +31,7 @@ public class RequestMatcherBuilder {
         this.path = path;
     }
 
-    static RequestMatcherBuilder requestMatcherBuilder(final PairsBuilder invoker, final String method, final String scheme, final String destination, final String path) {
+    static RequestMatcherBuilder requestMatcherBuilder(final StubServiceBuilder invoker, final String method, final String scheme, final String destination, final String path) {
         return new RequestMatcherBuilder(invoker, method, scheme, destination, path);
     }
 
@@ -62,7 +63,7 @@ public class RequestMatcherBuilder {
 //        query = queryParams.entrySet().stream()
 //                .flatMap(e -> e.getValue().stream().map(v -> encodeUrl(e.getKey()) + "=" + encodeUrl(v)))
 //                .collect(Collectors.joining("&"));
-        return new RequestMatcher(path, method, destination, scheme, query, body, headers);
+        return new RequestMatcher(path, method, destination, scheme, query, body, headers, TEMPLATE);
     }
 
 //    private String encodeUrl(String str) {
@@ -74,7 +75,7 @@ public class RequestMatcherBuilder {
 //    }
 
 
-    public PairsBuilder willReturn(final ResponseBuilder responseBuilder) {
-        return invoker.addPair(new RequestResponsePair(this.build(), responseBuilder.build()));
+    public StubServiceBuilder willReturn(final ResponseBuilder responseBuilder) {
+        return invoker.addRequestResponsePair(new RequestResponsePair(this.build(), responseBuilder.build()));
     }
 }

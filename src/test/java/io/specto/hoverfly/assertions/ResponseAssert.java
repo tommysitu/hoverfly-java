@@ -18,8 +18,7 @@ public class ResponseAssert extends AbstractAssert<ResponseAssert, Response> {
     }
 
     public static Header header(final String key, final String... values) {
-        final Header header = new Header(key, newArrayList(values));
-        return header;
+        return new Header(key, newArrayList(values));
     }
 
     public ResponseAssert hasStatus(final int status) {

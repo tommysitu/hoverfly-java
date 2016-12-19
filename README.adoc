@@ -30,8 +30,45 @@ As Hoverfly is a proxy, all requests (assuming they respect the JVM proxy settin
 
 The rule will attempt to detect the operating system and architecture type of the host, and then extract and execute the correct hoverfly binary.  It will import the json into it's database and then and destroy the process at the end of the tests.
 
+<<<<<<< 1f6be88c28b25c8be2d279c8759b9a6241a2b3f0
 ==== Maven Build
 Import to your Maven project:
+=======
+=== DSL
+
+The rule now has fluent DSL which allows you to build request matcher to response mappings in Java opposed to importing them as JSON.
+
+The rule is fluent and hierarchical, allowing you to define multiple service endpoints as follows:
+
+[source,java,indent=0]
+----
+hoverflyRule.setSimulation(
+    service("www.my-test.com")
+
+        .post("/api/bookings").body("{\"flightId\": \"1\"}")
+        .willReturn(created("http://localhost/api/bookings/1"))
+
+        .get("/api/bookings/1")
+        .willReturn(success("{\"bookingId\":\"1\"\}", "application/json")),
+
+    .service("www.anotherService.com")
+
+        .put("/api/bookings/1").body("{\"flightId\": \"1\"\"}")
+        .willReturn(success())
+
+        .delete("/api/bookings/1")
+        .willReturn(noContent())
+----
+
+The entrypoint for the DSL is `HoverflyDSL.service`.  After calling this you can provide a `method` and `path`, followed by optional request components.
+You can then use `willReturn` to state which response you want when there is a match, which takes `responseBuilder` object that you can instantiate directly,
+or via the helper class `responseCreators`.
+
+
+=== Maven
+
+You can get the rule from Maven Central
+>>>>>>> fixes #6 when using the DSL, pairs of type `template` are always
 
 ```xml
 <groupId>io.specto</groupId>

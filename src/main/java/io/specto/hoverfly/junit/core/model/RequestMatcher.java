@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestMatcher {
-    private final String requestType = "recording";
+    private final String requestType;
     private final String path;
     private final String method;
     private final String destination;
@@ -25,7 +25,8 @@ public class RequestMatcher {
                           @JsonProperty("scheme") String scheme,
                           @JsonProperty("query") String query,
                           @JsonProperty("body") String body,
-                          @JsonProperty("headers") Map<String, List<String>> headers) {
+                          @JsonProperty("headers") Map<String, List<String>> headers,
+                          @JsonProperty("requestType") String requestType) {
         this.path = path;
         this.method = method;
         this.destination = destination;
@@ -33,6 +34,7 @@ public class RequestMatcher {
         this.query = query;
         this.body = body;
         this.headers = headers;
+        this.requestType = requestType;
     }
 
     public String getRequestType() {

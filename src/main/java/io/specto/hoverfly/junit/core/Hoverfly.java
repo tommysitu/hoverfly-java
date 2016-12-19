@@ -44,11 +44,15 @@ import java.util.HashSet;
 import java.util.List;
 
 import static com.sun.jersey.api.client.ClientResponse.Status.OK;
+import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.util.Arrays.asList;
 
+/**
+ * A wrapper class for the Hovefly binary.  Managed the lifecyle of the processes, and then manages Hovefly itself by using it's API endpoints.
+ */
 public class Hoverfly {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Hoverfly.class);
@@ -65,7 +69,12 @@ public class Hoverfly {
     private StartedProcess startedProcess;
     private Path binaryPath;
 
-
+    /**
+     * Instantiates Hoverfly
+     *
+     * @param hoverflyConfig the config
+     * @param hoverflyMode   the mode
+     */
     public Hoverfly(HoverflyConfig hoverflyConfig, HoverflyMode hoverflyMode) {
         this.hoverflyConfig = hoverflyConfig;
         this.hoverflyMode = hoverflyMode;
@@ -74,6 +83,24 @@ public class Hoverfly {
         hoverflyResource = Client.create().resource(UriBuilder.fromUri(HOVERFLY_URL).port(adminPort).build());
     }
 
+    /**
+     * Instantiates Hoverfly
+     *
+     * @param hoverflyMode the mode
+     */
+    public Hoverfly(HoverflyMode hoverflyMode) {
+        this(configs(), hoverflyMode);
+    }
+
+    /**
+     * <ol>
+     *  <li>Adds Hoverflies SSL certificate to the trust store</li>
+     *  <li>Sets the proxy system properties to route through Hoverfly</li>
+     *  <li>Starts Hoverfly</li>
+     * </ol>
+     *
+     * @throws IOException
+     */
     public void start() throws IOException {
 
         setTrustStore();
@@ -105,6 +132,9 @@ public class Hoverfly {
         waitForHoverflyToStart();
     }
 
+    /**
+     * Stops the running Hoverfly process
+     */
     public void stop() {
         LOGGER.info("Destroying hoverfly process");
         startedProcess.getProcess().destroy();
@@ -116,12 +146,21 @@ public class Hoverfly {
         }
     }
 
+    /**
+     * Imports a simulation into Hoverfly from a {@link Simulation}
+     * @param simulation the simulation to import
+     */
     public void importSimulation(Simulation simulation) {
         hoverflyResource.path(SIMULATION_PATH)
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .put(simulation);
     }
 
+    /**
+     * Imports a simulation into Hoverfly from a {@link URI}
+     *
+     * @param simulationDataUri the URI where the simulation resides
+     */
     public void importSimulation(URI simulationDataUri) {
         final WebResource resource = hoverflyResource.path(SIMULATION_PATH);
         try {
@@ -135,6 +174,10 @@ public class Hoverfly {
         }
     }
 
+    /**
+     * Exports a simulation and stores it on the filesystem
+     * @param serviceDataURI the path on the filesystem to where the simulation should be stored
+     */
     public void exportSimulation(URI serviceDataURI) {
         LOGGER.info("Storing captured HoverflyData");
         try {
@@ -146,10 +189,18 @@ public class Hoverfly {
         }
     }
 
+    /**
+     * Gets the simulation currently used by the running Hoverfly instance
+     * @return the simulation
+     */
     public Simulation getSimulation() {
         return hoverflyResource.path(SIMULATION_PATH).get(Simulation.class);
     }
 
+    /**
+     * Returns whether the running Hoverfly is healthy or not
+     * @return whether it is healthy
+     */
     private boolean isHealthy() {
         ClientResponse response = null;
         try {
@@ -166,6 +217,9 @@ public class Hoverfly {
         return false;
     }
 
+    /**
+     * Configures the JVM system properties to use Hoverfly as a proxy
+     */
     private void setProxySystemProperties() {
         LOGGER.info("Setting proxy host to {}", "localhost");
         System.setProperty("http.proxyHost", "localhost");
@@ -183,10 +237,18 @@ public class Hoverfly {
         System.setProperty("https.proxyPort", proxyPort.toString());
     }
 
-    public Integer getProxyPort() {
+    /**
+     * Gets the proxy port Hoverfly is running on
+     *
+     * @return the proxy port
+     */
+    public int getProxyPort() {
         return proxyPort;
     }
 
+    /**
+     * Blocks until the Hoverfly process becomes healthy, otherwise time out
+     */
     private void waitForHoverflyToStart() {
         final Instant now = Instant.now();
 
@@ -201,6 +263,12 @@ public class Hoverfly {
         throw new IllegalStateException("Hoverfly has not become healthy in " + BOOT_TIMEOUT_SECONDS + " seconds");
     }
 
+    /**
+     * Extracts and runs the binary, setting any appropriate permissions.
+     * @param binaryName the name of the binary
+     * @return path to the extracted binary
+     * @throws IOException on failure
+     */
     private Path extractBinary(final String binaryName) throws IOException {
         LOGGER.info("Selecting the following binary based on the current operating system: {}", binaryName);
         final URI sourceHoverflyUrl = findResourceOnClasspath("binaries/" + binaryName);
@@ -219,6 +287,9 @@ public class Hoverfly {
         return temporaryHoverflyPath;
     }
 
+    /**
+     * Sets the JVM trust store so Hoverflies SSL certificate is trusted
+     */
     private void setTrustStore() {
         try {
             // load your key store as a stream and initialize a KeyStore
@@ -241,7 +312,7 @@ public class Hoverfly {
             sslContext.init(null, trustManagers, null);
             SSLContext.setDefault(sslContext);
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to set hoverfly trust store", e);
+            throw new IllegalStateException("Unable to set Hoverfly trust store", e);
         }
     }
 }
