@@ -12,13 +12,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static io.specto.hoverfly.junit.core.SimulationResource.classpath;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class ApacheHttpClientTest {
 
 
     @Rule
-    public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode("test-service.json");
+    public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"));
 
     private HttpClient httpClient;
 

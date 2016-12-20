@@ -1,5 +1,5 @@
 /**
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this classpath except in compliance with
  * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.time.Duration;
 import java.time.Instant;
@@ -94,9 +93,9 @@ public class Hoverfly {
 
     /**
      * <ol>
-     *  <li>Adds Hoverflies SSL certificate to the trust store</li>
-     *  <li>Sets the proxy system properties to route through Hoverfly</li>
-     *  <li>Starts Hoverfly</li>
+     * <li>Adds Hoverflies SSL certificate to the trust store</li>
+     * <li>Sets the proxy system properties to route through Hoverfly</li>
+     * <li>Starts Hoverfly</li>
      * </ol>
      *
      * @throws IOException
@@ -148,40 +147,25 @@ public class Hoverfly {
 
     /**
      * Imports a simulation into Hoverfly from a {@link Simulation}
-     * @param simulation the simulation to import
-     */
-    public void importSimulation(Simulation simulation) {
-        hoverflyResource.path(SIMULATION_PATH)
-                .type(MediaType.APPLICATION_JSON_TYPE)
-                .put(simulation);
-    }
-
-    /**
-     * Imports a simulation into Hoverfly from a {@link URI}
      *
-     * @param simulationDataUri the URI where the simulation resides
+     * @param simulationResource the simulation to import
      */
-    public void importSimulation(URI simulationDataUri) {
-        final WebResource resource = hoverflyResource.path(SIMULATION_PATH);
-        try {
-            if (simulationDataUri.getScheme().startsWith("http")) {
-                resource.put(simulationDataUri.toURL().openStream());
-            } else {
-                resource.put(Paths.get(simulationDataUri).toFile());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to submit simulation data", e);
-        }
+    public void importSimulation(SimulationResource simulationResource) {
+        simulationResource.toSimulation().ifPresent(s ->
+                hoverflyResource.path(SIMULATION_PATH)
+                        .type(MediaType.APPLICATION_JSON_TYPE)
+                        .put(s));
     }
 
+
     /**
-     * Exports a simulation and stores it on the filesystem
-     * @param serviceDataURI the path on the filesystem to where the simulation should be stored
+     * Exports a simulation and stores it on the filesystem at the given path
+     *
+     * @param path the path on the filesystem to where the simulation should be stored
      */
-    public void exportSimulation(URI serviceDataURI) {
+    public void exportSimulation(Path path) {
         LOGGER.info("Storing captured HoverflyData");
         try {
-            final Path path = Paths.get(serviceDataURI);
             Files.deleteIfExists(path);
             Files.write(path, hoverflyResource.path(SIMULATION_PATH).get(String.class).getBytes());
         } catch (Exception e) {
@@ -191,6 +175,7 @@ public class Hoverfly {
 
     /**
      * Gets the simulation currently used by the running Hoverfly instance
+     *
      * @return the simulation
      */
     public Simulation getSimulation() {
@@ -208,6 +193,8 @@ public class Hoverfly {
 
     /**
      * Returns whether the running Hoverfly is healthy or not
+     *
+     * @return whether it is healthy
      */
     private boolean isHealthy() {
         ClientResponse response = null;
@@ -264,6 +251,10 @@ public class Hoverfly {
 
     /**
      * Extracts and runs the binary, setting any appropriate permissions.
+     *
+     * @param binaryName the name of the binary
+     * @return path to the extracted binary
+     * @throws IOException on failure
      */
     private Path extractBinary(final String binaryName) throws IOException {
         LOGGER.info("Selecting the following binary based on the current operating system: {}", binaryName);

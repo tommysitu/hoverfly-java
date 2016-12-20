@@ -36,7 +36,7 @@ public class CaptureModeTest {
     private URI webServerBaseUrl;
     private RestTemplate restTemplate = new RestTemplate();
 
-    // We have to assert after the rule has executed because that's when the file is written to the filesystem
+    // We have to assert after the rule has executed because that's when the classpath is written to the filesystem
     @AfterClass
     public static void after() throws IOException, JSONException {
         final String expectedSimulation = Resources.toString(Resources.getResource(EXPECTED_SIMULATION_JSON), defaultCharset());

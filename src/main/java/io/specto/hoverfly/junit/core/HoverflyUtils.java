@@ -1,5 +1,5 @@
 /**
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this classpath except in compliance with
  * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,11 +14,13 @@ package io.specto.hoverfly.junit.core;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 /**
  * Utils for Hoverfly
@@ -86,5 +88,15 @@ class HoverflyUtils {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Looks for a file in the src/test/resources directory with the given name
+     *
+     * @param fileName name of the classpath
+     * @return URI pointing to the classpath
+     */
+    static File fileRelativeToTestResources(String fileName) {
+        return Paths.get("src/test/resources/", fileName).toFile();
     }
 }

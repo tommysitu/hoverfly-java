@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static io.specto.hoverfly.junit.core.SimulationResource.dsl;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
 import static io.specto.hoverfly.junit.dsl.ResponseCreators.*;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -31,7 +32,7 @@ public class HoverflyRuleDSLTest {
     @Before
     public void setUp() throws Exception {
 
-        hoverflyRule.setSimulation(
+        hoverflyRule.simulate(dsl(
                 service("www.my-test.com")
 
                         .post("/api/bookings").body("{\"flightId\": \"1\"}")
@@ -51,7 +52,9 @@ public class HoverflyRuleDSLTest {
                         .get("/api/bookings").query("destination=new%20york")
 //                            .queryParam("class", "business", "premium")
 //                            .queryParam("destination", "new york"))
-                        .willReturn(success("{\"bookingId\":\"2\",\"origin\":\"London\",\"destination\":\"New York\",\"class\":\"BUSINESS\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}}", "application/json")));
+                        .willReturn(success("{\"bookingId\":\"2\",\"origin\":\"London\",\"destination\":\"New York\",\"class\":\"BUSINESS\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}}", "application/json"))
+                )
+        );
     }
 
     @Test

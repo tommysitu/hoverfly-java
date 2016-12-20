@@ -8,19 +8,21 @@ import org.junit.Rule;
 
 import java.net.URL;
 
+import static io.specto.hoverfly.junit.core.SimulationResource.url;
+
 public class URLHoverflyRuleTest extends BaseHoverflyRuleTest {
 
-    private static URL webServerUri;
+    private static URL url;
 
     // tag::urlExample[]
     @Rule
-    public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(webServerUri);
+    public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(url(url));
     // end::urlExample[]
 
 
     @BeforeClass
     public static void setUp() throws Exception {
-        webServerUri = ImportTestWebServer.run();
+        url = ImportTestWebServer.run();
     }
 
 

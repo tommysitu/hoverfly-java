@@ -1,13 +1,13 @@
 /**
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this classpath except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- *
+ * <p>
  * Copyright 2016-2016 SpectoLabs Ltd.
  */
 package io.specto.hoverfly.junit.rule;
@@ -15,32 +15,21 @@ package io.specto.hoverfly.junit.rule;
 import io.specto.hoverfly.junit.core.Hoverfly;
 import io.specto.hoverfly.junit.core.HoverflyConfig;
 import io.specto.hoverfly.junit.core.HoverflyMode;
-import io.specto.hoverfly.junit.core.model.GlobalActions;
-import io.specto.hoverfly.junit.core.model.HoverflyData;
-import io.specto.hoverfly.junit.core.model.HoverflyMetaData;
-import io.specto.hoverfly.junit.core.model.RequestResponsePair;
-import io.specto.hoverfly.junit.core.model.Simulation;
-import io.specto.hoverfly.junit.dsl.StubServiceBuilder;
+import io.specto.hoverfly.junit.core.SimulationResource;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Set;
+import java.nio.file.Path;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.CAPTURE;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
 import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.fileRelativeToTestResources;
-import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.findResourceOnClasspath;
-import static java.util.stream.Collectors.toSet;
 import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.isAnnotatedWithRule;
-import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
+
 
 /**
  * <p>The Hoverfly Rule auto-spins up a Hoverfly process, and tears it down at the end of your tests.  It also configures the JVM
@@ -51,7 +40,7 @@ import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
  *     {@code
  * public class SomeTest {
  *           @ClassRule
- *           public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode("test-service.json")
+ *           public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"))
  *           @Test
  *           public void test() { //All requests will be proxied through Hoverfly
  *              // Given
@@ -82,7 +71,10 @@ import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
  * <p>
  * <p><b>It's recommended use always use the {@link org.junit.ClassRule} annotation, so we keep the same instance of Hoverfly through all your tests.</b>
  * This avoids the overhead of starting Hoverfly multiple times, and also helps ensure all your system properties are set before executing any other code.
- * If you want to change the data, you can do so in {@link org.junit.Before} method by calling {@link HoverflyRule#setSimulation}, but this will not be thread safe</p>
+ * If you want to change the data, you can do so in {@link org.junit.Before} method by calling {@link HoverflyRule#simulate}, but this will not be thread safe</p>
+ *
+ * @see SimulationResource
+ * @see io.specto.hoverfly.junit.dsl.HoverflyDsl
  *
  * @since 4.7
  */
@@ -90,17 +82,26 @@ public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private final Hoverfly hoverfly;
-    private final URI simulationResource;
+    private final SimulationResource simulationResource;
     private final HoverflyMode hoverflyMode;
+    private final Path capturePath;
 
-    private HoverflyRule(final URI simulationResource, final HoverflyMode hoverflyMode, final HoverflyConfig hoverflyConfig) {
-        this.hoverflyMode = hoverflyMode;
+    private HoverflyRule(final SimulationResource simulationResource, final HoverflyConfig hoverflyConfig) {
+        this.hoverflyMode = SIMULATE;
         this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
         this.simulationResource = simulationResource;
+        this.capturePath = null;
+    }
+
+    private HoverflyRule(final Path capturePath, final HoverflyConfig hoverflyConfig) {
+        this.hoverflyMode = CAPTURE;
+        this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
+        this.simulationResource = null;
+        this.capturePath = capturePath;
     }
 
     /**
-     * Instantiate a rule which runs Hoverfly in capture mode
+     * Instantiates a rule which runs Hoverfly in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
      * @return HoverflyRule the rule instance
@@ -110,69 +111,49 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiate a rule which runs Hoverfly in capture mode
+     * Instantiates a rule which runs Hoverfly in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
-     * @param hoverflyConfig the config
+     * @param hoverflyConfig   the config
      * @return the rule
      */
     public static HoverflyRule inCaptureMode(String recordedFilename, HoverflyConfig hoverflyConfig) {
-        return new HoverflyRule(fileRelativeToTestResources(recordedFilename), CAPTURE, hoverflyConfig);
+        return new HoverflyRule(fileRelativeToTestResources(recordedFilename), hoverflyConfig);
     }
 
     /**
-     * Instantiate a rule which runs Hoverfly in simulate mode
+     * Instantiates a rule which runs Hoverfly in simulate mode
      *
-     * @param resourceNameOnClasspath the classpath resource name
+     * @param simulationResource the simulation to import
      * @return the rule
      */
-    public static HoverflyRule inSimulationMode(String resourceNameOnClasspath) {
-        return inSimulationMode(resourceNameOnClasspath, configs());
+    public static HoverflyRule inSimulationMode(final SimulationResource simulationResource) {
+        return inSimulationMode(simulationResource, configs());
     }
 
-    /**
-     * Instantiate a rule which runs Hoverfly in simulate mode
-     *
-     * @param resourceNameOnClasspath the classpath resource name
-     * @param hoverflyConfig the config
-     * @return the rule
-     */
-    public static HoverflyRule inSimulationMode(String resourceNameOnClasspath, HoverflyConfig hoverflyConfig) {
-        return new HoverflyRule(findResourceOnClasspath(resourceNameOnClasspath), SIMULATE, hoverflyConfig);
+
+    public static HoverflyRule inSimulationMode(final SimulationResource simulationResource, HoverflyConfig hoverflyConfig) {
+        return new HoverflyRule(simulationResource, hoverflyConfig);
     }
 
-    /**
-     * Instantiate a rule which runs Hoverfly in simulate mode
-     *
-     * @param webResourceUrl the url to load the simulation from
-     * @return the rule
-     */
-    public static HoverflyRule inSimulationMode(URL webResourceUrl) {
-        return inSimulationMode(webResourceUrl, configs());
-    }
 
     /**
-     * Instantiate a rule which runs Hoverfly in simulate mode
-     *
-     * @param webResourceUrl the url to load the simulation from
-     * @param hoverflyConfig the config
-     * @return the rule
-     */
-    public static HoverflyRule inSimulationMode(URL webResourceUrl, HoverflyConfig hoverflyConfig) {
-        try {
-            return new HoverflyRule(webResourceUrl.toURI(), SIMULATE, hoverflyConfig);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * Instantiate a rule which runs Hoverfly in simulate mode with no data
+     * Instantiates a rule which runs Hoverfly in simulate mode with no data
      *
      * @return the rule
      */
     public static HoverflyRule inSimulationMode() {
-        return new HoverflyRule(null, SIMULATE, configs());
+        return inSimulationMode(configs());
+    }
+
+    /**
+     * Instantiates a rule which runs Hoverfly in simulate mode with no data
+     *
+     * @param hoverflyConfig the config
+     * @return the rule
+     */
+    public static HoverflyRule inSimulationMode(final HoverflyConfig hoverflyConfig) {
+        return inSimulationMode(SimulationResource.empty(), hoverflyConfig);
     }
 
     @Override
@@ -184,7 +165,11 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Start an instance of Hoverfly
+     * Starts in instance of Hoverfly
+     * <p>
+     * {@inheritDoc ExternalResource#before}
+     *
+     * @throws Throwable
      */
     @Override
     protected void before() throws Throwable {
@@ -196,13 +181,17 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Stop the managed instance of Hoverfly
+     * Stops the managed instance of Hoverfly
+     * <p>
+     * {@inheritDoc ExternalResource#after}
+     *
+     * @throws Throwable
      */
     @Override
     protected void after() {
         try {
             if (hoverflyMode == CAPTURE) {
-                hoverfly.exportSimulation(simulationResource);
+                hoverfly.exportSimulation(capturePath);
             }
         } finally {
             hoverfly.stop();
@@ -210,26 +199,21 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Get the proxy port this has run on, which could be useful when running Hoverfly on a random port.
+     * Gets the proxy port this has run on, which could be useful when running Hoverfly on a random port.
+     *
      * @return the proxy port
      */
     public int getProxyPort() {
         return hoverfly.getProxyPort();
     }
 
+
     /**
-     * Sets the simulation for Hoverfly
-     *
-     * @param stubServiceBuilder fluent builder for request response pairs
+     * Changes the Simulation used by Hoverfly
+     * @param simulationResource the simulation
      */
-    public void setSimulation(StubServiceBuilder... stubServiceBuilder) {
-
-        final Set<RequestResponsePair> pairs = Arrays.stream(stubServiceBuilder)
-                .map(StubServiceBuilder::getRequestResponsePairs)
-                .flatMap(Set::stream)
-                .collect(toSet());
-
-        hoverfly.importSimulation(new Simulation(new HoverflyData(pairs, new GlobalActions(newArrayList())), new HoverflyMetaData()));
+    public void simulate(SimulationResource simulationResource) {
+        hoverfly.importSimulation(simulationResource);
     }
 
 }
