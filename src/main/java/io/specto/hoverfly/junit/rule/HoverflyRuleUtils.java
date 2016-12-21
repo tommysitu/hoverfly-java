@@ -28,9 +28,6 @@ class HoverflyRuleUtils {
 
     /**
      * Looks on the classpath for a given resource
-     *
-     * @param resourceName name of the resource
-     * @return URI pointing to the resource
      */
     static URI findResourceOnClasspath(String resourceName) {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -47,8 +44,6 @@ class HoverflyRuleUtils {
 
     /**
      * Looks for a file in the src/test/resources directory with the given name
-     * @param fileName name of the file
-     * @return URI pointing to the file
      */
     static URI fileRelativeToTestResources(String fileName) {
         return Paths.get("src/test/resources/", fileName).toUri();

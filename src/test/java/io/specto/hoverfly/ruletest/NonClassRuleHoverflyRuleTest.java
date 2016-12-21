@@ -1,4 +1,4 @@
-package io.specto.hoverfly.junit.rule;
+package io.specto.hoverfly.ruletest;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -8,6 +8,7 @@ import ch.qos.logback.core.Appender;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import io.specto.hoverfly.junit.rule.HoverflyRule;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

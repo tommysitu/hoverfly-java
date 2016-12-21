@@ -198,8 +198,16 @@ public class Hoverfly {
     }
 
     /**
+     * Gets the proxy port Hoverfly is running on
+     *
+     * @return the proxy port
+     */
+    public int getProxyPort() {
+        return proxyPort;
+    }
+
+    /**
      * Returns whether the running Hoverfly is healthy or not
-     * @return whether it is healthy
      */
     private boolean isHealthy() {
         ClientResponse response = null;
@@ -238,15 +246,6 @@ public class Hoverfly {
     }
 
     /**
-     * Gets the proxy port Hoverfly is running on
-     *
-     * @return the proxy port
-     */
-    public int getProxyPort() {
-        return proxyPort;
-    }
-
-    /**
      * Blocks until the Hoverfly process becomes healthy, otherwise time out
      */
     private void waitForHoverflyToStart() {
@@ -265,9 +264,6 @@ public class Hoverfly {
 
     /**
      * Extracts and runs the binary, setting any appropriate permissions.
-     * @param binaryName the name of the binary
-     * @return path to the extracted binary
-     * @throws IOException on failure
      */
     private Path extractBinary(final String binaryName) throws IOException {
         LOGGER.info("Selecting the following binary based on the current operating system: {}", binaryName);

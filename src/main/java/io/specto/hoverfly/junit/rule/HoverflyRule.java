@@ -100,7 +100,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in capture mode
+     * Instantiate a rule which runs Hoverfly in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
      * @return HoverflyRule the rule instance
@@ -110,7 +110,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in capture mode
+     * Instantiate a rule which runs Hoverfly in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
      * @param hoverflyConfig the config
@@ -121,7 +121,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode
+     * Instantiate a rule which runs Hoverfly in simulate mode
      *
      * @param resourceNameOnClasspath the classpath resource name
      * @return the rule
@@ -131,7 +131,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode
+     * Instantiate a rule which runs Hoverfly in simulate mode
      *
      * @param resourceNameOnClasspath the classpath resource name
      * @param hoverflyConfig the config
@@ -142,7 +142,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode
+     * Instantiate a rule which runs Hoverfly in simulate mode
      *
      * @param webResourceUrl the url to load the simulation from
      * @return the rule
@@ -152,7 +152,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode
+     * Instantiate a rule which runs Hoverfly in simulate mode
      *
      * @param webResourceUrl the url to load the simulation from
      * @param hoverflyConfig the config
@@ -167,7 +167,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode with no data
+     * Instantiate a rule which runs Hoverfly in simulate mode with no data
      *
      * @return the rule
      */
@@ -184,10 +184,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Starts in instance of Hoverfly
-     *
-     * {@inheritDoc ExternalResource#before}
-     * @throws Throwable
+     * Start an instance of Hoverfly
      */
     @Override
     protected void before() throws Throwable {
@@ -199,10 +196,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Stops the managed instance of Hoverfly
-     *
-     * {@inheritDoc ExternalResource#after}
-     * @throws Throwable
+     * Stop the managed instance of Hoverfly
      */
     @Override
     protected void after() {
@@ -216,7 +210,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Gets the proxy port this has run on, which could be useful when running Hoverfly on a random port.
+     * Get the proxy port this has run on, which could be useful when running Hoverfly on a random port.
      * @return the proxy port
      */
     public int getProxyPort() {
@@ -226,7 +220,7 @@ public class HoverflyRule extends ExternalResource {
     /**
      * Sets the simulation for Hoverfly
      *
-     * @param stubServiceBuilder
+     * @param stubServiceBuilder fluent builder for request response pairs
      */
     public void setSimulation(StubServiceBuilder... stubServiceBuilder) {
 
