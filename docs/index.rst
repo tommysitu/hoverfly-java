@@ -3,7 +3,7 @@ Overview
 What is Hoverfly?
 =================
 
-`Hoverfly <http://hoverfly.io>`_ is a lightweight service virtualisation tool which allows you to stub / simulate http services. Written in Go, it runs as a proxy and responds to clients on behalf of a real service as if it is that service.
+`Hoverfly <http://hoverfly.io>`_ is a lightweight service virtualisation tool which allows you to stub / simulate http services. It is a proxy written in Go which responds to http requests with stored responses, pretending to be it's real counterpart.
 
 It enables you to get around common testing problems caused by you external dependencies, such as non-deterministic data, flakiness, not yet implemented API's, licensing fees, slow tests and more.
 
