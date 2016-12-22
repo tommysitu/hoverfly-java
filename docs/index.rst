@@ -32,6 +32,8 @@ If using maven, add the following dependency to your pom:
 Gradle
 ======
 
+Or with gradle add the dependency to your *.gradle file:
+
 .. code-block:: groovy
 
    testCompile "io.specto:hoverfly-junit:0.3.0"
@@ -39,12 +41,12 @@ Gradle
 Code example
 ============
 
-The simplest way is to get started is with the JUnit rule. Just give it some valid Hoverfly Json. Behind the scenes the JVM proxy settings will be configured to use the managed Hoverfly process, so you can just make requests as normal, only this time Hoverfly will respond instead of the real service. (assuming your http client respects JVM proxy settings).
+The simplest way is to get started is with the JUnit rule. Just give it some valid Hoverfly JSON. Behind the scenes the JVM proxy settings will be configured to use the managed Hoverfly process, so you can just make requests as normal, only this time Hoverfly will respond instead of the real service (assuming your http client respects JVM proxy settings).
 
 .. code-block:: java
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.json"));
+    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.JSON"));
 
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
@@ -53,7 +55,7 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
-        assertThatJson(getBookingResponse.getBody()).isEqualTo("{" +
+        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{" +
                 "\"bookingId\":\"1\"," +
                 "\"origin\":\"London\"," +
                 "\"destination\":\"Singapore\"," +
@@ -66,7 +68,7 @@ Core
 ####
 
 Simulating
-----------
+==========
 
 The core of this library is the Hoverfly class, which abstracts away and orchestrates a Hoverfly instance.  A flow might be as follows:
 
@@ -79,7 +81,7 @@ The core of this library is the Hoverfly class, which abstracts away and orchest
     hoverfly.stop();
 
 Capturing
----------
+=========
 
 The previous examples have only used Hoverfly in simulate mode. You can also run it in capture mode, meaning that requests will be made to the real service as normal,
 only they will be intercepted and recorded by Hoverfly.  This can be a simple way of breaking a tests dependency on an external service; wait until you have a green
@@ -95,7 +97,7 @@ test, then switch back into simulate mode using the data produced during capture
 
 
 Config
-------
+======
 
 Hoverfly takes a config, which contains sensible defaults if not configured.  Ports will be randomised to unused ones, which is useful on something like a CI server if you want
 to avoid port clashes.
@@ -105,7 +107,7 @@ to avoid port clashes.
     config().proxyPort(8080)
 
 SSL
----
+===
 
 When requests pass through Hoverfly, it needs to decrypt them in order for it to persist them to a database, or to perform matching.  So you end up with SSL between Hoverfly and
 the external service, and then SSL again between your client and Hoverfly.  To get this to work, Hoverfly comes with it's own self-signed certificate which has to be trusted by
