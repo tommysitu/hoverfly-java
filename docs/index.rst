@@ -76,7 +76,7 @@ The core of this library is the Hoverfly class, which abstracts away and orchest
 
     final Hoverfly hoverfly = new Hoverfly(config(), SIMULATE);
     hoverfly.start();
-    hoverfly.importSimulation(classpath(simulation))
+    hoverfly.importSimulation(classpath("simulation.json"))
     // do some requests here
     hoverfly.stop();
 
@@ -92,8 +92,50 @@ test, then switch back into simulate mode using the data produced during capture
     final Hoverfly hoverfly = new Hoverfly(config(), CAPTURE);
     hoverfly.start();
     // do some requests here
-    hoverfly.exportSimulation(classpath(simulation))
+    hoverfly.exportSimulation(classpath("simulation.json"))
     hoverfly.stop();
+
+Sources
+=======
+
+There are a few different sources for Simulations that you want to import:
+
+.. code-block:: java
+    SimulationSource.classpath("simulation.json") //classpath
+    SimulationSource.url(new URL("http://www.my-service.com/simulation")) // URL
+    SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())) // Object
+    SimulationSource.simulation(new Simulation()) // Object
+    SimulationSource.empty() // None
+
+DSL
+===
+
+The rule now has fluent DSL which allows you to build request matcher to response mappings in Java opposed to importing them as JSON.
+
+The rule is fluent and hierarchical, allowing you to define multiple service endpoints as follows:
+
+.. code-block:: java
+simulationSource.dsl(
+    service("www.my-test.com")
+
+        .post("/api/bookings").body("{\"flightId\": \"1\"}")
+        .willReturn(created("http://localhost/api/bookings/1"))
+
+        .get("/api/bookings/1")
+        .willReturn(success("{\"bookingId\":\"1\"\}", "application/json")),
+
+    .service("www.anotherService.com")
+
+        .put("/api/bookings/1").body("{\"flightId\": \"1\"\"}")
+        .willReturn(success())
+
+        .delete("/api/bookings/1")
+        .willReturn(noContent())
+    )
+
+The entrypoint for the DSL is `HoverflyDSL.service`.  After calling this you can provide a `method` and `path`, followed by optional request components.
+You can then use `willReturn` to state which response you want when there is a match, which takes `responseBuilder` object that you can instantiate directly,
+or via the helper class `responseCreators`.
 
 
 Config
@@ -112,3 +154,58 @@ SSL
 When requests pass through Hoverfly, it needs to decrypt them in order for it to persist them to a database, or to perform matching.  So you end up with SSL between Hoverfly and
 the external service, and then SSL again between your client and Hoverfly.  To get this to work, Hoverfly comes with it's own self-signed certificate which has to be trusted by
 your client.  To avoid the pain of configuring your keystore, Hoverfly's certificate is trusted automatically when you instantiate it.
+
+JUnit
+#####
+
+Overview
+========
+
+An easier way to orchestrate Hoverfly is via the rule.  This is because it will create destroy the process for you automatically, doing any cleanup work and auto-importing / exporting if required.
+
+Simulate
+========
+
+.. code-block:: java
+
+    @ClassRule
+    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("simulation.json"));
+
+Capture
+=======
+
+.. code-block:: java
+
+    @ClassRule
+    public HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("simulation.json"));
+
+Use @ClassRule
+==============
+
+It is recommended to boot Hoverfly once and share it across multiple tests by using a `@ClassRule` rather than `@Rule`.
+
+Misc
+####
+
+Apache Httpclient
+=================
+
+This doesn't respect JVM system properties for things such as the proxy and truststore settings. Therefore when you build one you would need to:
+
+.. code-block:: java
+    HttpClient httpClient = HttpClients.createSystem();
+
+
+Or on older versions you may need to:
+
+.. code-block:: java
+    HttpClient httpClient = new SystemDefaultHttpClient();
+
+
+In addition, Hoverfly should be initialized before Apache HttpClient to ensure that the relevant JVM system properties are set before they are used by Apache library to configure the HttpClient.
+
+There are several options to achieve this:
+
+* Use `@ClassRule` and it guarantees that `HoverflyRule` is executed at the very start and end of the test case
+* If using `@Rule` is inevitable, you should initialize the HttpClient inside your `@Before` setUp method which will be executed after `@Rule`
+* As a last resort, you may want to manually configured Apache HttpClient to use custom proxy or ssl context, please check out https://hc.apache.org/httpcomponents-client-ga/examples.html[HttpClient examples^]
