@@ -23,9 +23,9 @@ If using maven, add the following dependency to your pom:
 
 .. code-block:: xml
 
-    <depencency>
+    <dependency>
         <groupId>io.specto</groupId>
-        <artifactId>hoverfly-junit</artifactId>
+        <artifactId>hoverfly-java</artifactId>
         <version>0.3.0</version>
     </dependency>
 
@@ -36,7 +36,7 @@ Or with gradle add the dependency to your *.gradle file:
 
 .. code-block:: groovy
 
-   testCompile "io.specto:hoverfly-junit:0.3.0"
+   testCompile "io.specto:hoverfly-java:0.3.0"
 
 Code example
 ============
@@ -46,7 +46,7 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 .. code-block:: java
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.JSON"));
+    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.json"));
 
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
@@ -84,7 +84,7 @@ Capturing
 =========
 
 The previous examples have only used Hoverfly in simulate mode. You can also run it in capture mode, meaning that requests will be made to the real service as normal,
-only they will be intercepted and recorded by Hoverfly.  This can be a simple way of breaking a tests dependency on an external service; wait until you have a green
+only they will be intercepted and recorded by Hoverfly.  This can be a simple way of breaking a test's dependency on an external service; wait until you have a green
 test, then switch back into simulate mode using the data produced during capture mode.
 
 .. code-block:: java
@@ -92,7 +92,7 @@ test, then switch back into simulate mode using the data produced during capture
     final Hoverfly hoverfly = new Hoverfly(config(), CAPTURE);
     hoverfly.start();
     // do some requests here
-    hoverfly.exportSimulation(classpath("simulation.json"))
+    hoverfly.exportSimulation(Paths.get("some-path/simulation.json"))
     hoverfly.stop();
 
 Sources
