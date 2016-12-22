@@ -1,15 +1,12 @@
 package io.specto.hoverfly.ruletest;
 
-import org.junit.ClassRule;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
-import io.specto.hoverfly.webserver.ImportTestWebServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
@@ -17,7 +14,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class HttpsHoverflyRuleTest {
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode("test-service.json");
+    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"));
 
     private RestTemplate restTemplate = new RestTemplate();
 

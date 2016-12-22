@@ -15,7 +15,7 @@ package io.specto.hoverfly.junit.rule;
 import io.specto.hoverfly.junit.core.Hoverfly;
 import io.specto.hoverfly.junit.core.HoverflyConfig;
 import io.specto.hoverfly.junit.core.HoverflyMode;
-import io.specto.hoverfly.junit.core.SimulationResource;
+import io.specto.hoverfly.junit.core.SimulationSource;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -73,7 +73,7 @@ import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.isAnnotatedWithRul
  * This avoids the overhead of starting Hoverfly multiple times, and also helps ensure all your system properties are set before executing any other code.
  * If you want to change the data, you can do so in {@link org.junit.Before} method by calling {@link HoverflyRule#simulate}, but this will not be thread safe</p>
  *
- * @see SimulationResource
+ * @see SimulationSource
  * @see io.specto.hoverfly.junit.dsl.HoverflyDsl
  *
  * @since 4.7
@@ -82,21 +82,21 @@ public class HoverflyRule extends ExternalResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HoverflyRule.class);
     private final Hoverfly hoverfly;
-    private final SimulationResource simulationResource;
+    private final SimulationSource simulationSource;
     private final HoverflyMode hoverflyMode;
     private final Path capturePath;
 
-    private HoverflyRule(final SimulationResource simulationResource, final HoverflyConfig hoverflyConfig) {
+    private HoverflyRule(final SimulationSource simulationSource, final HoverflyConfig hoverflyConfig) {
         this.hoverflyMode = SIMULATE;
         this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
-        this.simulationResource = simulationResource;
+        this.simulationSource = simulationSource;
         this.capturePath = null;
     }
 
     private HoverflyRule(final Path capturePath, final HoverflyConfig hoverflyConfig) {
         this.hoverflyMode = CAPTURE;
         this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
-        this.simulationResource = null;
+        this.simulationSource = null;
         this.capturePath = capturePath;
     }
 
@@ -124,16 +124,16 @@ public class HoverflyRule extends ExternalResource {
     /**
      * Instantiates a rule which runs Hoverfly in simulate mode
      *
-     * @param simulationResource the simulation to import
+     * @param simulationSource the simulation to import
      * @return the rule
      */
-    public static HoverflyRule inSimulationMode(final SimulationResource simulationResource) {
-        return inSimulationMode(simulationResource, configs());
+    public static HoverflyRule inSimulationMode(final SimulationSource simulationSource) {
+        return inSimulationMode(simulationSource, configs());
     }
 
 
-    public static HoverflyRule inSimulationMode(final SimulationResource simulationResource, HoverflyConfig hoverflyConfig) {
-        return new HoverflyRule(simulationResource, hoverflyConfig);
+    public static HoverflyRule inSimulationMode(final SimulationSource simulationSource, HoverflyConfig hoverflyConfig) {
+        return new HoverflyRule(simulationSource, hoverflyConfig);
     }
 
 
@@ -153,7 +153,7 @@ public class HoverflyRule extends ExternalResource {
      * @return the rule
      */
     public static HoverflyRule inSimulationMode(final HoverflyConfig hoverflyConfig) {
-        return inSimulationMode(SimulationResource.empty(), hoverflyConfig);
+        return inSimulationMode(SimulationSource.empty(), hoverflyConfig);
     }
 
     @Override
@@ -175,8 +175,8 @@ public class HoverflyRule extends ExternalResource {
     protected void before() throws Throwable {
         hoverfly.start();
 
-        if (hoverflyMode == SIMULATE && simulationResource != null) {
-            hoverfly.importSimulation(simulationResource);
+        if (hoverflyMode == SIMULATE && simulationSource != null) {
+            hoverfly.importSimulation(simulationSource);
         }
     }
 
@@ -210,10 +210,10 @@ public class HoverflyRule extends ExternalResource {
 
     /**
      * Changes the Simulation used by Hoverfly
-     * @param simulationResource the simulation
+     * @param simulationSource the simulation
      */
-    public void simulate(SimulationResource simulationResource) {
-        hoverfly.importSimulation(simulationResource);
+    public void simulate(SimulationSource simulationSource) {
+        hoverfly.importSimulation(simulationSource);
     }
 
 }

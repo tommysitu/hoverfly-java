@@ -16,8 +16,8 @@ import java.nio.file.Path;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
-import static io.specto.hoverfly.junit.core.SimulationResource.classpath;
-import static io.specto.hoverfly.junit.core.SimulationResource.simulation;
+import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
+import static io.specto.hoverfly.junit.core.SimulationSource.simulation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 

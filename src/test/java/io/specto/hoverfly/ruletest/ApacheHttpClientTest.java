@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static io.specto.hoverfly.junit.core.SimulationResource.classpath;
+import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class ApacheHttpClientTest {

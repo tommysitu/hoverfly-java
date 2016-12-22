@@ -23,7 +23,7 @@ import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
 /**
  * Interface for converting a resource into a {@link Simulation}
  */
-public interface SimulationResource {
+public interface SimulationSource {
 
     /**
      * Creates a simulation from a URL
@@ -31,7 +31,7 @@ public interface SimulationResource {
      * @param url the url of the simulation
      * @return the resource
      */
-    static SimulationResource url(final URL url) {
+    static SimulationSource url(final URL url) {
         return () -> {
             try {
                 return Optional.of(new ObjectMapper().readValue(url, Simulation.class));
@@ -47,7 +47,7 @@ public interface SimulationResource {
      * @param classpath the classpath of the simulation
      * @return the resource
      */
-    static SimulationResource classpath(final String classpath) {
+    static SimulationSource classpath(final String classpath) {
         return () -> {
             try {
                 return Optional.of(new ObjectMapper().readValue(Paths.get(findResourceOnClasspath(classpath)).toFile(), Simulation.class));
@@ -64,7 +64,7 @@ public interface SimulationResource {
      * @return the resource
      * @see io.specto.hoverfly.junit.dsl.HoverflyDsl
      */
-    static SimulationResource dsl(final StubServiceBuilder... stubServiceBuilder) {
+    static SimulationSource dsl(final StubServiceBuilder... stubServiceBuilder) {
         return () -> {
             final Set<RequestResponsePair> pairs = Arrays.stream(stubServiceBuilder)
                     .map(StubServiceBuilder::getRequestResponsePairs)
@@ -81,7 +81,7 @@ public interface SimulationResource {
      * @param simulation the simulation
      * @return the simulation
      */
-    static SimulationResource simulation(final Simulation simulation) {
+    static SimulationSource simulation(final Simulation simulation) {
         return () -> Optional.of(simulation);
     }
 
@@ -90,9 +90,9 @@ public interface SimulationResource {
      *
      * @return an empty simulation
      */
-    static SimulationResource empty() {
+    static SimulationSource empty() {
         return Optional::empty;
     }
 
-    Optional<Simulation> toSimulation();
+    Optional<Simulation> getSimulation();
 }

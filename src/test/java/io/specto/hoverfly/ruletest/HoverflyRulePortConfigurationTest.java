@@ -1,13 +1,13 @@
 package io.specto.hoverfly.ruletest;
 
-import org.junit.ClassRule;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
-import static io.specto.hoverfly.junit.core.SimulationResource.classpath;
+import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.OK;
 

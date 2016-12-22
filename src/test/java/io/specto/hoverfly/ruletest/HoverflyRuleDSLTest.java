@@ -3,7 +3,6 @@ package io.specto.hoverfly.ruletest;
 import io.specto.hoverfly.junit.rule.HoverflyRule;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -14,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static io.specto.hoverfly.junit.core.SimulationResource.dsl;
+import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
 import static io.specto.hoverfly.junit.dsl.ResponseCreators.*;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;

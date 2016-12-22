@@ -8,7 +8,7 @@ import org.junit.Rule;
 
 import java.net.URL;
 
-import static io.specto.hoverfly.junit.core.SimulationResource.url;
+import static io.specto.hoverfly.junit.core.SimulationSource.url;
 
 public class URLHoverflyRuleTest extends BaseHoverflyRuleTest {
 
