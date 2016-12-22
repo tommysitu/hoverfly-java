@@ -26,22 +26,22 @@ Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
 
 ```java
 
-    @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
-        service("www.my-test.com")
-            .get("/api/bookings/1")
-            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
-    ));
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
+    service("www.my-test.com")
+        .get("/api/bookings/1")
+        .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
+));
 
-    @Test
-    public void shouldBeAbleToGetABookingUsingHoverfly() {
-        // When
-        final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+@Test
+public void shouldBeAbleToGetABookingUsingHoverfly() {
+    // When
+    final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
 
-        // Then
-        assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
-        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
-    }
+    // Then
+    assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
+    assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
+}
 ```
 
 == Contributions
