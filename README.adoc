@@ -21,7 +21,7 @@ A Java native language binding for http://hoverfly.io/[Hoverfly^], which allows 
 
 Contributions are welcome!
 
-To submit a pull request you should fork the Hoverfly repository, and make your change on a feature branch of your fork.
+To submit a pull request you should fork the Hoverfly-Java repository, and make your change on a feature branch of your fork.
 
 == Issues
 
