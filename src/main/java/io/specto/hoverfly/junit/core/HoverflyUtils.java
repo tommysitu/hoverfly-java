@@ -90,13 +90,4 @@ class HoverflyUtils {
         }
     }
 
-    /**
-     * Looks for a file in the src/test/resources directory with the given name
-     *
-     * @param fileName name of the classpath
-     * @return URI pointing to the classpath
-     */
-    static File fileRelativeToTestResources(String fileName) {
-        return Paths.get("src/test/resources/", fileName).toFile();
-    }
 }

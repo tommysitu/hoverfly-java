@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
+
 /**
- * A builder for building responses
+ * A builder for building {@link Response}
  *
  * @see ResponseCreators
  */
@@ -45,7 +47,7 @@ public class ResponseBuilder {
     /**
      * Sets the body
      * @param body body of the response
-     * @return this
+     * @return the {@link ResponseBuilder for further customizations}
      */
     public ResponseBuilder body(final String body) {
         this.body = body;
@@ -55,7 +57,7 @@ public class ResponseBuilder {
     /**
      * Sets the status
      * @param status status of the response
-     * @return this
+     * @return the {@link ResponseBuilder for further customizations}
      */
     public ResponseBuilder status(final int status) {
         this.status = status;
@@ -66,10 +68,10 @@ public class ResponseBuilder {
      * Sets a header
      * @param key header name
      * @param value header value
-     * @return this
+     * @return the {@link ResponseBuilder for further customizations}
      */
     public ResponseBuilder header(final String key, final String value) {
-        this.headers.put(key, Collections.singletonList(value));
+        this.headers.put(key, singletonList(value));
         return this;
     }
 
@@ -77,7 +79,7 @@ public class ResponseBuilder {
      * Builds a {@link Response}
      * @return the response
      */
-    public Response build() {
+    Response build() {
         return new Response(status, body, false, headers);
     }
 }

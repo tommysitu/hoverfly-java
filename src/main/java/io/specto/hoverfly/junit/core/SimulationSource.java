@@ -1,11 +1,13 @@
 package io.specto.hoverfly.junit.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import io.specto.hoverfly.junit.core.model.GlobalActions;
 import io.specto.hoverfly.junit.core.model.HoverflyData;
 import io.specto.hoverfly.junit.core.model.HoverflyMetaData;
 import io.specto.hoverfly.junit.core.model.RequestResponsePair;
 import io.specto.hoverfly.junit.core.model.Simulation;
+import io.specto.hoverfly.junit.dsl.HoverflyDsl;
 import io.specto.hoverfly.junit.dsl.StubServiceBuilder;
 
 import java.io.IOException;
@@ -23,7 +25,12 @@ import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
 /**
  * Interface for converting a resource into a {@link Simulation}
  */
+@FunctionalInterface
 public interface SimulationSource {
+
+    ObjectReader OBJECT_READER = new ObjectMapper().readerFor(Simulation.class);
+
+    Optional<Simulation> getSimulation();
 
     /**
      * Creates a simulation from a URL
@@ -34,7 +41,7 @@ public interface SimulationSource {
     static SimulationSource url(final URL url) {
         return () -> {
             try {
-                return Optional.of(new ObjectMapper().readValue(url, Simulation.class));
+                return Optional.of(OBJECT_READER.readValue(url));
             } catch (IOException e) {
                 throw new IllegalArgumentException("Cannot read simulation", e);
             }
@@ -50,7 +57,7 @@ public interface SimulationSource {
     static SimulationSource classpath(final String classpath) {
         return () -> {
             try {
-                return Optional.of(new ObjectMapper().readValue(Paths.get(findResourceOnClasspath(classpath)).toFile(), Simulation.class));
+                return Optional.of(OBJECT_READER.readValue(Paths.get(findResourceOnClasspath(classpath)).toFile()));
             } catch (IOException e) {
                 throw new IllegalArgumentException("Cannot load classpath resource: '" + classpath + "'", e);
             }
@@ -59,10 +66,10 @@ public interface SimulationSource {
 
     /**
      * Creates a simulation from the dsl
-     *
-     * @param stubServiceBuilder dsl stubs for each service
+     * You can pass in multiple {@link StubServiceBuilder} to simulate services with different base urls
+     * @param stubServiceBuilder the fluent builder for {@link RequestResponsePair}
      * @return the resource
-     * @see io.specto.hoverfly.junit.dsl.HoverflyDsl
+     * @see HoverflyDsl
      */
     static SimulationSource dsl(final StubServiceBuilder... stubServiceBuilder) {
         return () -> {
@@ -93,6 +100,4 @@ public interface SimulationSource {
     static SimulationSource empty() {
         return Optional::empty;
     }
-
-    Optional<Simulation> getSimulation();
 }

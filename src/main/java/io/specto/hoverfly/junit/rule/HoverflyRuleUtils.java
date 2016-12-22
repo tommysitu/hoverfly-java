@@ -28,22 +28,6 @@ import java.nio.file.Paths;
 class HoverflyRuleUtils {
 
     /**
-     * Looks on the classpath for a given resource
-     */
-    static URI findResourceOnClasspath(String resourceName) {
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        final URL resource = classLoader.getResource(resourceName);
-        if (resource == null) {
-            throw new IllegalArgumentException("Resource not found with name: " + resourceName);
-        }
-        try {
-            return resource.toURI();
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
      * Looks for a file in the src/test/resources directory with the given name
      */
     static Path fileRelativeToTestResources(String fileName) {

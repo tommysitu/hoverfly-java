@@ -17,11 +17,18 @@ import io.specto.hoverfly.junit.core.model.RequestResponsePair;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.CharEncoding.UTF_8;
+
+/**
+ * A builder for {@link RequestMatcher}
+ */
 public class RequestMatcherBuilder {
 
     private static final String TEMPLATE = "template";
@@ -32,8 +39,8 @@ public class RequestMatcherBuilder {
     private final String path;
     private final MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
     private final Map<String, List<String>> headers = new HashMap<>();
-    private String body = "";
-    private String query = "";
+    private String body;
+    private String query;
 
     private RequestMatcherBuilder(final StubServiceBuilder invoker, final String method, final String scheme, final String destination, final String path) {
         this.invoker = invoker;
@@ -48,25 +55,52 @@ public class RequestMatcherBuilder {
     }
 
 
+    /**
+     * Sets the request body
+     * @param body the request body to match on
+     * @return the {@link RequestMatcherBuilder} for further customizations
+     */
     public RequestMatcherBuilder body(final String body) {
         this.body = body;
         return this;
     }
 
+    /**
+     * Sets the request query
+     * @param query the query params string to match on
+     * @return the {@link RequestMatcherBuilder} for further customizations
+     */
     public RequestMatcherBuilder query(final String query) {
         this.query = query;
         return this;
+    }
+
+    /**
+     * Sets one request header
+     * @param key the header key to match on
+     * @param value the header value to match on
+     * @return the {@link RequestMatcherBuilder} for further customizations
+     */
+    // TODO missing test
+    public RequestMatcherBuilder header(final String key, final String value) {
+        headers.put(key, Collections.singletonList(value));
+        return this;
+    }
+
+    /**
+     * Sets the expected response
+     * @param responseBuilder the builder for response
+     * @return the {@link StubServiceBuilder} for chaining the next {@link RequestMatcherBuilder}
+     * @see ResponseBuilder
+     */
+    public StubServiceBuilder willReturn(final ResponseBuilder responseBuilder) {
+        return invoker.addRequestResponsePair(new RequestResponsePair(this.build(), responseBuilder.build()));
     }
 
     private RequestMatcherBuilder queryParam(final String key, final Object... values) {
         for(Object value : values) {
             queryParams.add(key, value.toString());
         }
-        return this;
-    }
-
-    public RequestMatcherBuilder header(final String key, final String value) {
-        headers.put(key, Collections.singletonList(value));
         return this;
     }
 
@@ -78,16 +112,12 @@ public class RequestMatcherBuilder {
         return new RequestMatcher(path, method, destination, scheme, query, body, headers, TEMPLATE);
     }
 
-//    private String encodeUrl(String str) {
-//        try {
-//            return URLEncoder.encode(str, "UTF-8").replaceAll("\\+", "%20");
-//        } catch (UnsupportedEncodingException e) {
-//            throw new UnsupportedOperationException(e);
-//        }
-//    }
 
-
-    public StubServiceBuilder willReturn(final ResponseBuilder responseBuilder) {
-        return invoker.addRequestResponsePair(new RequestResponsePair(this.build(), responseBuilder.build()));
+    private String encodeUrl(String str) {
+        try {
+            return URLEncoder.encode(str, UTF_8).replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 }

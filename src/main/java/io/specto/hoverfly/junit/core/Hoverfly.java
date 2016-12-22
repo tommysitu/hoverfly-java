@@ -50,7 +50,7 @@ import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.util.Arrays.asList;
 
 /**
- * A wrapper class for the Hovefly binary.  Managed the lifecyle of the processes, and then manages Hovefly itself by using it's API endpoints.
+ * A wrapper class for the Hoverfly binary.  Manage the lifecycle of the processes, and then manage Hoverfly itself by using it's API endpoints.
  */
 public class Hoverfly {
 
@@ -69,7 +69,7 @@ public class Hoverfly {
     private Path binaryPath;
 
     /**
-     * Instantiates Hoverfly
+     * Instantiates {@link Hoverfly}
      *
      * @param hoverflyConfig the config
      * @param hoverflyMode   the mode
@@ -83,7 +83,7 @@ public class Hoverfly {
     }
 
     /**
-     * Instantiates Hoverfly
+     * Instantiates {@link Hoverfly}
      *
      * @param hoverflyMode the mode
      */
@@ -93,12 +93,11 @@ public class Hoverfly {
 
     /**
      * <ol>
-     * <li>Adds Hoverflies SSL certificate to the trust store</li>
+     * <li>Adds Hoverfly SSL certificate to the trust store</li>
      * <li>Sets the proxy system properties to route through Hoverfly</li>
      * <li>Starts Hoverfly</li>
      * </ol>
      *
-     * @throws IOException
      */
     public void start() throws IOException {
 
@@ -132,7 +131,7 @@ public class Hoverfly {
     }
 
     /**
-     * Stops the running Hoverfly process
+     * Stops the running {@link Hoverfly} process
      */
     public void stop() {
         LOGGER.info("Destroying hoverfly process");
@@ -146,7 +145,7 @@ public class Hoverfly {
     }
 
     /**
-     * Imports a simulation into Hoverfly from a {@link Simulation}
+     * Imports a simulation into {@link Hoverfly} from a {@link SimulationSource}
      *
      * @param simulationSource the simulation to import
      */
@@ -164,17 +163,17 @@ public class Hoverfly {
      * @param path the path on the filesystem to where the simulation should be stored
      */
     public void exportSimulation(Path path) {
-        LOGGER.info("Storing captured HoverflyData");
+        LOGGER.info("Exporting simulation data from Hoverfly");
         try {
             Files.deleteIfExists(path);
             Files.write(path, hoverflyResource.path(SIMULATION_PATH).get(String.class).getBytes());
         } catch (Exception e) {
-            LOGGER.error("Failed to persist captured data", e);
+            LOGGER.error("Failed to export simulation data", e);
         }
     }
 
     /**
-     * Gets the simulation currently used by the running Hoverfly instance
+     * Gets the simulation currently used by the running {@link Hoverfly} instance
      *
      * @return the simulation
      */
@@ -183,7 +182,7 @@ public class Hoverfly {
     }
 
     /**
-     * Gets the proxy port Hoverfly is running on
+     * Gets the proxy port {@link Hoverfly} is running on
      *
      * @return the proxy port
      */
@@ -193,8 +192,6 @@ public class Hoverfly {
 
     /**
      * Returns whether the running Hoverfly is healthy or not
-     *
-     * @return whether it is healthy
      */
     private boolean isHealthy() {
         ClientResponse response = null;
@@ -252,9 +249,6 @@ public class Hoverfly {
     /**
      * Extracts and runs the binary, setting any appropriate permissions.
      *
-     * @param binaryName the name of the binary
-     * @return path to the extracted binary
-     * @throws IOException on failure
      */
     private Path extractBinary(final String binaryName) throws IOException {
         LOGGER.info("Selecting the following binary based on the current operating system: {}", binaryName);
