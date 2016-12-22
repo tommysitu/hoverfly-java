@@ -12,6 +12,10 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import sys
+import os
+import shlex
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -47,8 +51,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Hoverfly Java'
-copyright = u'2016, Andrew Morgan, Tommy Situ'
-author = u'Andrew Morgan, Tommy Situ'
+copyright = u'2016, SpectoLabs'
+author = u'SpectoLabs'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -115,7 +119,7 @@ html_theme = 'alabaster'
 # html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = []
+html_theme_path = ['.']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -126,17 +130,17 @@ html_theme = 'alabaster'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = None
+html_logo = "hf-java-logo.png"
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = None
+html_favicon = "favicon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['docstatic']
+html_static_path = ['alabaster/static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -152,7 +156,7 @@ html_static_path = ['docstatic']
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
+# html_sidebars = { '**': ['about.html', 'navigation.html', 'searchbox.html'], }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -222,7 +226,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'HoverflyJava.tex', u'Hoverfly Java Documentation',
-     u'Andrew Morgan, Tommy Situ', 'manual'),
+     u'SpectoLabs', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
