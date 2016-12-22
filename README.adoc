@@ -1,11 +1,11 @@
-== Hoverfly Java - Easy creation of stub servers for testing
+== Hoverfly Java - Easy creation of stub http servers for testing
 
 image:https://circleci.com/gh/SpectoLabs/hoverfly-java.svg?style=shield["CircleCI", link="https://circleci.com/gh/SpectoLabs/hoverfly-java"]
 image:https://codecov.io/gh/spectolabs/hoverfly-java/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/spectolabs/hoverfly-java"]
 image:https://img.shields.io/maven-central/v/io.specto/hoverfly-java.svg["Maven Central", link="https://mvnrepository.com/artifact/io.specto/hoverfly-java"]
 
 A Java native language binding for http://hoverfly.io/[Hoverfly^], a Go proxy which allows you to simulate http services in your unit tests. Another term
-for this is Service Virtualisation[https://en.wikipedia.org/wiki/Service_virtualization].
+for this is https://en.wikipedia.org/wiki/Service_virtualization[Service Virtualisation^].
 
 == Features
 
@@ -18,7 +18,31 @@ for this is Service Virtualisation[https://en.wikipedia.org/wiki/Service_virtual
 - Https automatically supported, no extra configuration required
 - Interoperable with standard Hoverfly json, making it easy to re-use data between Java and other bindings.
 
-Full documentation is available here[http://hoverfly-java.specto.io]
+== Documentation
+
+Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
+
+== Example
+
+```java
+
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
+    service("www.my-test.com")
+        .get("/api/bookings/1")
+        .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
+));
+
+@Test
+public void shouldBeAbleToGetABookingUsingHoverfly() {
+    // When
+    final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+
+    // Then
+    assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
+    assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
+}
+```
 
 == Contributions
 

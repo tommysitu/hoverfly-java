@@ -46,7 +46,11 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 .. code-block:: java
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.json"));
+    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
+        service("www.my-test.com")
+            .get("/api/bookings/1")
+            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
+    ));
 
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
@@ -55,13 +59,7 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
-        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{" +
-                "\"bookingId\":\"1\"," +
-                "\"origin\":\"London\"," +
-                "\"destination\":\"Singapore\"," +
-                "\"time\":\"2011-09-01T12:30\"," +
-                "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}" +
-                "}");
+        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
     }
 
 Core
@@ -102,11 +100,11 @@ There are a few different potential sources for Simulations:
 
 .. code-block:: java
 
-    SimulationSource.classpath("simulation.json") //classpath
-    SimulationSource.url(new URL("http://www.my-service.com/simulation")) // URL
-    SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())) // Object
-    SimulationSource.simulation(new Simulation()) // Object
-    SimulationSource.empty() // None
+    SimulationSource.classpath("simulation.json"); //classpath
+    SimulationSource.url(new URL("http://www.my-service.com/simulation")); // URL
+    SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())); // Object
+    SimulationSource.simulation(new Simulation()); // Object
+    SimulationSource.empty(); // None
 
 DSL
 ===
