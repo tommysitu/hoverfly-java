@@ -1,4 +1,4 @@
-== Hoverfly Java - Easy creation of stub servers for testing
+== Hoverfly Java - Easy creation of stub http servers for testing
 
 image:https://circleci.com/gh/SpectoLabs/hoverfly-java.svg?style=shield["CircleCI", link="https://circleci.com/gh/SpectoLabs/hoverfly-java"]
 image:https://codecov.io/gh/spectolabs/hoverfly-java/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/spectolabs/hoverfly-java"]
