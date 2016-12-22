@@ -101,6 +101,7 @@ Sources
 There are a few different sources for Simulations that you want to import:
 
 .. code-block:: java
+
     SimulationSource.classpath("simulation.json") //classpath
     SimulationSource.url(new URL("http://www.my-service.com/simulation")) // URL
     SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())) // Object
@@ -115,6 +116,7 @@ The rule now has fluent DSL which allows you to build request matcher to respons
 The rule is fluent and hierarchical, allowing you to define multiple service endpoints as follows:
 
 .. code-block:: java
+
     simulationSource.dsl(
         service("www.my-test.com")
 
