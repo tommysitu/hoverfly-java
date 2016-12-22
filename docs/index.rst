@@ -74,7 +74,7 @@ The core of this library is the Hoverfly class, which abstracts away and orchest
 
     final Hoverfly hoverfly = new Hoverfly(config(), SIMULATE);
     hoverfly.start();
-    hoverfly.import(classpath(simulation))
+    hoverfly.importSimulation(classpath(simulation))
     // do some requests here
     hoverfly.stop();
 
@@ -87,10 +87,26 @@ test, then switch back into simulate mode using the data produced during capture
 
 .. code-block:: java
 
-    final Hoverfly hoverfly = new Hoverfly(config(), SIMULATE);
+    final Hoverfly hoverfly = new Hoverfly(config(), CAPTURE);
     hoverfly.start();
-    hoverfly.import(classpath(simulation))
     // do some requests here
-    hoverfly.stop();
+    hoverfly.exportSimulation(classpath(simulation))
     hoverfly.stop();
 
+
+Config
+------
+
+Hoverfly takes a config, which contains sensible defaults if not configured.  Ports will be randomised to unused ones, which is useful on something like a CI server if you want
+to avoid port clashes.
+
+.. code-block:: java
+
+    config().proxyPort(8080)
+
+SSL
+---
+
+When requests pass through Hoverfly, it needs to decrypt them in order for it to persist them to a database, or to perform matching.  So you end up with SSL between Hoverfly and
+the external service, and then SSL again between your client and Hoverfly.  To get this to work, Hoverfly comes with it's own self-signed certificate which has to be trusted by
+your client.  To avoid the pain of configuring your keystore, Hoverfly's certificate is trusted automatically when you instantiate it.
