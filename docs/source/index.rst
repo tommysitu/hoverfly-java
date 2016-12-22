@@ -1,16 +1,11 @@
-Overview
+What is Hoverfly Java?
 ########
-What is Hoverfly?
-=================
 
 `Hoverfly <http://hoverfly.io>`_ is a lightweight service virtualisation tool which allows you to stub / simulate HTTP(S) services. It is a proxy written in `Go <https://golang.org/>`_ which responds to HTTP(S) requests with stored responses, pretending to be it's real counterpart.
 
 It enables you to get around common testing problems caused by external dependencies, such as non-deterministic data, flakiness, not yet implemented API's, licensing fees, slow tests and more.
 
-Hoverfly Java
-=============
-
-Hoverfly Java is a native language binding which gives you an expressive API for managing Hoverfly in Java.  It gives you a Hoverfly class which abstracts away the binary and API calls, a DSL for creating simulations, and a JUnit integration for using it within JUnit tests.
+**Hoverfly Java** is a native language binding which gives you an expressive API for managing Hoverfly in Java.  It gives you a Hoverfly class which abstracts away the binary and API calls, a DSL for creating simulations, and a JUnit integration for using it within JUnit tests.
 
 
 Quick start
