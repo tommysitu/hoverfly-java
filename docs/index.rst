@@ -98,7 +98,7 @@ test, then switch back into simulate mode using the data produced during capture
 Sources
 =======
 
-There are a few different sources for Simulations that you want to import:
+There are a few different potential sources for Simulations:
 
 .. code-block:: java
 
@@ -184,7 +184,8 @@ Capture
 Use @ClassRule
 ==============
 
-It is recommended to boot Hoverfly once and share it across multiple tests by using a `@ClassRule` rather than `@Rule`.
+It is recommended to boot Hoverfly once and share it across multiple tests by using a `@ClassRule` rather than `@Rule`.  This means you don't have the overhead of starting one process per test,
+and also guarantees that all your system properties are set correctly before executing any of your test code.
 
 Misc
 ####
@@ -195,12 +196,14 @@ Apache Httpclient
 This doesn't respect JVM system properties for things such as the proxy and truststore settings. Therefore when you build one you would need to:
 
 .. code-block:: java
+
     HttpClient httpClient = HttpClients.createSystem();
 
 
 Or on older versions you may need to:
 
 .. code-block:: java
+
     HttpClient httpClient = new SystemDefaultHttpClient();
 
 
@@ -211,3 +214,17 @@ There are several options to achieve this:
 * Use `@ClassRule` and it guarantees that `HoverflyRule` is executed at the very start and end of the test case
 * If using `@Rule` is inevitable, you should initialize the HttpClient inside your `@Before` setUp method which will be executed after `@Rule`
 * As a last resort, you may want to manually configured Apache HttpClient to use custom proxy or ssl context, please check out https://hc.apache.org/httpcomponents-client-ga/examples.html[HttpClient examples^]
+
+
+Legacy Schema Migration
+=======================
+
+If you have recorded data in the legacy schema generated before hoverfly-junit v0.1.9, you will need to run the following commands using http://hoverfly.io/[Hoverfly^] to migrate to the new schema:
+
+.. code-block:: bash
+    $ hoverctl start
+    $ hoverctl delete simulations
+    $ hoverctl import --v1 path-to-my-json/file.json
+    $ hoverctl export path-to-my-json/file.json
+    $ hoverctl stop
+```

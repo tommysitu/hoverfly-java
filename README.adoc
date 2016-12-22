@@ -1,4 +1,4 @@
-== Hoverfly JUnit Rule
+== Hoverfly Java - Easy creation of stub servers for testing
 
 image:https://circleci.com/gh/SpectoLabs/hoverfly-junit.svg?style=shield["CircleCI", link="https://circleci.com/gh/SpectoLabs/hoverfly-junit"]
 image:https://codecov.io/gh/spectolabs/hoverfly-junit/branch/master/graph/badge.svg["Codecov", link="https://codecov.io/gh/spectolabs/hoverfly-junit"]
@@ -6,32 +6,31 @@ image:https://img.shields.io/maven-central/v/io.specto/hoverfly-junit.svg["Maven
 
 A Java native language binding for http://hoverfly.io/[Hoverfly^], which allows you to simulate http services in your unit tests.
 
-=== Legacy Schema Migration
-If you have recorded data in the legacy schema generated before hoverfly-junit v0.1.9, you will need to run the following commands using http://hoverfly.io/[Hoverfly^] to migrate to the new schema:
-```bash
-$ hoverctl start
-$ hoverctl delete simulations
-$ hoverctl import --v1 path-to-my-json/file.json
-$ hoverctl export path-to-my-json/file.json
-$ hoverctl stop
-```
+== Features
 
-=== Quick Start
+- Simulation of http services
+- Strict or loose http request matching based on URL, method, body and header combinations
+- Fluent and expressive DSL for easy generation of simulated services
+- Create simulations by running in capture mode
+- No need to change the host that you point to - Hoverfly is a proxy
+- Multiple hosts / services per single instance of Hoverfly. No need to create more than one.
+- Https automatically supported, no extra configuration required
+- Interoperable with standard Hoverfly json, making it easy to re-use data between Java and other bindings.
 
-Simply add the following rule to your class, giving it the path to your Simulation on the ClassPath.
+== Contributions
 
-[source,java,indent=0]
-----
-@Rule
-public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode("test-hoverflyStubService.json");
-----
+Contributions are welcome!
 
-As Hoverfly is a proxy, all requests (assuming they respect the JVM proxy settings) will be routed through it.  Hoverfly will then respond instead of the real hoverflyStubService.
+To submit a pull request you should fork the Hoverfly repository, and make your change on a feature branch of your fork.
 
-The rule will attempt to detect the operating system and architecture type of the host, and then extract and execute the correct hoverfly binary.  It will import the json into it's database and then and destroy the process at the end of the tests.
+== Issues
 
-<<<<<<< 1f6be88c28b25c8be2d279c8759b9a6241a2b3f0
-==== Maven Build
-Import to your Maven project:
-=======
-=== DSL
+Feel free to raise an issues on Github.
+
+== License
+
+Apache License version 2.0.
+
+(c) SpectoLabs 2016.
+
+
