@@ -13,25 +13,35 @@
 package io.specto.hoverfly.junit.dsl;
 
 import static io.specto.hoverfly.junit.dsl.ResponseBuilder.response;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.HttpHeaders.LOCATION;
 
 /**
  * Wrapper around a {@link ResponseBuilder} for building common types of responses
  */
 public class ResponseCreators {
 
+    private static final int CREATED = 201;
+    private static final int OK = 200;
+    private static final int NO_CONTENT = 204;
+    private static final int BAD_REQUEST = 400;
+    private static final int SERVER_ERROR = 500;
+    private static final int FORBIDDEN = 403;
+    private static final int UNAUTHORISED = 401;
+
     private ResponseCreators() {
     }
 
     /**
-     * Builds a 200 response with a given location header value
+     * Builds a 201 response with a given location header value
      *
      * @param locationHeaderValue the value of the location header
      * @return builder with the given fields set
      */
     public static ResponseBuilder created(final String locationHeaderValue) {
         return response()
-                .status(201)
-                .header("Location", locationHeaderValue);
+                .status(CREATED)
+                .header(LOCATION, locationHeaderValue);
     }
 
     /**
@@ -42,9 +52,9 @@ public class ResponseCreators {
      */
     public static ResponseBuilder success(final String body, final String contentType) {
         return response()
-                .status(200)
+                .status(OK)
                 .body(body)
-                .header("Content-Type", contentType);
+                .header(CONTENT_TYPE, contentType);
     }
 
     /**
@@ -52,7 +62,7 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder success() {
-        return response().status(200);
+        return response().status(OK);
     }
 
     /**
@@ -60,7 +70,7 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder noContent() {
-        return response().status(204);
+        return response().status(NO_CONTENT);
     }
 
     /**
@@ -68,7 +78,7 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder badRequest() {
-        return response().status(400);
+        return response().status(BAD_REQUEST);
     }
 
     /**
@@ -76,7 +86,7 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder serverError() {
-        return response().status(500);
+        return response().status(SERVER_ERROR);
     }
 
     /**
@@ -84,7 +94,7 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder forbidden() {
-        return response().status(403);
+        return response().status(FORBIDDEN);
     }
 
     /**
@@ -92,6 +102,6 @@ public class ResponseCreators {
      * @return builder with the given fields set
      */
     public static ResponseBuilder unauthorised() {
-        return response().status(401);
+        return response().status(UNAUTHORISED);
     }
 }

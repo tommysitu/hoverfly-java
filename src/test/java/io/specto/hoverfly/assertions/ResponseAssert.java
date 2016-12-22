@@ -45,7 +45,7 @@ public class ResponseAssert extends AbstractAssert<ResponseAssert, Response> {
         return this;
     }
 
-    public ResponseAssert hasOnlyHeaders(final Header... headers) {
+    public ResponseAssert hasExactHeaders(final Header... headers) {
         isNotNull();
 
         final Set<Header> setOfHeaders = Arrays.stream(headers)

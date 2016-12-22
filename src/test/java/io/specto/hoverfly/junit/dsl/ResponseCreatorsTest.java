@@ -16,7 +16,7 @@ public class ResponseCreatorsTest {
         assertThat(response)
                 .hasStatus(201)
                 .hasNoBody()
-                .hasOnlyHeaders(header("Location", "http://location.com"));
+                .hasExactHeaders(header("Location", "http://location.com"));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class ResponseCreatorsTest {
         assertThat(response)
                 .hasStatus(200)
                 .hasBody("body")
-                .hasOnlyHeaders(header("Content-Type", "contentType"));
+                .hasExactHeaders(header("Content-Type", "contentType"));
     }
 
     @Test

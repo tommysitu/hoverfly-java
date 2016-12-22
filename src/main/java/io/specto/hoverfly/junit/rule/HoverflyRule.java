@@ -16,6 +16,10 @@ import io.specto.hoverfly.junit.core.Hoverfly;
 import io.specto.hoverfly.junit.core.HoverflyConfig;
 import io.specto.hoverfly.junit.core.HoverflyMode;
 import io.specto.hoverfly.junit.core.SimulationSource;
+import io.specto.hoverfly.junit.dsl.HoverflyDsl;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -32,51 +36,40 @@ import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.isAnnotatedWithRul
 
 
 /**
- * <p>The Hoverfly Rule auto-spins up a Hoverfly process, and tears it down at the end of your tests.  It also configures the JVM
- * proxy to use Hoverfly, so so long as your client respects these proxy settings you shouldn't have to configure it.</p>
- * <p>
- * <p>Example of usage:
+ * <p>The {@link HoverflyRule} auto-spins up a {@link Hoverfly} process, and tears it down at the end of your tests.  It also configures the JVM
+ * proxy to use {@link Hoverfly}, so so long as your client respects these proxy settings you shouldn't have to configure it.</p>
+ * <h2>Example Usage</h2>
  * <pre>
- *     {@code
  * public class SomeTest {
- *           @ClassRule
- *           public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"))
- *           @Test
- *           public void test() { //All requests will be proxied through Hoverfly
- *              // Given
- *              final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherService.com/api/bookings/1")).build();
+ *      &#064;ClassRule
+ *      public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"))
  *
- *              // When
- *              final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);
+ *      &#064;Test
+ *      public void test() { //All requests will be proxied through Hoverfly
+ *          // Given
+ *          final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherService.com/api/bookings/1")).build();
  *
- *              // Then
- *              assertThat(bookFlightResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
- *           }
- *       }
- *     }
+ *          // When
+ *          final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);
+ *
+ *          // Then
+ *          assertThat(bookFlightResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+ *      }
+ * }
  * </pre>
- * <p>
- * <p>You can provide data from a Hoverfly JSON simulation, or alternatively you can use a DSL - {@link io.specto.hoverfly.junit.dsl.HoverflyDsl}</p>
- * <p>
+ * <p>You can provide data from a Hoverfly JSON simulation, or alternatively you can use a DSL - {@link HoverflyDsl}</p>
  * <p>It is also possible to capture data:</p>
- * <p>
  * <pre>
- *     {@code
- *     @Rule
- *     public HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("recorded-simulation.json");
- *     }
+ *     &#064;ClassRule
+ *     public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("recorded-simulation.json");
  * </pre>
- * <p>
- * <p>The output will end up in your /src/test directory</p>
- * <p>
- * <p><b>It's recommended use always use the {@link org.junit.ClassRule} annotation, so we keep the same instance of Hoverfly through all your tests.</b>
+ * <p>The recorded data will be saved in your src/test/resources directory</p>
+ * <p><b>It's recommended to always use the {@link ClassRule} annotation, so you can share the same instance of Hoverfly through all your tests.</b>
  * This avoids the overhead of starting Hoverfly multiple times, and also helps ensure all your system properties are set before executing any other code.
- * If you want to change the data, you can do so in {@link org.junit.Before} method by calling {@link HoverflyRule#simulate}, but this will not be thread safe</p>
+ * If you want to change the data, you can do so in {@link Before} method by calling {@link HoverflyRule#simulate}, but this will not be thread safe.</p>
  *
  * @see SimulationSource
- * @see io.specto.hoverfly.junit.dsl.HoverflyDsl
- *
- * @since 4.7
+ * @see HoverflyDsl
  */
 public class HoverflyRule extends ExternalResource {
 
@@ -101,17 +94,17 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in capture mode
+     * Instantiates a rule which runs {@link Hoverfly} in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
-     * @return HoverflyRule the rule instance
+     * @return the rule
      */
     public static HoverflyRule inCaptureMode(String recordedFilename) {
         return inCaptureMode(recordedFilename, configs());
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in capture mode
+     * Instantiates a rule which runs {@link Hoverfly} in capture mode
      *
      * @param recordedFilename the path to the recorded name relative to src/test/resources
      * @param hoverflyConfig   the config
@@ -122,7 +115,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode
+     * Instantiates a rule which runs {@link Hoverfly} in simulate mode
      *
      * @param simulationSource the simulation to import
      * @return the rule
@@ -132,13 +125,13 @@ public class HoverflyRule extends ExternalResource {
     }
 
 
-    public static HoverflyRule inSimulationMode(final SimulationSource simulationSource, HoverflyConfig hoverflyConfig) {
+    public static HoverflyRule inSimulationMode(final SimulationSource simulationSource, final HoverflyConfig hoverflyConfig) {
         return new HoverflyRule(simulationSource, hoverflyConfig);
     }
 
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode with no data
+     * Instantiates a rule which runs {@link Hoverfly} in simulate mode with no data
      *
      * @return the rule
      */
@@ -147,7 +140,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Instantiates a rule which runs Hoverfly in simulate mode with no data
+     * Instantiates a rule which runs {@link Hoverfly} in simulate mode with no data
      *
      * @param hoverflyConfig the config
      * @return the rule
@@ -156,20 +149,19 @@ public class HoverflyRule extends ExternalResource {
         return inSimulationMode(SimulationSource.empty(), hoverflyConfig);
     }
 
+    /**
+     * Log warning if {@link HoverflyRule} is annotated with {@link Rule}
+     */
     @Override
     public Statement apply(Statement base, Description description) {
         if (isAnnotatedWithRule(description)) {
-            LOGGER.warn(" It is recommended to use HoverflyRule with @ClassRule to get better performance in your tests, and prevent known issue with Apache HttpClient. For more information, please see https://github.com/SpectoLabs/hoverfly-junit.");
+            LOGGER.warn("It is recommended to use HoverflyRule with @ClassRule to get better performance in your tests, and prevent known issue with Apache HttpClient. For more information, please see https://github.com/SpectoLabs/hoverfly-java.");
         }
         return super.apply(base, description);
     }
 
     /**
      * Starts in instance of Hoverfly
-     * <p>
-     * {@inheritDoc ExternalResource#before}
-     *
-     * @throws Throwable
      */
     @Override
     protected void before() throws Throwable {
@@ -182,10 +174,6 @@ public class HoverflyRule extends ExternalResource {
 
     /**
      * Stops the managed instance of Hoverfly
-     * <p>
-     * {@inheritDoc ExternalResource#after}
-     *
-     * @throws Throwable
      */
     @Override
     protected void after() {
@@ -199,7 +187,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     /**
-     * Gets the proxy port this has run on, which could be useful when running Hoverfly on a random port.
+     * Gets the proxy port this has run on, which could be useful when running {@link Hoverfly} on a random port.
      *
      * @return the proxy port
      */
@@ -209,7 +197,7 @@ public class HoverflyRule extends ExternalResource {
 
 
     /**
-     * Changes the Simulation used by Hoverfly
+     * Changes the Simulation used by {@link Hoverfly}
      * @param simulationSource the simulation
      */
     public void simulate(SimulationSource simulationSource) {

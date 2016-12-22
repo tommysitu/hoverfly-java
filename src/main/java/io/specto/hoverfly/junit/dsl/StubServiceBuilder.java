@@ -19,11 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static io.specto.hoverfly.junit.dsl.RequestMatcherBuilder.requestMatcherBuilder;
-import static io.specto.hoverfly.junit.dsl.RequestMethod.*;
+import static javax.ws.rs.HttpMethod.*;
 
 /**
  * Used as part of the DSL for creating a {@link RequestResponsePair} used within a Hoverfly Simulation.  Each builder is locked to a single base URL.
- * If you want to use another base URL, you must chain things together by calling {@link StubServiceBuilder#anotherService}
  */
 public class StubServiceBuilder {
 
@@ -38,9 +37,10 @@ public class StubServiceBuilder {
     /**
      * Instantiates builder for a given base URL
      *
-     * @param baseUrl         the base URL you want all of these requestResponsePairs to use
+     * @param baseUrl the base URL of the service you are going to simulate
      */
     StubServiceBuilder(String baseUrl) {
+        //TODO null checking
         if (baseUrl.startsWith(HTTPS + SEPARATOR)) {
             this.scheme = HTTPS;
             this.destination = baseUrl.substring(HTTPS.length() + SEPARATOR.length(), baseUrl.length());
@@ -57,8 +57,7 @@ public class StubServiceBuilder {
      * Creating a GET request matcher
      *
      * @param path the path you want the matcher to have
-     * @return a builder for the response to send when matching
-     * @see RequestMatcherBuilder
+     * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder get(final String path) {
         return requestMatcherBuilder(this, GET, scheme, destination, path);
@@ -68,8 +67,7 @@ public class StubServiceBuilder {
      * Creating a DELETE request matcher
      *
      * @param path the path you want the matcher to have
-     * @return a builder for the response to send when matching
-     * @see RequestMatcherBuilder
+     * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder delete(final String path) {
         return requestMatcherBuilder(this, DELETE, scheme, destination, path);
@@ -79,8 +77,7 @@ public class StubServiceBuilder {
      * Creating a PUT request matcher
      *
      * @param path the path you want the matcher to have
-     * @return a builder for the response to send when matching
-     * @see RequestMatcherBuilder
+     * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder put(final String path) {
         return requestMatcherBuilder(this, PUT, scheme, destination, path);
@@ -90,11 +87,19 @@ public class StubServiceBuilder {
      * Creating a POST request matcher
      *
      * @param path the path you want the matcher to have
-     * @return a builder for the response to send when matching
-     * @see RequestMatcherBuilder
+     * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder post(final String path) {
         return requestMatcherBuilder(this, POST, scheme, destination, path);
+    }
+
+
+    /**
+     * Used for retrieving all the requestResponsePairs that the builder contains
+     * @return the set of {@link RequestResponsePair}
+     */
+    public Set<RequestResponsePair> getRequestResponsePairs() {
+        return ImmutableSet.copyOf(requestResponsePairs);
     }
 
     /**
@@ -104,20 +109,9 @@ public class StubServiceBuilder {
      *
      * pairsBuilder.method("/some/path").willReturn(created()).method("/some/other/path").willReturn(noContent())
      * <pre/>
-     * @param requestResponsePair
-     * @return
      */
     StubServiceBuilder addRequestResponsePair(final RequestResponsePair requestResponsePair) {
         this.requestResponsePairs.add(requestResponsePair);
         return this;
-    }
-
-    /**
-     * Used for retrieving all the requestResponsePairs that the builder contains
-     *
-     * @return
-     */
-    public Set<RequestResponsePair> getRequestResponsePairs() {
-        return ImmutableSet.copyOf(requestResponsePairs);
     }
 }

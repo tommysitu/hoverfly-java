@@ -16,7 +16,7 @@ package io.specto.hoverfly.junit.dsl;
  * Entry point to a DSL which can be used to generate a Hoverfly simulation.  Example code:
  * <p>
  * <pre>
- * hoverfly.import(
+ * hoverflyRule.simulate(
  *
  *      service("www.my-test.com")
  *
@@ -26,7 +26,7 @@ package io.specto.hoverfly.junit.dsl;
  *          .get("/api/bookings/1")
  *          .willReturn(success("{\"bookingId\":\"1\"}", "application/json")),
  *
- *      .service("www.other-anotherService.com")
+ *      .service("www.other-service.com")
  *
  *          .put("/api/bookings/1").body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
  *          .willReturn(success())
@@ -52,10 +52,8 @@ public class HoverflyDsl {
     /**
      * Instantiates a DSL for a given service.  Once you do this, you can create request matchers to response mappings by following these semantics:
      * <p>
-     * <pre>
-     *
      * service("www.service.com").method("/some/path").willReturn(created())
-     * </pre>
+     * </p>
      *
      * @param baseUrl the base URL you want all subsequent requests mappings to contain
      * @return the {@link StubServiceBuilder}

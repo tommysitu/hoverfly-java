@@ -13,7 +13,7 @@
 package io.specto.hoverfly.junit.core;
 
 /**
- * Config used to change the settings for Hoverfly
+ * Config used to change the settings for {@link Hoverfly}
  */
 public class HoverflyConfig {
     private int proxyPort;
@@ -33,9 +33,9 @@ public class HoverflyConfig {
     }
 
     /**
-     * Sets the proxy port for Hoverfly
+     * Sets the proxy port for {@link Hoverfly}
      * @param proxyPort the proxy port
-     * @return this
+     * @return the {@link HoverflyConfig} for further customizations
      */
     public HoverflyConfig proxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
@@ -43,9 +43,9 @@ public class HoverflyConfig {
     }
 
     /**
-     * Sets the admin port for Hoverfly
+     * Sets the admin port for {@link Hoverfly}
      * @param adminPort the admin port
-     * @return this
+     * @return the {@link HoverflyConfig} for further customizations
      */
     public HoverflyConfig adminPort(int adminPort) {
         this.adminPort = adminPort;
@@ -53,9 +53,9 @@ public class HoverflyConfig {
     }
 
     /**
-     * Controls whether we want to proxy localhost.  If false then any request to localhost will not be proxied through Hoverfly.
+     * Controls whether we want to proxy localhost.  If false then any request to localhost will not be proxied through {@link Hoverfly}.
      * @param proxyLocalHost whether to proxy localhost
-     * @return this
+     * @return the {@link HoverflyConfig} for further customizations
      */
     public HoverflyConfig proxyLocalHost(boolean proxyLocalHost) {
         this.proxyLocalHost = proxyLocalHost;
@@ -63,7 +63,7 @@ public class HoverflyConfig {
     }
 
     /**
-     * Get's the proxy port Hoverfly is configured to run on
+     * Gets the proxy port {@link Hoverfly} is configured to run on
      * @return the proxy port
      */
     public int getProxyPort() {
@@ -71,7 +71,7 @@ public class HoverflyConfig {
     }
 
     /**
-     * Get's the admin port Hoverfly is configured to run on
+     * Gets the admin port {@link Hoverfly} is configured to run on
      * @return the admin port
      */
     public int getAdminPort() {
