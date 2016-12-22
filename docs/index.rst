@@ -46,7 +46,24 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 .. code-block:: java
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("test-service.json"));
+    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
+        service("www.my-test.com")
+
+            .post("/api/bookings").body("{\"flightId\": \"1\"}")
+            .willReturn(created("http://localhost/api/bookings/1"))
+
+            .get("/api/bookings/1")
+            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json")),
+
+        .service("www.anotherService.com")
+
+            .put("/api/bookings/1").body("{\"flightId\": \"1\"\"}")
+            .willReturn(success())
+
+            .delete("/api/bookings/1")
+            .willReturn(noContent())
+        )
+    ));
 
     @Test
     public void shouldBeAbleToGetABookingUsingHoverfly() {
