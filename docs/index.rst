@@ -102,11 +102,11 @@ There are a few different potential sources for Simulations:
 
 .. code-block:: java
 
-    SimulationSource.classpath("simulation.json") //classpath
-    SimulationSource.url(new URL("http://www.my-service.com/simulation")) // URL
-    SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())) // Object
-    SimulationSource.simulation(new Simulation()) // Object
-    SimulationSource.empty() // None
+    SimulationSource.classpath("simulation.json"); //classpath
+    SimulationSource.url(new URL("http://www.my-service.com/simulation")); // URL
+    SimulationSource.dsl(service("www.foo.com").get("/bar).willReturn(success())); // Object
+    SimulationSource.simulation(new Simulation()); // Object
+    SimulationSource.empty(); // None
 
 DSL
 ===
