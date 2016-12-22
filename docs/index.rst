@@ -48,21 +48,8 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
     @ClassRule
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
         service("www.my-test.com")
-
-            .post("/api/bookings").body("{\"flightId\": \"1\"}")
-            .willReturn(created("http://localhost/api/bookings/1"))
-
             .get("/api/bookings/1")
-            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json")),
-
-        .service("www.anotherService.com")
-
-            .put("/api/bookings/1").body("{\"flightId\": \"1\"\"}")
-            .willReturn(success())
-
-            .delete("/api/bookings/1")
-            .willReturn(noContent())
-        )
+            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
     ));
 
     @Test
@@ -72,13 +59,7 @@ The simplest way is to get started is with the JUnit rule. Just give it some val
 
         // Then
         assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
-        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{" +
-                "\"bookingId\":\"1\"," +
-                "\"origin\":\"London\"," +
-                "\"destination\":\"Singapore\"," +
-                "\"time\":\"2011-09-01T12:30\"," +
-                "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}" +
-                "}");
+        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
     }
 
 Core
