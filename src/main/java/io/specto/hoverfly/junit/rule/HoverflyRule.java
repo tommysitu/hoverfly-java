@@ -41,16 +41,16 @@ import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.isAnnotatedWithRul
  * <h2>Example Usage</h2>
  * <pre>
  * public class SomeTest {
- *      &#064;ClassRule
+ *      {@code @ClassRule}
  *      public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"))
  *
- *      &#064;Test
+ *      {@code @Test}
  *      public void test() { //All requests will be proxied through Hoverfly
  *          // Given
- *          final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherService.com/api/bookings/1")).build();
+ *          {@code final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherService.com/api/bookings/1")).build();}
  *
  *          // When
- *          final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);
+ *          {@code final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);}
  *
  *          // Then
  *          assertThat(bookFlightResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
