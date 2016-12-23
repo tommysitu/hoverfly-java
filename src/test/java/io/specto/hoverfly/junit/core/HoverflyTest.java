@@ -5,7 +5,9 @@ import com.google.common.io.Resources;
 import io.specto.hoverfly.junit.core.model.Simulation;
 import org.junit.After;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -16,8 +18,10 @@ import java.nio.file.Path;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
+import static io.specto.hoverfly.junit.core.SimulationSource.classpath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.springframework.http.HttpStatus.OK;
 
 public class HoverflyTest {
 
@@ -43,12 +47,12 @@ public class HoverflyTest {
     }
 
     @Test
-    public void shouldImportSimulationObject() throws Exception {
+    public void shouldImportSimulation() throws Exception {
         startDefaultHoverfly();
         // When
         URL resource = Resources.getResource("test-service.json");
         Simulation importedSimulation = mapper.readValue(resource, Simulation.class);
-        hoverfly.importSimulation(importedSimulation);
+        hoverfly.importSimulation(classpath("test-service.json"));
 
         // Then
         Simulation exportedSimulation = hoverfly.getSimulation();
@@ -56,30 +60,96 @@ public class HoverflyTest {
     }
 
     @Test
-    public void shouldImportFileURI() throws Exception {
+    public void shouldThrowExceptionWhenProxyPortIsAlreadyInUse() throws Exception {
+        // Given
         startDefaultHoverfly();
-        // When
-        URL resource = Resources.getResource("test-service.json");
-        Simulation importedSimulation = mapper.readValue(resource, Simulation.class);
-        hoverfly.importSimulation(resource.toURI());
+        Hoverfly portClashHoverfly = new Hoverfly(configs().proxyPort(hoverfly.getProxyPort()), SIMULATE);
 
-        // Then
-        Simulation exportedSimulation = hoverfly.getSimulation();
-        assertThat(exportedSimulation).isEqualTo(importedSimulation);
+        try {
+            // When
+            Throwable throwable = catchThrowable(portClashHoverfly::start);
+
+            //Then
+            assertThat(throwable)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("Port is already in use");
+        } finally {
+            portClashHoverfly.stop();
+        }
     }
 
     @Test
-    public void shouldThrowExceptionWhenSubmitSimulationFailed() throws Exception {
-
+    public void shouldThrowExceptionWhenAdminPortIsAlreadyInUse() throws Exception {
+        // Given
         startDefaultHoverfly();
-        // When
-        Throwable throwable = catchThrowable(() -> hoverfly.importSimulation(Resources.getResource("test-service-v1.json").toURI()));
+        Hoverfly portClashHoverfly = new Hoverfly(configs().adminPort(hoverfly.getAdminPort()), SIMULATE);
 
-        // Then
-        assertThat(throwable)
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Failed to submit simulation data");
+        try {
+            // When
+            Throwable throwable = catchThrowable(portClashHoverfly::start);
+
+            //Then
+            assertThat(throwable)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("Port is already in use");
+        } finally {
+            portClashHoverfly.stop();
+        }
     }
+
+
+    @Test
+    public void shouldBeAbleToUseARemoteHoverflyDefaultingToLocalhost() throws Exception {
+        // Given
+        startDefaultHoverfly();
+        final int adminPort = hoverfly.getAdminPort();
+        final int proxyPort = hoverfly.getProxyPort();
+        final Hoverfly hoverfly = new Hoverfly(configs().useRemoteInstance().adminPort(adminPort).proxyPort(proxyPort), SIMULATE);
+
+        // When
+        assertRemoteHoverflyIsWorking(hoverfly);
+    }
+
+    @Test
+    public void shouldBeAbleToUseARemoteHoverflyConfiguringTheHost() throws Exception {
+        // Given
+        startDefaultHoverfly();
+        final int adminPort = hoverfly.getAdminPort();
+        final int proxyPort = hoverfly.getProxyPort();
+        final Hoverfly remoteHoverfly = new Hoverfly(configs().useRemoteInstance("http://localhost").adminPort(adminPort).proxyPort(proxyPort), SIMULATE);
+
+        // When
+        assertRemoteHoverflyIsWorking(remoteHoverfly);
+    }
+
+    @Test
+    public void shouldDefaultRemoteHoverflyInstancePortsToStaticValues() {
+        // Given
+        hoverfly = new Hoverfly(configs().proxyPort(8500).adminPort(8888), SIMULATE);
+        hoverfly.start();
+
+        // When
+        final Hoverfly remoteHoverfly = new Hoverfly(configs().useRemoteInstance("http://localhost"), SIMULATE);
+
+        // When
+        assertRemoteHoverflyIsWorking(remoteHoverfly);
+    }
+
+
+    private void assertRemoteHoverflyIsWorking(final Hoverfly hoverfly) {
+        try {
+            hoverfly.start();
+            hoverfly.importSimulation(classpath("test-service.json"));
+            final ResponseEntity<String> getBookingResponse = new RestTemplate().getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+
+            // Then
+            assertThat(hoverfly.getSimulation()).isNotNull();
+            assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
+        } finally {
+            hoverfly.stop();
+        }
+    }
+
 
     @After
     public void tearDown() throws Exception {
@@ -89,7 +159,7 @@ public class HoverflyTest {
     }
 
     private void startDefaultHoverfly() throws IOException, URISyntaxException {
-        hoverfly = new Hoverfly(configs(), SIMULATE);
+        hoverfly = new Hoverfly(SIMULATE);
         hoverfly.start();
     }
 }
