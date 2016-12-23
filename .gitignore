@@ -5,4 +5,6 @@ src/test/resources/recorded-simulation.json
 .gradle/
 build/
 .DS_Store
-out
+out/
+target/
+classes/
