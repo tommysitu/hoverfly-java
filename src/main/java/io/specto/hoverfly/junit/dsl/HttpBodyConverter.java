@@ -5,14 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.ws.rs.core.MediaType;
 
-public interface BodyConverter {
+/**
+ * Interface for converting a java object into a http request body, and storing the appropriate content type header value
+ */
+public interface HttpBodyConverter {
     /**
      * Converts a given object into json, and returns application/json content type
      *
      * @param body the body of the request or response
      * @return the converter
      */
-    static BodyConverter json(final Object body) {
+    static HttpBodyConverter json(final Object body) {
         return json(body, new ObjectMapper());
     }
 
@@ -23,8 +26,8 @@ public interface BodyConverter {
      * @param objectMapper objectMapper to use
      * @return converter
      */
-    static BodyConverter json(final Object body, final ObjectMapper objectMapper) {
-        return new BodyConverter() {
+    static HttpBodyConverter json(final Object body, final ObjectMapper objectMapper) {
+        return new HttpBodyConverter() {
             @Override
             public String body() {
                 try {

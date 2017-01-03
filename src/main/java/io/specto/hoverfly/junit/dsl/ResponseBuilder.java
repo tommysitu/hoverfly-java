@@ -85,9 +85,9 @@ public class ResponseBuilder {
         return new Response(status, body, false, headers);
     }
 
-    public ResponseBuilder body(final BodyConverter bodyConverter) {
-        this.body = bodyConverter.body();
-        this.header("Content-Type", bodyConverter.contentType());
+    public ResponseBuilder body(final HttpBodyConverter httpBodyConverter) {
+        this.body = httpBodyConverter.body();
+        this.header("Content-Type", httpBodyConverter.contentType());
         return this;
     }
 }

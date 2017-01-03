@@ -105,7 +105,7 @@ public class ResponseCreators {
         return response().status(UNAUTHORISED);
     }
 
-    public static ResponseBuilder success(BodyConverter bodyConverter) {
-        return response().status(OK).body(bodyConverter);
+    public static ResponseBuilder success(HttpBodyConverter httpBodyConverter) {
+        return response().status(OK).body(httpBodyConverter);
     }
 }

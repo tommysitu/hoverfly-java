@@ -121,9 +121,9 @@ public class RequestMatcherBuilder {
         }
     }
 
-    public RequestMatcherBuilder body(BodyConverter bodyConverter) {
-        this.body = bodyConverter.body();
-        header("Content-Type", bodyConverter.contentType());
+    public RequestMatcherBuilder body(HttpBodyConverter httpBodyConverter) {
+        this.body = httpBodyConverter.body();
+        header("Content-Type", httpBodyConverter.contentType());
         return this;
     }
 }
