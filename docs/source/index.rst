@@ -21,7 +21,7 @@ If using Maven, add the following dependency to your pom:
     <dependency>
         <groupId>io.specto</groupId>
         <artifactId>hoverfly-java</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.2</version>
         <scope>test</scope>
     </dependency>
 
@@ -32,12 +32,12 @@ Or with Gradle add the dependency to your *.gradle file:
 
 .. code-block:: groovy
 
-   testCompile "io.specto:hoverfly-java:0.3.0"
+   testCompile "io.specto:hoverfly-java:0.3.2"
 
 Code example
 ============
 
-The simplest way is to get started is with the JUnit rule. Just give it some valid Hoverfly JSON. Behind the scenes the JVM proxy settings will be configured to use the managed Hoverfly process, so you can just make requests as normal, only this time Hoverfly will respond instead of the real service (assuming your HTTP client respects JVM proxy settings).
+The simplest way is to get started is with the JUnit rule. Behind the scenes the JVM proxy settings will be configured to use the managed Hoverfly process, so you can just make requests as normal, only this time Hoverfly will respond instead of the real service (assuming your HTTP client respects JVM proxy settings):
 
 .. code-block:: java
 
