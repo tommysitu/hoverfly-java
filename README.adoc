@@ -1,5 +1,3 @@
-== This is not yet released, and is currently blocked by https://issues.sonatype.org/browse/OSSRH-27167 before we can do so. Please use the old project for now located at https://github.com/SpectoLabs/hoverfly-junit
-
 == Hoverfly Java - Easy creation of stub http servers for testing
 
 image:https://circleci.com/gh/SpectoLabs/hoverfly-java.svg?style=shield["CircleCI", link="https://circleci.com/gh/SpectoLabs/hoverfly-java"]
