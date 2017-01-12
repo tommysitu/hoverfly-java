@@ -19,6 +19,10 @@ for this is https://en.wikipedia.org/wiki/Service_virtualization[Service Virtual
 - Https automatically supported, no extra configuration required
 - Interoperable with standard Hoverfly json, making it easy to re-use data between Java and other bindings.
 
+== Documentation
+
+Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
+
 == Maven Dependency
 
 ```xml
@@ -29,10 +33,6 @@ for this is https://en.wikipedia.org/wiki/Service_virtualization[Service Virtual
     <scope>test</scope>
 </dependency>
 ```
-
-== Documentation
-
-Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
 
 == Example
 
