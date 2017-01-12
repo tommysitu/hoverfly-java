@@ -19,6 +19,17 @@ for this is https://en.wikipedia.org/wiki/Service_virtualization[Service Virtual
 - Https automatically supported, no extra configuration required
 - Interoperable with standard Hoverfly json, making it easy to re-use data between Java and other bindings.
 
+== Maven Dependency
+
+```xml
+<dependency>
+    <groupId>io.specto</groupId>
+    <artifactId>hoverfly-java</artifactId>
+    <version>0.3.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
 == Documentation
 
 Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
@@ -43,17 +54,6 @@ public void shouldBeAbleToGetABookingUsingHoverfly() {
     assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
     assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
 }
-```
-
-== Maven Dependency
-
-```xml
-<dependency>
-    <groupId>io.specto</groupId>
-    <artifactId>hoverfly-java</artifactId>
-    <version>0.3.2</version>
-    <scope>test</scope>
-</dependency>
 ```
 
 == Contributions
