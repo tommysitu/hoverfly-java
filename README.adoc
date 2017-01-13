@@ -35,7 +35,18 @@ Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
 ```
 
 == Example
+=== Create API simulation using capture mode
+``` java
+// Capture and output HTTP traffic to json file
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("simulation.json"));
 
+
+// After the capturing, switch to inSimulationMode to spin up a stub server
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("simulation.json"));
+```
+=== Create API simulation using DSL
 ```java
 
 @ClassRule
