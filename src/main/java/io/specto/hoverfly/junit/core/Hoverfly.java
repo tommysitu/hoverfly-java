@@ -24,18 +24,13 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.StartedProcess;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyStore;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -44,6 +39,7 @@ import java.util.List;
 
 import static com.sun.jersey.api.client.ClientResponse.Status.OK;
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
+import static io.specto.hoverfly.junit.core.HoverflySslUtils.setTrustStore;
 import static io.specto.hoverfly.junit.core.HoverflyUtils.*;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
@@ -294,38 +290,8 @@ public class Hoverfly {
         return temporaryHoverflyPath;
     }
 
-    /**
-     * Sets the JVM trust store so Hoverflies SSL certificate is trusted
-     */
-    private void setTrustStore() {
-        try {
-            // load your key store as a stream and initialize a KeyStore
-            InputStream trustStream = findResourceOnClasspath("hoverfly.jks").openStream();
-
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-
-            // load the stream to your store
-            trustStore.load(trustStream, "hoverfly".toCharArray());
-
-            // initialize a trust manager factory with the trusted store
-            TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustFactory.init(trustStore);
-
-            // get the trust managers from the factory
-            TrustManager[] trustManagers = trustFactory.getTrustManagers();
-
-            // initialize an ssl context to use these managers and set as default
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustManagers, null);
-            SSLContext.setDefault(sslContext);
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to set Hoverfly trust store", e);
-        }
-    }
-
     public int getAdminPort() {
         return adminPort;
     }
-
 
 }
