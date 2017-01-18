@@ -3,18 +3,28 @@ package io.specto.hoverfly.junit.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import io.specto.hoverfly.junit.core.model.Simulation;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyStore;
+import java.util.Properties;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
@@ -135,6 +145,16 @@ public class HoverflyTest {
         assertRemoteHoverflyIsWorking(remoteHoverfly);
     }
 
+    @Test
+    public void shouldNotOverrideDefaultTrustManager() throws Exception {
+        startDefaultHoverfly();
+
+        HttpClient client = HttpClientBuilder.create().setSSLContext(SSLContext.getDefault()).build();
+
+        // TODO: Find better way to test trust store
+        HttpResponse response = client.execute(new HttpGet("https://specto.io"));
+        assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
     private void assertRemoteHoverflyIsWorking(final Hoverfly hoverfly) {
         try {
