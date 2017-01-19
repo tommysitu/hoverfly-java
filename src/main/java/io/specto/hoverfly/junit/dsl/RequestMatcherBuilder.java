@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.CharEncoding.UTF_8;
 
@@ -97,18 +98,17 @@ public class RequestMatcherBuilder {
         return invoker.addRequestResponsePair(new RequestResponsePair(this.build(), responseBuilder.build()));
     }
 
-//    private RequestMatcherBuilder queryParam(final String key, final Object... values) {
-//        for(Object value : values) {
-//            queryParams.add(key, value.toString());
-//        }
-//        return this;
-//    }
+    public RequestMatcherBuilder queryParam(final String key, final Object... values) {
+        for(Object value : values) {
+            queryParams.add(key, value.toString());
+        }
+        return this;
+    }
 
     private RequestMatcher build() {
-        // TODO Hoverfly only supports exact request query matching at the moment, will enable queryParams builder when the problem is resolved
-//        query = queryParams.entrySet().stream()
-//                .flatMap(e -> e.getValue().stream().map(v -> encodeUrl(e.getKey()) + "=" + encodeUrl(v)))
-//                .collect(Collectors.joining("&"));
+        query = queryParams.entrySet().stream()
+                .flatMap(e -> e.getValue().stream().map(v -> encodeUrl(e.getKey()) + "=" + encodeUrl(v)))
+                .collect(Collectors.joining("&"));
         return new RequestMatcher(path, method, destination, scheme, query, body, headers, TEMPLATE);
     }
 
