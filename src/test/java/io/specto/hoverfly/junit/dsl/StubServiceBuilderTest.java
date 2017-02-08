@@ -91,6 +91,18 @@ public class StubServiceBuilderTest {
     }
 
     @Test
+    public void shouldBuildPatchRequest() {
+        // Given
+
+        // When
+        final Set<RequestResponsePair> pairs = service("www.base-url.com").patch("/").willReturn(response()).getRequestResponsePairs();
+
+        // Then
+        assertThat(pairs).hasSize(1);
+        assertThat(Iterables.getLast(pairs).getRequest().getMethod()).isEqualTo("PATCH");
+    }
+
+    @Test
     public void shouldBuildDeleteRequest() {
         // Given
 
