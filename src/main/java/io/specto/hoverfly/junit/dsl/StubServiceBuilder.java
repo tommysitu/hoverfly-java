@@ -15,6 +15,7 @@ package io.specto.hoverfly.junit.dsl;
 import io.specto.hoverfly.junit.core.model.RequestResponsePair;
 import jersey.repackaged.com.google.common.collect.ImmutableSet;
 
+import javax.ws.rs.HttpMethod;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ public class StubServiceBuilder {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String SEPARATOR = "://";
+    private static final String PATCH = "PATCH";
 
     private final String destination;
     private final String scheme;
@@ -93,6 +95,16 @@ public class StubServiceBuilder {
         return requestMatcherBuilder(this, POST, scheme, destination, path);
     }
 
+
+    /**
+     * Creating a PATCH request matcher
+     *
+     * @param path the path you want the matcher to have
+     * @return the {@link RequestMatcherBuilder} for further customizations
+     */
+    public RequestMatcherBuilder patch(final String path) {
+        return requestMatcherBuilder(this, PATCH, scheme, destination, path);
+    }
 
     /**
      * Used for retrieving all the requestResponsePairs that the builder contains

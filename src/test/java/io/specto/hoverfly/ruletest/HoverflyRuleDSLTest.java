@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -52,6 +53,9 @@ public class HoverflyRuleDSLTest {
 //                            .queryParam("class", "business", "premium")
 //                            .queryParam("destination", "new york"))
                         .willReturn(success("{\"bookingId\":\"2\",\"origin\":\"London\",\"destination\":\"New York\",\"class\":\"BUSINESS\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}}", "application/json"))
+
+                        .patch("/api/bookings/1").body("{\"class\": \"BUSINESS\"}")
+                        .willReturn(noContent())
                 )
         );
     }
@@ -105,5 +109,22 @@ public class HoverflyRuleDSLTest {
                 "\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/2\"}}" +
                 "}");
 
+    }
+
+    @Test
+    public void shouldBeAbleToPatchBookingsUsingHoverfly() throws Exception {
+        // Given
+        final RequestEntity<String> bookFlightRequest = RequestEntity.patch(new URI("http://www.other-anotherService.com/api/bookings/1"))
+                .contentType(APPLICATION_JSON)
+                .body("{\"class\": \"BUSINESS\"}");
+
+        // When
+        // Apache HttpClient is required for making PATCH request using RestTemplate
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        restTemplate.setRequestFactory(requestFactory);
+        final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);
+
+        // Then
+        assertThat(bookFlightResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 }
