@@ -41,7 +41,7 @@ public class HoverflyRuleDSLTest {
                         .get("/api/bookings/1")
                         .willReturn(success("{\"bookingId\":\"1\",\"origin\":\"London\",\"destination\":\"Singapore\",\"time\":\"2011-09-01T12:30\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/bookings/1\"}}}", "application/json")),
 
-                service("www.other-anotherService.com")
+                service("www.other-anotherservice.com")
 
                         .put("/api/bookings/1").body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}")
                         .willReturn(success())
@@ -63,7 +63,7 @@ public class HoverflyRuleDSLTest {
     @Test
     public void shouldBeAbleToAmendABookingUsingHoverfly() throws URISyntaxException {
         // Given
-        final RequestEntity<String> bookFlightRequest = RequestEntity.put(new URI("http://www.other-anotherService.com/api/bookings/1"))
+        final RequestEntity<String> bookFlightRequest = RequestEntity.put(new URI("http://www.other-anotherservice.com/api/bookings/1"))
                 .contentType(APPLICATION_JSON)
                 .body("{\"flightId\": \"1\", \"class\": \"PREMIUM\"}");
 
@@ -77,7 +77,7 @@ public class HoverflyRuleDSLTest {
     @Test
     public void shouldBeAbleToDeleteBookingUsingHoverfly() throws Exception {
         // Given
-        final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherService.com/api/bookings/1")).build();
+        final RequestEntity<Void> bookFlightRequest = RequestEntity.delete(new URI("http://www.other-anotherservice.com/api/bookings/1")).build();
 
         // When
         final ResponseEntity<Void> bookFlightResponse = restTemplate.exchange(bookFlightRequest, Void.class);
@@ -90,7 +90,7 @@ public class HoverflyRuleDSLTest {
     @Test
     public void shouldBeAbleToQueryBookingsUsingHoverfly() throws Exception {
         // When
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://www.other-anotherService.com")
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://www.other-anotherservice.com")
                 .path("/api/bookings")
 //                .queryParam("class", "business", "premium")
                 .queryParam("destination", "new york")
@@ -114,7 +114,7 @@ public class HoverflyRuleDSLTest {
     @Test
     public void shouldBeAbleToPatchBookingsUsingHoverfly() throws Exception {
         // Given
-        final RequestEntity<String> bookFlightRequest = RequestEntity.patch(new URI("http://www.other-anotherService.com/api/bookings/1"))
+        final RequestEntity<String> bookFlightRequest = RequestEntity.patch(new URI("http://www.other-anotherservice.com/api/bookings/1"))
                 .contentType(APPLICATION_JSON)
                 .body("{\"class\": \"BUSINESS\"}");
 
