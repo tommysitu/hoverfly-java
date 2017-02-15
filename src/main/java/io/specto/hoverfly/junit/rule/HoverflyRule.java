@@ -26,11 +26,13 @@ import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyMode.CAPTURE;
 import static io.specto.hoverfly.junit.core.HoverflyMode.SIMULATE;
+import static io.specto.hoverfly.junit.core.SimulationSource.file;
 import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.fileRelativeToTestResources;
 import static io.specto.hoverfly.junit.rule.HoverflyRuleUtils.isAnnotatedWithRule;
 
@@ -91,6 +93,37 @@ public class HoverflyRule extends ExternalResource {
         this.hoverfly = new Hoverfly(hoverflyConfig, hoverflyMode);
         this.simulationSource = null;
         this.capturePath = capturePath;
+    }
+
+    /**
+     * Instantiates a rule which runs {@link Hoverfly} in capture mode if
+     * recorded file is not present, or in simulation mode if record file is present
+     * @param recordFile the path where captured or simulated traffic is taken. Relative to src/test/resources
+     * @return the rule
+     */
+    public static HoverflyRule inCaptureOrSimulationMode(String recordFile) {
+        final Path path = fileRelativeToTestResources(recordFile);
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            return inSimulationMode(file(path));
+        } else {
+            return inCaptureMode(recordFile);
+        }
+    }
+
+    /**
+     * Instantiates a rule which runs {@link Hoverfly} in capture mode if
+     * recorded file is not present, or in simulation mode if record file is present
+     * @param recordFile the path where captured or simulated traffic is taken. Relative to src/test/resources
+     * @param hoverflyConfig the config
+     * @return the rule
+     */
+    public static HoverflyRule inCaptureOrSimulationMode(String recordFile, HoverflyConfig hoverflyConfig) {
+        final Path path = fileRelativeToTestResources(recordFile);
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            return inSimulationMode(file(path), hoverflyConfig);
+        } else {
+            return inCaptureMode(recordFile, hoverflyConfig);
+        }
     }
 
     /**
@@ -191,6 +224,14 @@ public class HoverflyRule extends ExternalResource {
      */
     public int getProxyPort() {
         return hoverfly.getProxyPort();
+    }
+
+    /**
+     * Gets started Hoverfly mode
+     * @return the mode.
+     */
+    public HoverflyMode getHoverflyMode() {
+        return hoverflyMode;
     }
 
     /**
