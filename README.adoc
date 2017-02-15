@@ -45,6 +45,10 @@ public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("
 // After the capturing, switch to inSimulationMode to spin up a stub server
 @ClassRule
 public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("simulation.json"));
+
+// Or you can use both approaches at once. If json file not present in capture mode, if present in simulation mode
+@ClassRule
+public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureOrSimulationMode("simulation.json");
 ```
 === Create API simulation using DSL
 ```java
