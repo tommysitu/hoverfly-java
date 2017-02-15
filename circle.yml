@@ -2,6 +2,11 @@ machine:
   java:
     version: oraclejdk8
 
+dependencies:
+  post:
+    # Compile the code in dependencies directive would allow CircleCI to cache all Maven dependencies
+    - ./gradlew compileTestJava
+
 test:
   post:
     - ./gradlew jacocoTestReport

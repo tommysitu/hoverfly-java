@@ -21,7 +21,7 @@ If using Maven, add the following dependency to your pom:
     <dependency>
         <groupId>io.specto</groupId>
         <artifactId>hoverfly-java</artifactId>
-        <version>0.3.3</version>
+        <version>0.3.6</version>
         <scope>test</scope>
     </dependency>
 
@@ -32,7 +32,7 @@ Or with Gradle add the dependency to your *.gradle file:
 
 .. code-block:: groovy
 
-   testCompile "io.specto:hoverfly-java:0.3.3"
+   testCompile "io.specto:hoverfly-java:0.3.6"
 
 Code example
 ============
