@@ -193,7 +193,20 @@ Capture
 .. code-block:: java
 
     @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("simulation.json"));
+    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("simulation.json");
+
+File is relative to src/test/resources.
+
+Capture or Simulate
+=======
+
+You can create a Hoverfly Rule that is started in capture mode if simulated file is not present and in simulation mode if file exists.
+File is relative to src/test/resources.
+
+.. code-block:: java
+
+    @ClassRule
+    public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureOrSimulationMode("simulation.json");
 
 Use @ClassRule
 ==============
