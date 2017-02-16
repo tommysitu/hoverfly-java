@@ -39,7 +39,7 @@ Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
 ``` java
 // Capture and output HTTP traffic to json file
 @ClassRule
-public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode(classpath("simulation.json"));
+public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureMode("simulation.json");
 
 
 // After the capturing, switch to inSimulationMode to spin up a stub server
