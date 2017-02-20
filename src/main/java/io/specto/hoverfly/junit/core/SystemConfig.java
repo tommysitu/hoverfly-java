@@ -3,6 +3,9 @@ package io.specto.hoverfly.junit.core;
 import io.specto.hoverfly.junit.core.SystemConfigFactory.ArchType;
 import io.specto.hoverfly.junit.core.SystemConfigFactory.OsName;
 
+/**
+ * Platform specific configuration for hoverfly
+ */
 class SystemConfig {
 
     private static final String BINARY_PATH_FORMAT = "hoverfly_%s_%s%s";

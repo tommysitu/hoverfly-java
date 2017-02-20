@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 
+/**
+ * Validate user-input {@link HoverflyConfig} before it is used by {@link Hoverfly}
+ */
 class HoverflyConfigValidator {
 
     private static final int DEFAULT_PROXY_PORT = 8500;

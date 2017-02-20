@@ -2,6 +2,9 @@ package io.specto.hoverfly.junit.core;
 
 import org.apache.commons.lang3.SystemUtils;
 
+/**
+ * Provides platform specific info
+ */
 class SystemInfo {
 
     private final boolean isOsWindows = SystemUtils.IS_OS_WINDOWS;

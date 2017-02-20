@@ -1,5 +1,8 @@
 package io.specto.hoverfly.junit.core;
 
+/**
+ * Create platform specific configuration based on system info
+ */
 class SystemConfigFactory {
 
     private SystemInfo systemInfo = new SystemInfo();

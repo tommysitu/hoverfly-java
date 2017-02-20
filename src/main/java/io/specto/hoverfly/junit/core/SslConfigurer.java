@@ -17,6 +17,9 @@ import java.util.Arrays;
 import static io.specto.hoverfly.junit.core.HoverflyUtils.findResourceOnClasspath;
 
 
+/**
+ * A component for configuring SSL context to enable HTTPS connection to hoverfly instance
+ */
 class SslConfigurer {
 
     private static final String HOVERFLY_TRUST_STORE = "hoverfly.jks";
@@ -45,6 +48,9 @@ class SslConfigurer {
         return trustStore;
     }
 
+    /**
+     * Create custom trust manager that verify server authenticity using both default JVM trust store and hoverfly default trust store
+     */
     private TrustManager[] createTrustManagers(KeyStore hoverflyTrustStore) throws NoSuchAlgorithmException, KeyStoreException {
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         // initialize a trust manager factory with default trust store

@@ -17,6 +17,9 @@ import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.util.Arrays.asList;
 
+/**
+ * Manage temporary files for running hoverfly
+ */
 class TempFileManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TempFileManager.class);
@@ -24,6 +27,9 @@ class TempFileManager {
     private static final String HOVERFLY_BINARIES_ROOT_PATH = "binaries/";
     private Path tempDirectory;
 
+    /**
+     * Delete the hoverfly temporary directory recursively
+     */
     void purge() {
         if (tempDirectory == null) {
             return;
@@ -36,6 +42,9 @@ class TempFileManager {
 
     }
 
+    /**
+     * Copy classpath resource to hoverfly temporary directory
+     */
     Path copyClassPathResource(String resourcePath, String targetName) {
         URL sourceUrl = HoverflyUtils.findResourceOnClasspath(resourcePath);
 
@@ -76,10 +85,16 @@ class TempFileManager {
         return targetPath;
     }
 
+    /**
+     * Return the temporary directory as Path
+     */
     Path getTempDirectory() {
         return tempDirectory;
     }
 
+    /**
+     * Get or create temporary directory
+     */
     private Path getOrCreateTempDirecotry() {
         if (tempDirectory == null) {
 
