@@ -2,7 +2,9 @@ package io.specto.hoverfly.junit.core;
 
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.powermock.reflect.Whitebox;
 
 import static io.specto.hoverfly.junit.core.SystemConfigFactory.ArchType.ARCH_386;
@@ -17,6 +19,9 @@ public class SystemConfigFactoryTest {
 
     private SystemConfigFactory factory;
     private SystemInfo systemInfo;
+
+    @Rule
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
     @Before
     public void setUp() throws Exception {

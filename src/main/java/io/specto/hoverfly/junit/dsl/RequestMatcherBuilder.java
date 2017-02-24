@@ -12,19 +12,17 @@
  */
 package io.specto.hoverfly.junit.dsl;
 
-import io.specto.hoverfly.junit.core.model.DelaySettings;
 import io.specto.hoverfly.junit.core.model.RequestMatcher;
 import io.specto.hoverfly.junit.core.model.RequestResponsePair;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.CharEncoding.UTF_8;
@@ -41,7 +39,7 @@ public class RequestMatcherBuilder {
     private final String scheme;
     private final String destination;
     private final String path;
-    private final MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    private final MultivaluedHashMap<String, String> queryParams = new MultivaluedHashMap<>();
     private final Map<String, List<String>> headers = new HashMap<>();
     private String body;
 
@@ -75,7 +73,7 @@ public class RequestMatcherBuilder {
      */
     public RequestMatcherBuilder body(HttpBodyConverter httpBodyConverter) {
         this.body = httpBodyConverter.body();
-        header(HttpHeaders.CONTENT_TYPE, httpBodyConverter.contentType());
+        header("Content-Type", httpBodyConverter.contentType());
         return this;
     }
 
@@ -130,4 +128,25 @@ public class RequestMatcherBuilder {
             throw new UnsupportedOperationException(e);
         }
     }
+
+    private static class MultivaluedHashMap<K, V> {
+        private Map<K, List<V>> elements = new HashMap<>();
+
+        public void add(K key, V value) {
+            List<V> values;
+            if (elements.containsKey(key)) {
+                values = elements.get(key);
+            } else {
+                values = new ArrayList<>();
+                elements.put(key, values);
+            }
+            values.add(value);
+        }
+
+        public Set<Map.Entry<K, List<V>>> entrySet() {
+            return elements.entrySet();
+        }
+
+    }
+
 }

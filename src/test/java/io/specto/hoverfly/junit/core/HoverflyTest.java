@@ -8,7 +8,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.mockito.InOrder;
 import org.powermock.reflect.Whitebox;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +35,12 @@ public class HoverflyTest {
     private Hoverfly hoverfly;
     private ObjectMapper mapper = new ObjectMapper();
 
+    @Rule
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
+
     @Test
     public void shouldStartHoverflyOnConfiguredPort() throws Exception {
+
         hoverfly = new Hoverfly(configs().proxyPort(EXPECTED_PROXY_PORT), SIMULATE);
         hoverfly.start();
         assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(EXPECTED_PROXY_PORT));
@@ -248,9 +255,7 @@ public class HoverflyTest {
 
     @Test
     public void shouldSetNonProxyHostSystemPropertyToEmptyIfIsProxyLocalHost() throws Exception {
-
         hoverfly = new Hoverfly(configs().proxyLocalHost(true), SIMULATE);
-
         hoverfly.start();
 
         assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("");

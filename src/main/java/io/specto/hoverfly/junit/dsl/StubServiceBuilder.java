@@ -15,17 +15,15 @@ package io.specto.hoverfly.junit.dsl;
 import io.specto.hoverfly.junit.core.model.DelaySettings;
 import io.specto.hoverfly.junit.core.model.RequestMatcher;
 import io.specto.hoverfly.junit.core.model.RequestResponsePair;
-import jersey.repackaged.com.google.common.collect.ImmutableList;
-import jersey.repackaged.com.google.common.collect.ImmutableSet;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static io.specto.hoverfly.junit.dsl.RequestMatcherBuilder.requestMatcherBuilder;
-import static javax.ws.rs.HttpMethod.*;
-import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
 
 /**
  * Used as part of the DSL for creating a {@link RequestResponsePair} used within a Hoverfly Simulation.  Each builder is locked to a single base URL.
@@ -40,7 +38,7 @@ public class StubServiceBuilder {
     private final String destination;
     private final String scheme;
     private final Set<RequestResponsePair> requestResponsePairs = new HashSet<>();
-    private final List<DelaySettings> delaySettings = newArrayList();
+    private final List<DelaySettings> delaySettings = new ArrayList<>();
 
     /**
      * Instantiates builder for a given base URL
@@ -68,7 +66,7 @@ public class StubServiceBuilder {
      * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder get(final String path) {
-        return requestMatcherBuilder(this, GET, scheme, destination, path);
+        return requestMatcherBuilder(this, "GET", scheme, destination, path);
     }
 
     /**
@@ -78,7 +76,7 @@ public class StubServiceBuilder {
      * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder delete(final String path) {
-        return requestMatcherBuilder(this, DELETE, scheme, destination, path);
+        return requestMatcherBuilder(this, "DELETE", scheme, destination, path);
     }
 
     /**
@@ -88,7 +86,7 @@ public class StubServiceBuilder {
      * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder put(final String path) {
-        return requestMatcherBuilder(this, PUT, scheme, destination, path);
+        return requestMatcherBuilder(this, "PUT", scheme, destination, path);
     }
 
     /**
@@ -98,7 +96,7 @@ public class StubServiceBuilder {
      * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder post(final String path) {
-        return requestMatcherBuilder(this, POST, scheme, destination, path);
+        return requestMatcherBuilder(this, "POST", scheme, destination, path);
     }
 
 
@@ -109,7 +107,7 @@ public class StubServiceBuilder {
      * @return the {@link RequestMatcherBuilder} for further customizations
      */
     public RequestMatcherBuilder patch(final String path) {
-        return requestMatcherBuilder(this, PATCH, scheme, destination, path);
+        return requestMatcherBuilder(this, "PATCH", scheme, destination, path);
     }
 
     /**
@@ -118,7 +116,7 @@ public class StubServiceBuilder {
      * @return the set of {@link RequestResponsePair}
      */
     public Set<RequestResponsePair> getRequestResponsePairs() {
-        return ImmutableSet.copyOf(requestResponsePairs);
+        return Collections.unmodifiableSet(requestResponsePairs);
     }
 
     /**
@@ -160,7 +158,7 @@ public class StubServiceBuilder {
      * @return list of {@link DelaySettings}
      */
     public List<DelaySettings> getDelaySettings() {
-        return ImmutableList.copyOf(this.delaySettings);
+        return Collections.unmodifiableList(this.delaySettings);
     }
 
     void addDelaySetting(final DelaySettings delaySettings) {
