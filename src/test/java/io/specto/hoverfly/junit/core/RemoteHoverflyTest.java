@@ -2,7 +2,9 @@ package io.specto.hoverfly.junit.core;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.RestoreSystemProperties;
 import org.powermock.reflect.Whitebox;
 
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
@@ -17,6 +19,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class RemoteHoverflyTest {
 
     private Hoverfly remoteHoverflyStub;
+
+    @Rule
+    public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
     @Before
     public void setUp() throws Exception {

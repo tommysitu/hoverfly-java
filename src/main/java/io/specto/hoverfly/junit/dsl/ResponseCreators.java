@@ -13,8 +13,6 @@
 package io.specto.hoverfly.junit.dsl;
 
 import static io.specto.hoverfly.junit.dsl.ResponseBuilder.response;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
 
 /**
  * Wrapper around a {@link ResponseBuilder} for building common types of responses
@@ -41,7 +39,7 @@ public class ResponseCreators {
     public static ResponseBuilder created(final String locationHeaderValue) {
         return response()
                 .status(CREATED)
-                .header(LOCATION, locationHeaderValue);
+                .header("Location", locationHeaderValue);
     }
 
     /**
@@ -54,7 +52,7 @@ public class ResponseCreators {
         return response()
                 .status(OK)
                 .body(body)
-                .header(CONTENT_TYPE, contentType);
+                .header("Content-Type", contentType);
     }
 
     /**

@@ -14,10 +14,12 @@ package io.specto.hoverfly.junit.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import io.specto.hoverfly.junit.core.model.Simulation;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +27,9 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.StartedProcess;
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -36,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static com.sun.jersey.api.client.ClientResponse.Status.OK;
 import static io.specto.hoverfly.junit.core.HoverflyConfig.configs;
 import static io.specto.hoverfly.junit.core.HoverflyUtils.checkPortInUse;
 import static io.specto.hoverfly.junit.core.SystemProperty.*;
@@ -47,13 +48,15 @@ import static io.specto.hoverfly.junit.core.SystemProperty.*;
 public class Hoverfly implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Hoverfly.class);
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final int BOOT_TIMEOUT_SECONDS = 10;
     private static final int RETRY_BACKOFF_INTERVAL_MS = 100;
     private static final String HEALTH_CHECK_PATH = "/api/stats";
     private static final String SIMULATION_PATH = "/api/v2/simulation";
     private final HoverflyConfig hoverflyConfig;
     private final HoverflyMode hoverflyMode;
-    private final WebResource hoverflyResource;
+    private OkHttpClient client = new OkHttpClient();
     private StartedProcess startedProcess;
 
     private SslConfigurer sslConfigurer = new SslConfigurer();
@@ -69,11 +72,6 @@ public class Hoverfly implements AutoCloseable {
     public Hoverfly(HoverflyConfig hoverflyConfig, HoverflyMode hoverflyMode) {
         this.hoverflyConfig = new HoverflyConfigValidator().validate(hoverflyConfig);
         this.hoverflyMode = hoverflyMode;
-
-        hoverflyResource = Client.create().resource(
-                UriBuilder.fromUri("http://" + hoverflyConfig.getHost())
-                        .port(hoverflyConfig.getAdminPort())
-                        .build());
     }
 
     /**
@@ -178,10 +176,24 @@ public class Hoverfly implements AutoCloseable {
      */
     public void importSimulation(SimulationSource simulationSource) {
         LOGGER.info("Importing simulation data to Hoverfly");
-        simulationSource.getSimulation().ifPresent(s ->
-                hoverflyResource.path(SIMULATION_PATH)
-                        .type(MediaType.APPLICATION_JSON_TYPE)
-                        .put(s));
+
+        simulationSource.getSimulation().ifPresent((Simulation s) -> {
+            try {
+
+                final byte[] jsonContent = OBJECT_MAPPER.writeValueAsBytes(s);
+                RequestBody body = RequestBody.create(JSON, jsonContent);
+
+                final Request.Builder builder = createRequestBuilderWithUrl(SIMULATION_PATH);
+                final Request request = builder.put(body).build();
+
+                final Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            } catch (IOException e) {
+                LOGGER.error("Failed to import simulation data", e);
+               throw new IllegalArgumentException(e);
+            }
+        });
     }
 
 
@@ -194,12 +206,22 @@ public class Hoverfly implements AutoCloseable {
         LOGGER.info("Exporting simulation data from Hoverfly");
         try {
             Files.deleteIfExists(path);
-            ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-            Simulation simulation = hoverflyResource.path(SIMULATION_PATH).get(Simulation.class);
-            objectWriter.writeValue(path.toFile(), simulation);
+            final Request.Builder builder = createRequestBuilderWithUrl(SIMULATION_PATH);
+            final Request request = builder.get().build();
+
+            final Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            Simulation simulation = OBJECT_MAPPER.readValue(response.body().charStream(), Simulation.class);
+            persistSimulation(path, simulation);
         } catch (Exception e) {
             LOGGER.error("Failed to export simulation data", e);
         }
+    }
+
+    private void persistSimulation(Path path, Simulation simulation) throws IOException {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        objectWriter.writeValue(path.toFile(), simulation);
     }
 
     /**
@@ -208,7 +230,16 @@ public class Hoverfly implements AutoCloseable {
      * @return the simulation
      */
     public Simulation getSimulation() {
-        return hoverflyResource.path(SIMULATION_PATH).get(Simulation.class);
+        final Request.Builder builder = createRequestBuilderWithUrl(SIMULATION_PATH);
+        final Request request = builder.get().build();
+
+        try {
+            final Response response = client.newCall(request).execute();
+            return OBJECT_MAPPER.readValue(response.body().charStream(), Simulation.class);
+        } catch (IOException e) {
+            LOGGER.error("Failed to get simulation data", e);
+            throw new IllegalArgumentException(e);
+        }
     }
 
 
@@ -224,17 +255,17 @@ public class Hoverfly implements AutoCloseable {
      * Returns whether the running Hoverfly is healthy or not
      */
     private boolean isHealthy() {
-        ClientResponse response = null;
+            final Request.Builder builder = createRequestBuilderWithUrl(HEALTH_CHECK_PATH);
+            final Request request = builder.get().build();
+
         try {
-            response = hoverflyResource.path(HEALTH_CHECK_PATH).get(ClientResponse.class);
-            LOGGER.debug("Hoverfly health check status code is: {}", response.getStatus());
-            return response.getStatus() == OK.getStatusCode();
-        } catch (Exception e) {
+            final Response response = client.newCall(request).execute();
+            LOGGER.debug("Hoverfly health check status code is: {}", response.code());
+
+            final boolean successful = response.isSuccessful();
+            return successful;
+        } catch (IOException e) {
             LOGGER.debug("Not yet healthy", e);
-        } finally {
-            if (response != null) {
-                response.close();
-            }
         }
         return false;
     }
@@ -309,4 +340,16 @@ public class Hoverfly implements AutoCloseable {
         // TODO: clear system properties, and reset default SslContext?
         tempFileManager.purge();
     }
+    private Request.Builder createRequestBuilderWithUrl(String path) {
+        final Request.Builder builder;
+        try {
+            builder = new Request.Builder()
+                    .url(new URL("http", hoverflyConfig.getHost(), hoverflyConfig.getAdminPort(), path));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        return builder;
+    }
+
 }

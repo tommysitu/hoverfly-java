@@ -31,13 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.HttpStatus.OK;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NonClassRuleHoverflyRuleTest {
 
     private static Appender<ILoggingEvent> appender;
+
     @Rule
     public HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(classpath("test-service.json"));
     @Captor

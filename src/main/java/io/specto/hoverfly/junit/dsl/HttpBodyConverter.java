@@ -3,8 +3,6 @@ package io.specto.hoverfly.junit.dsl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.ws.rs.core.MediaType;
-
 /**
  * Interface for converting a java object into a http request body, and storing the appropriate content type header value
  */
@@ -39,7 +37,7 @@ public interface HttpBodyConverter {
 
             @Override
             public String contentType() {
-                return MediaType.APPLICATION_JSON;
+                return "application/json";
             }
         };
     }

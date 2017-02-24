@@ -17,7 +17,6 @@ import java.util.Set;
 import static io.specto.hoverfly.junit.core.HoverflyUtils.findResourceOnClasspath;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static jersey.repackaged.com.google.common.collect.Lists.newArrayList;
 
 
 /**
