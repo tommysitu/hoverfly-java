@@ -132,7 +132,7 @@ public class RequestMatcherBuilder {
     private static class MultivaluedHashMap<K, V> {
         private Map<K, List<V>> elements = new HashMap<>();
 
-        public void add(K key, V value) {
+        private void add(K key, V value) {
             List<V> values;
             if (elements.containsKey(key)) {
                 values = elements.get(key);
@@ -143,7 +143,7 @@ public class RequestMatcherBuilder {
             values.add(value);
         }
 
-        public Set<Map.Entry<K, List<V>>> entrySet() {
+        private Set<Map.Entry<K, List<V>>> entrySet() {
             return elements.entrySet();
         }
 
