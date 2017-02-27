@@ -15,6 +15,7 @@ package io.specto.hoverfly.junit.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.specto.hoverfly.junit.core.model.Simulation;
+import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -186,9 +187,10 @@ public class Hoverfly implements AutoCloseable {
                 final Request.Builder builder = createRequestBuilderWithUrl(SIMULATION_PATH);
                 final Request request = builder.put(body).build();
 
-                final Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
+                final Call call = client.newCall(request);
+                try (final Response response = call.execute()) {
+                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                }
             } catch (IOException e) {
                 LOGGER.error("Failed to import simulation data", e);
                throw new IllegalArgumentException(e);
@@ -209,10 +211,8 @@ public class Hoverfly implements AutoCloseable {
             final Request.Builder builder = createRequestBuilderWithUrl(SIMULATION_PATH);
             final Request request = builder.get().build();
 
-            final Response response = client.newCall(request).execute();
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            Simulation simulation = OBJECT_MAPPER.readValue(response.body().charStream(), Simulation.class);
+            final Call call = client.newCall(request);
+            final Simulation simulation = readSimulation(call);
             persistSimulation(path, simulation);
         } catch (Exception e) {
             LOGGER.error("Failed to export simulation data", e);
@@ -234,8 +234,8 @@ public class Hoverfly implements AutoCloseable {
         final Request request = builder.get().build();
 
         try {
-            final Response response = client.newCall(request).execute();
-            return OBJECT_MAPPER.readValue(response.body().charStream(), Simulation.class);
+            final Call call = client.newCall(request);
+            return readSimulation(call);
         } catch (IOException e) {
             LOGGER.error("Failed to get simulation data", e);
             throw new IllegalArgumentException(e);
@@ -259,11 +259,13 @@ public class Hoverfly implements AutoCloseable {
             final Request request = builder.get().build();
 
         try {
-            final Response response = client.newCall(request).execute();
-            LOGGER.debug("Hoverfly health check status code is: {}", response.code());
+            final Call call = client.newCall(request);
+            try (final Response response = call.execute()) {
+                LOGGER.debug("Hoverfly health check status code is: {}", response.code());
 
-            final boolean successful = response.isSuccessful();
-            return successful;
+                final boolean successful = response.isSuccessful();
+                return successful;
+            }
         } catch (IOException e) {
             LOGGER.debug("Not yet healthy", e);
         }
@@ -350,6 +352,14 @@ public class Hoverfly implements AutoCloseable {
         }
 
         return builder;
+    }
+
+    private Simulation readSimulation(Call call) throws IOException {
+        try (Response response = call.execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            return OBJECT_MAPPER.readValue(response.body().charStream(), Simulation.class);
+        }
     }
 
 }
