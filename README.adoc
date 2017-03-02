@@ -55,10 +55,10 @@ public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureOrSimulationMode
 ```java
 
 @ClassRule
-public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
+public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
     service("www.my-test.com")
         .get("/api/bookings/1")
-        .willReturn(success(json(new Booking(1))))
+        .willReturn(success("{\"bookingId\":\"1\"}", "application/json"))
 ));
 
 @Test
