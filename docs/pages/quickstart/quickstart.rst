@@ -32,20 +32,27 @@ Code example
 The simplest way is to get started is with the JUnit rule. Behind the scenes the JVM proxy settings will be configured to use the managed Hoverfly process, so you can just make requests as normal, only this time Hoverfly will respond instead of the real service (assuming your HTTP client respects JVM proxy settings):
 
 .. code-block:: java
+    import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
+    import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
+    import static io.specto.hoverfly.junit.dsl.ResponseCreators.success;
 
-    @ClassRule
-    public static HoverflyRule hoverflyRule = HoverflyRule.inSimulateMode(dsl(
-        service("www.my-test.com")
-            .get("/api/bookings/1")
-            .willReturn(success("{\"bookingId\":\"1\"\}", "application/json"))
-    ));
+    public class HoverflyExample {
 
-    @Test
-    public void shouldBeAbleToGetABookingUsingHoverfly() {
-        // When
-        final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+        @ClassRule
+        public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
+            service("www.my-test.com")
+                .get("/api/bookings/1")
+                .willReturn(success("{\"bookingId\":\"1\"}", "application/json"))
+        ));
 
-        // Then
-        assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
-        assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
-    }
+        @Test
+        public void shouldBeAbleToGetABookingUsingHoverfly() {
+            // When
+            final ResponseEntity<String> getBookingResponse = restTemplate.getForEntity("http://www.my-test.com/api/bookings/1", String.class);
+
+            // Then
+            assertThat(getBookingResponse.getStatusCode()).isEqualTo(OK);
+            assertThatJSON(getBookingResponse.getBody()).isEqualTo("{"\"bookingId\":\"1\"}");
+        }
+
+    // Continues...
