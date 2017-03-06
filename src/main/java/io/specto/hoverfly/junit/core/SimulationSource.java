@@ -83,7 +83,7 @@ public interface SimulationSource {
      * @param classpath classpath suffix after 'hoverfly/'
      * @return the resource
      */
-    static SimulationSource classpathBelowHoverflyDir(String classpath) {
+    static SimulationSource defaultPath(String classpath) {
         return () -> {
             try {
                 final String fullClasspath = HOVERFLY_ROOT + classpath;
