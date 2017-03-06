@@ -155,7 +155,7 @@ public class HoverflyTest {
         when(mockStartedProcess.getProcess()).thenReturn(mockProcess);
 
         // When
-        hoverfly.stop();
+        hoverfly.close();
 
         // Then
         InOrder inOrder = inOrder(mockProcess, tempFileManager);

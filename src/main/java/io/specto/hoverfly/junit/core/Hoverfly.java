@@ -151,15 +151,6 @@ public class Hoverfly implements AutoCloseable {
     }
 
     /**
-     * @deprecated As of release 0.3.8, replaced by {@link #close()}
-     */
-    @Deprecated
-    public void stop() {
-        cleanUp();
-    }
-
-
-    /**
      * Stops the running {@link Hoverfly} process and clean up resources
      */
     @Override
