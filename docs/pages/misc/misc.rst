@@ -42,3 +42,34 @@ If you have recorded data in the legacy schema generated before hoverfly-junit v
     $ hoverctl import --v1 path-to-my-json/file.json
     $ hoverctl export path-to-my-json/file.json
     $ hoverctl stop
+
+Using Snapshot Version
+----------------------
+
+To use snapshot version, you should include the OSS snapshot repository in your build file.
+
+If using Maven, add the following repository to your pom:
+
+.. parsed-literal::
+
+    <repositories>
+        <repository>
+            <id>oss-snapshots</id>
+                <name>OSS Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                </snapshots>
+        </repository>
+    </repositories>
+
+Or with Gradle add the repository to your build.gradle file:
+
+.. parsed-literal::
+
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+    }
+
