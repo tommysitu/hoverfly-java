@@ -1,7 +1,7 @@
 package io.specto.hoverfly.junit.api;
 
-public class HoverflyClientException extends RuntimeException {
-    public HoverflyClientException(String message) {
+class HoverflyClientException extends RuntimeException {
+    HoverflyClientException(String message) {
         super(message);
     }
 }

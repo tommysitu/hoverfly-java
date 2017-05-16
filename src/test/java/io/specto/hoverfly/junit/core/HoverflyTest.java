@@ -40,7 +40,7 @@ public class HoverflyTest {
         hoverfly = new Hoverfly(configs().proxyPort(EXPECTED_PROXY_PORT), SIMULATE);
         hoverfly.start();
         assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(EXPECTED_PROXY_PORT));
-        assertThat(hoverfly.getHoverflyConfiguration().getProxyPort()).isEqualTo(EXPECTED_PROXY_PORT);
+        assertThat(hoverfly.getHoverflyConfig().getProxyPort()).isEqualTo(EXPECTED_PROXY_PORT);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class HoverflyTest {
         // Given
         startDefaultHoverfly();
 
-        try (Hoverfly portClashHoverfly = new Hoverfly(configs().proxyPort(hoverfly.getHoverflyConfiguration().getProxyPort()), SIMULATE)) {
+        try (Hoverfly portClashHoverfly = new Hoverfly(configs().proxyPort(hoverfly.getHoverflyConfig().getProxyPort()), SIMULATE)) {
             // When
             Throwable throwable = catchThrowable(portClashHoverfly::start);
 
@@ -91,7 +91,7 @@ public class HoverflyTest {
         // Given
         startDefaultHoverfly();
 
-        try (Hoverfly portClashHoverfly = new Hoverfly(configs().adminPort(hoverfly.getHoverflyConfiguration().getAdminPort()), SIMULATE)) {
+        try (Hoverfly portClashHoverfly = new Hoverfly(configs().adminPort(hoverfly.getHoverflyConfig().getAdminPort()), SIMULATE)) {
             // When
             Throwable throwable = catchThrowable(portClashHoverfly::start);
 
@@ -250,8 +250,8 @@ public class HoverflyTest {
 
         hoverfly = new Hoverfly(SIMULATE);
 
-        assertThat(hoverfly.getHoverflyConfiguration().getProxyPort()).isNotZero();
-        assertThat(hoverfly.getHoverflyConfiguration().getAdminPort()).isNotZero();
+        assertThat(hoverfly.getHoverflyConfig().getProxyPort()).isNotZero();
+        assertThat(hoverfly.getHoverflyConfig().getAdminPort()).isNotZero();
     }
 
 
@@ -263,8 +263,8 @@ public class HoverflyTest {
         assertThat(System.getProperty("http.proxyHost")).isEqualTo("localhost");
         assertThat(System.getProperty("https.proxyHost")).isEqualTo("localhost");
 
-        assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(hoverfly.getHoverflyConfiguration().getProxyPort()));
-        assertThat(System.getProperty("https.proxyPort")).isEqualTo(String.valueOf(hoverfly.getHoverflyConfiguration().getProxyPort()));
+        assertThat(System.getProperty("http.proxyPort")).isEqualTo(String.valueOf(hoverfly.getHoverflyConfig().getProxyPort()));
+        assertThat(System.getProperty("https.proxyPort")).isEqualTo(String.valueOf(hoverfly.getHoverflyConfig().getProxyPort()));
 
         assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("local|*.local|169.254/16|*.169.254/16");
 

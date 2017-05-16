@@ -246,7 +246,7 @@ public class Hoverfly implements AutoCloseable {
      * Gets the validated {@link HoverflyConfig} object used by the current Hoverfly instance
      * @return the current Hoverfly configurations
      */
-    public HoverflyConfiguration getHoverflyConfiguration() {
+    public HoverflyConfiguration getHoverflyConfig() {
         return hoverflyConfig;
     }
 

@@ -227,7 +227,7 @@ public class HoverflyRule extends ExternalResource {
      * @return the proxy port
      */
     public int getProxyPort() {
-        return hoverfly.getHoverflyConfiguration().getProxyPort();
+        return hoverfly.getHoverflyConfig().getProxyPort();
     }
 
     /**
@@ -287,7 +287,7 @@ public class HoverflyRule extends ExternalResource {
     }
 
     public String getAuthHeaderValue() {
-        Optional<String> authToken = hoverfly.getHoverflyConfiguration().getAuthToken();
+        Optional<String> authToken = hoverfly.getHoverflyConfig().getAuthToken();
         return authToken.map(s -> "Bearer " + s).orElse(null);
     }
 }
