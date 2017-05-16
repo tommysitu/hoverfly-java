@@ -7,6 +7,7 @@ import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.*;
@@ -33,11 +34,11 @@ class SslConfigurer {
      */
 
     void setDefaultSslContext(String pemFilename) {
-        setDefaultSslContext(Paths.get(findResourceOnClasspath(pemFilename).getPath()));
+        setDefaultSslContext(findResourceOnClasspath(pemFilename));
     }
 
-    void setDefaultSslContext(Path pemFile) {
-        try (InputStream pemInputStream = new FileInputStream(pemFile.toFile())) {
+    void setDefaultSslContext(URL pemFile) {
+        try (InputStream pemInputStream = pemFile.openStream()) {
 
             KeyStore trustStore = createTrustStore(pemInputStream);
             TrustManager[] trustManagers = createTrustManagers(trustStore);
