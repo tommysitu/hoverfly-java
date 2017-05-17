@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 
+/**
+ *  Upgrade v1 to v2 schema
+ */
 class FieldMatcherDeserializer extends JsonDeserializer<FieldMatcher> {
     @Override
     public FieldMatcher deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {

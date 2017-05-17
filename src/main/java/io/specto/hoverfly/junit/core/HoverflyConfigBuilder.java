@@ -28,12 +28,6 @@ class HoverflyConfigBuilder implements LocalHoverflyConfig {
     private String proxyCaCert;
 
 
-    /**
-     * Sets the proxy port for {@link Hoverfly}
-     *
-     * @param proxyPort the proxy port
-     * @return the {@link HoverflyConfigBuilder} for further customizations
-     */
     @Override
     public HoverflyConfig proxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
@@ -41,33 +35,18 @@ class HoverflyConfigBuilder implements LocalHoverflyConfig {
     }
 
 
-    /**
-     * Sets the admin port for {@link Hoverfly}
-     * @param adminPort the admin port
-     * @return the {@link HoverflyConfigBuilder} for further customizations
-     */
     @Override
     public HoverflyConfig adminPort(int adminPort) {
         this.adminPort = adminPort;
         return this;
     }
 
-    /**
-     * Controls whether we want to proxy localhost.  If false then any request to localhost will not be proxied through {@link Hoverfly}.
-     * @return the {@link HoverflyConfigBuilder} for further customizations
-     */
     @Override
     public HoverflyConfig proxyLocalHost() {
         this.proxyLocalHost = true;
         return this;
     }
 
-    /**
-     * Sets the SSL certificate file for overriding default Hoverfly self-signed certificate
-     * The file can be in any PEM encoded certificate, in .crt or .pem extensions
-     * @param sslCertificatePath certificate file in classpath
-     * @return the {@link HoverflyConfigBuilder} for further customizations
-     */
     @Override
     public LocalHoverflyConfig sslCertificatePath(String sslCertificatePath) {
         this.sslCertificatePath = sslCertificatePath;
@@ -75,12 +54,6 @@ class HoverflyConfigBuilder implements LocalHoverflyConfig {
     }
 
 
-    /**
-     * Sets the SSL key file for overriding default Hoverfly SSL key
-     * The file can be in any PEM encoded key, in .key or .pem extensions
-     * @param sslKeyPath key file in classpath
-     * @return the {@link HoverflyConfigBuilder} for further customizations
-     */
     @Override
     public LocalHoverflyConfig sslKeyPath(String sslKeyPath) {
         this.sslKeyPath = sslKeyPath;

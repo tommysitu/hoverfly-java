@@ -110,9 +110,6 @@ public class OkHttpHoverflyClient implements HoverflyClient {
         }
     }
 
-    /**
-     * Returns whether the running Hoverfly is healthy or not
-     */
     @Override
     public boolean getHealth() {
         boolean isHealthy = false;

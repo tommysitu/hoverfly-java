@@ -60,7 +60,7 @@ public class RemoteHoverflyStubTest {
     public void shouldSetNonProxyHostsWhenUsingBothRemoteHoverflyInstanceAndProxyLocalHost() throws Exception {
 
         // Given
-        try (Hoverfly hoverflyUnderTest = new Hoverfly(configs().remote().host("hoverfly-cloud").proxyLocalHost(true), SIMULATE)) {
+        try (Hoverfly hoverflyUnderTest = new Hoverfly(configs().remote().host("hoverfly-cloud").proxyLocalHost(), SIMULATE)) {
 
             // When
             hoverflyUnderTest.start();

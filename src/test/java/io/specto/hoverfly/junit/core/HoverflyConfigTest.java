@@ -60,7 +60,7 @@ public class HoverflyConfigTest {
     public void remoteHoverflyConfigShouldIgnoreCustomSslCertAndKey() throws Exception {
         HoverflyConfiguration configs = configs()
                 .sslCertificatePath("ssl/ca.crt")
-                .sslKeyPath("ssl/ca.key")
+                .sslKeyPath("ssl/ca.key").remote()
                 .remote()
                 .build();
 

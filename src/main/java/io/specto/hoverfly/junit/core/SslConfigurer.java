@@ -37,7 +37,7 @@ class SslConfigurer {
         setDefaultSslContext(findResourceOnClasspath(pemFilename));
     }
 
-    void setDefaultSslContext(URL pemFile) {
+    private void setDefaultSslContext(URL pemFile) {
         try (InputStream pemInputStream = pemFile.openStream()) {
 
             KeyStore trustStore = createTrustStore(pemInputStream);

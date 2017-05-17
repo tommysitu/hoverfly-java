@@ -5,6 +5,9 @@ import java.util.Optional;
 import static io.specto.hoverfly.junit.core.HoverflyConstants.HTTP;
 import static io.specto.hoverfly.junit.core.HoverflyConstants.LOCALHOST;
 
+/**
+ * Configurations for Hoverfly instance
+ */
 public class HoverflyConfiguration {
 
     private String scheme = HTTP;
@@ -21,6 +24,9 @@ public class HoverflyConfiguration {
     private String proxyCaCertificate;
 
 
+    /**
+     * Create configurations for external hoverfly
+     */
     HoverflyConfiguration(String scheme, String host, int proxyPort, int adminPort, boolean proxyLocalHost, String destination, String proxyCaCertificate, String authToken, String adminCertificate) {
         this(proxyPort, adminPort, proxyLocalHost, destination, proxyCaCertificate, null, null);
         setScheme(scheme);
@@ -30,6 +36,9 @@ public class HoverflyConfiguration {
         this.isRemoteInstance = true;
     }
 
+    /**
+     * Create configurations for internal-managed hoverfly
+     */
     HoverflyConfiguration(int proxyPort, int adminPort, boolean proxyLocalHost, String destination, String proxyCaCertificate, String sslCertificatePath, String sslKeyPath) {
         this.proxyPort = proxyPort;
         this.adminPort = adminPort;

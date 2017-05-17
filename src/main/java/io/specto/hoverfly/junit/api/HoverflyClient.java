@@ -4,6 +4,9 @@ import io.specto.hoverfly.junit.core.HoverflyMode;
 import io.specto.hoverfly.junit.core.model.HoverflyInfo;
 import io.specto.hoverfly.junit.core.model.Simulation;
 
+/**
+ * Http client for querying Hoverfly admin endpoints
+ */
 public interface HoverflyClient {
 
 
@@ -17,6 +20,10 @@ public interface HoverflyClient {
 
     void setMode(HoverflyMode mode);
 
+    /**
+     * Check Hoverfly is healthy
+     * @return the status of Hoverfly
+     */
     boolean getHealth();
 
 }

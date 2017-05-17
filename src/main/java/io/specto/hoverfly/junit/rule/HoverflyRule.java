@@ -78,7 +78,6 @@ public class HoverflyRule extends ExternalResource {
     private final HoverflyMode hoverflyMode;
     private Path capturePath;
     private SimulationSource simulationSource;
-    private String authHeaderValue;
 
     private HoverflyRule(final SimulationSource simulationSource, final HoverflyConfig hoverflyConfig) {
         this.hoverflyMode = SIMULATE;

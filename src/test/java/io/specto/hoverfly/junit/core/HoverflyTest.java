@@ -119,9 +119,8 @@ public class HoverflyTest {
         // then
         verify(mockAppender).doAppend(argThat(argument -> {
             LoggingEvent event = (LoggingEvent) argument;
-            boolean r = event.getLevel().levelStr.equals("WARN") &&
+            return event.getLevel().levelStr.equals("WARN") &&
                     event.getMessage().contains("Local Hoverfly is already running");
-            return r;
         }));
     }
 
@@ -272,7 +271,7 @@ public class HoverflyTest {
 
     @Test
     public void shouldSetNonProxyHostSystemPropertyToEmptyIfIsProxyLocalHost() throws Exception {
-        hoverfly = new Hoverfly(configs().proxyLocalHost(true), SIMULATE);
+        hoverfly = new Hoverfly(configs().proxyLocalHost(), SIMULATE);
         hoverfly.start();
 
         assertThat(System.getProperty("http.nonProxyHosts")).isEqualTo("");
