@@ -31,7 +31,7 @@ Full documentation is available http://hoverfly-java.readthedocs.io/[here^]
 <dependency>
     <groupId>io.specto</groupId>
     <artifactId>hoverfly-java</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -59,7 +59,7 @@ public static HoverflyRule hoverflyRule = HoverflyRule.inCaptureOrSimulationMode
 public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
     service("www.my-test.com")
         .get("/api/bookings/1")
-        .willReturn(success("{\"bookingId\":\"1\"}", "application/json"))
+        .willReturn(created("http://localhost/api/bookings/1"))
 ));
 
 @Test
@@ -73,7 +73,9 @@ public void shouldBeAbleToGetABookingUsingHoverfly() {
 }
 ```
 
-Full code examples are available https://github.com/SpectoLabs/hoverfly-java/blob/master/src/test/java/io/specto/hoverfly/ruletest/HoverflyRuleDSLTest.java[here^].
+Some code examples for the DSL are available https://github.com/SpectoLabs/hoverfly-java/blob/master/src/test/java/io/specto/hoverfly/ruletest/HoverflyRuleDSLTest.java[here^].
+
+More code examples for the DSL using request matchers can be found https://github.com/SpectoLabs/hoverfly-java/blob/master/src/test/java/io/specto/hoverfly/ruletest/HoverflyRuleDslMatcherTest.java[here^].
 
 == Contributions
 
@@ -89,6 +91,6 @@ Feel free to raise an issues on Github.
 
 Apache License version 2.0.
 
-(c) SpectoLabs 2016.
+(c) SpectoLabs 2017.
 
 

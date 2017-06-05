@@ -43,9 +43,8 @@ public class HoverflyRuleDslMatcherTest {
 
                     // Query matcher
                     .get("/api/bookings")
+                    .queryParam("airline", contains("Pacific"))
                     .queryParam("page", any())
-//                    .queryParam("airline", startsWith("Pacific"))
-//                    .queryParam("airline", contains("pacific")) // not working
                     .willReturn(success(json(booking)))
 
                     // Match any query params
@@ -64,7 +63,7 @@ public class HoverflyRuleDslMatcherTest {
 
                     // JsonPath Matcher
                     .post("/api/bookings")
-//                    .body(matchesJsonPath("$[?(@.flightId == 1)]")) // not working
+//                    .body(matchesJsonPath("$[?(@.flightId == 1)]")) // TODO: this expression is not supported
                     .body(matchesJsonPath("$.flightId"))
                     .willReturn(created("http://localhost/api/bookings/1"))
 
@@ -79,7 +78,6 @@ public class HoverflyRuleDslMatcherTest {
 
                     // XmlPath Matcher
                     .post("/api/bookings")
-//                    .body(matchesJsonPath("?($.flightId == \"1\")")) // not working
                     .body(matchesXPath("/flightId"))
                     .willReturn(created("http://localhost/api/bookings/1")),
 
@@ -187,9 +185,9 @@ public class HoverflyRuleDslMatcherTest {
         // When
         URI uri = UriComponentsBuilder.fromHttpUrl("http://www.my-test.com")
                 .path("/api/bookings")
+                .queryParam("airline", "Pacific Air")
                 .queryParam("page", 1)
                 .queryParam("size", 10)
-//                .queryParam("airline", "Pacific Air")
                 .build()
                 .toUri();
         final ResponseEntity<SimpleBooking> response = restTemplate.getForEntity(uri, SimpleBooking.class);
@@ -205,7 +203,7 @@ public class HoverflyRuleDslMatcherTest {
         // Given
         final RequestEntity<String> bookFlightRequest = RequestEntity.put(new URI("http://www.my-test.com/api/bookings/1"))
                 .contentType(APPLICATION_JSON)
-                .body("{\"flightId\": \"1\",\"class\": \"PREMIUM\"}");
+                .body("{\"class\": \"PREMIUM\", \"flightId\": \"1\"}");
 
         // When
         final ResponseEntity<String> bookFlightResponse = restTemplate.exchange(bookFlightRequest, String.class);

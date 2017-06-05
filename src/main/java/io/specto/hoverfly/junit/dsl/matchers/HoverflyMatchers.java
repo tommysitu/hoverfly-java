@@ -32,7 +32,6 @@ public class HoverflyMatchers {
         return GlobMatcher.newInstance(WILDCARD + value);
     }
 
-    // TODO this pattern doesn't work if the target string starts with or ends with the string to match
     public static PlainTextFieldMatcher contains(String value) {
         return GlobMatcher.newInstance(WILDCARD + value + WILDCARD);
     }
