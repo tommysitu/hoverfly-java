@@ -12,7 +12,6 @@ import io.specto.hoverfly.junit.core.model.*;
 import org.assertj.core.util.Lists;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -33,7 +32,7 @@ public class OkHttpHoverflyClientTest {
     @Before
     public void setUp() throws Exception {
         startDefaultHoverfly();
-        HoverflyConfiguration hoverflyConfig = hoverfly.getHoverflyConfiguration();
+        HoverflyConfiguration hoverflyConfig = hoverfly.getHoverflyConfig();
         client = new OkHttpHoverflyClient(hoverflyConfig.getScheme(), hoverflyConfig.getHost(), hoverflyConfig.getAdminPort(), null);
     }
 
@@ -46,8 +45,7 @@ public class OkHttpHoverflyClientTest {
     public void shouldBeAbleToGetConfigInfo() throws Exception {
         HoverflyInfoView configInfo = client.getConfigInfo();
 
-        // TODO mapping string to enum for hoverfly mode
-        assertThat(configInfo.getMode()).isEqualTo(SIMULATE.name().toLowerCase());
+        assertThat(configInfo.getMode()).isEqualTo(SIMULATE.getValue());
         assertThat(configInfo.getDestination()).isEqualTo(".");
     }
 
@@ -67,9 +65,7 @@ public class OkHttpHoverflyClientTest {
     }
 
 
-    // TODO Re-enable this test after new hoverfly release
     @Test
-    @Ignore("TODO bug in hoverfly not returning mode arguments")
     public void shouldBeAbleToSetCaptureModeWithArguments() throws Exception {
         client.setMode(CAPTURE, new ModeArguments(Lists.newArrayList("Content-Type", "Authorization")));
 
