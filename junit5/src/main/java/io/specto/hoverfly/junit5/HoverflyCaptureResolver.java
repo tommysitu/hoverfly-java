@@ -45,8 +45,16 @@ public class HoverflyCaptureResolver implements BeforeAllCallback, AfterAllCallb
             final Optional<Class<?>> testClass = context.getTestClass();
             if (testClass.isPresent()) {
                 final HoverflyCapture hoverflyCapture = hoverflyCaptureOptional.get();
-                final HoverflyConfigProducer hoverflyConfigProducer = hoverflyCapture.config().newInstance();
-                startHoverflyIfNotStarted(testClass.get(), hoverflyConfigProducer.create(), hoverflyCapture.path(), hoverflyCapture.recordFile());
+
+                HoverflyConfig config = HoverflyConfig.configs();
+                if (hoverflyCapture.captureAllHeaders()) {
+                    config.captureAllHeaders();
+                }
+                if (hoverflyCapture.proxyLocalhost()) {
+                    config.proxyLocalHost();
+                }
+//                final HoverflyConfigProducer hoverflyConfigProducer = hoverflyCapture.config().newInstance();
+                startHoverflyIfNotStarted(testClass.get(), config, hoverflyCapture.path(), hoverflyCapture.recordFile());
             }
 
         } else {

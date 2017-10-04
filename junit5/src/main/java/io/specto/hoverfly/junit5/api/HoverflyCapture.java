@@ -13,8 +13,11 @@ public @interface HoverflyCapture {
     String NO_RECORD_FILE = "";
     String PATH = "src/test/resources/hoverfly";
 
+
     Class<? extends HoverflyConfigProducer> config() default HoverflyConfigProducer.DefaultHoverflyConfigProducer.class;
     String path() default PATH;
     String recordFile() default NO_RECORD_FILE;
 
+    boolean proxyLocalhost() default false;
+    boolean captureAllHeaders() default false;
 }

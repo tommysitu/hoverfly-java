@@ -1,0 +1,49 @@
+{
+  "data" : {
+    "pairs" : [ {
+      "request" : {
+        "path" : {
+          "exactMatch" : ""
+        },
+        "method" : {
+          "exactMatch" : "GET"
+        },
+        "destination" : {
+          "exactMatch" : "localhost:50565"
+        },
+        "scheme" : {
+          "exactMatch" : "http"
+        },
+        "query" : {
+          "exactMatch" : ""
+        },
+        "body" : {
+          "exactMatch" : ""
+        },
+        "headers" : {
+          "Accept" : [ "text/plain, application/xml, text/xml, application/json, application/*+xml, application/*+json, */*" ],
+          "Proxy-Connection" : [ "keep-alive" ],
+          "User-Agent" : [ "Java/1.8.0_112" ]
+        }
+      },
+      "response" : {
+        "status" : 200,
+        "body" : "<h1>Hello World</h1>\n",
+        "encodedBody" : false,
+        "headers" : {
+          "Content-Length" : [ "21" ],
+          "Content-Type" : [ "text/html;charset=utf-8" ],
+          "Date" : [ "Wed, 04 Oct 2017 14:51:12 GMT" ],
+          "Hoverfly" : [ "Was-Here" ],
+          "Server" : [ "Jetty(9.3.11.v20160721)" ]
+        }
+      }
+    } ],
+    "globalActions" : {
+      "delays" : [ ]
+    }
+  },
+  "meta" : {
+    "schemaVersion" : "v2"
+  }
+}

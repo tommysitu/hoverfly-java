@@ -3,6 +3,8 @@ package io.specto.hoverfly.junit5;
 import io.specto.hoverfly.junit.core.Hoverfly;
 import io.specto.hoverfly.junit.core.HoverflyConfig;
 import io.specto.hoverfly.junit.core.HoverflyMode;
+import io.specto.hoverfly.junit.core.SimulationSource;
+import io.specto.hoverfly.junit.core.config.LocalHoverflyConfig;
 import io.specto.hoverfly.junit5.api.HoverflySimulate;
 import io.specto.hoverfly.junit5.spi.HoverflySimulation;
 import java.lang.reflect.AnnotatedElement;
@@ -71,17 +73,12 @@ public class HoverflySimulateResolver implements AfterAllCallback, BeforeAllCall
 
     private void startHoverflyIfNotStarted(HoverflySimulate hoverflySimulate) {
         if (!isRunning()) {
-            try {
-                this.hoverfly = new Hoverfly(hoverflySimulate.config().newInstance().create(),
-                    HoverflyMode.SIMULATE);
-                this.hoverfly.start();
+            LocalHoverflyConfig configs = HoverflyConfig.configs();
+            configs.adminPort(hoverflySimulate.adminPort()).proxyPort(hoverflySimulate.proxyPort());
+            this.hoverfly = new Hoverfly(configs,HoverflyMode.SIMULATE);
+            this.hoverfly.start();
 
-                importSimulation(hoverflySimulate.source());
-            } catch (InstantiationException e) {
-                throw new IllegalStateException(e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
+            hoverfly.importSimulation(SimulationSource.classpath(hoverflySimulate.simulationSource().classpath()));
         }
     }
 

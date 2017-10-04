@@ -1,0 +1,50 @@
+{
+	"data": {
+		"pairs": [
+			{
+				"response": {
+					"status": 200,
+					"body": "\u003ch1\u003eHello World\u003c/h1\u003e\n",
+					"encodedBody": false,
+					"headers": {
+						"Content-Length": [
+							"21"
+						],
+						"Content-Type": [
+							"text/html;charset=utf-8"
+						],
+						"Hoverfly": [
+							"Was-Here"
+						],
+						"Server": [
+							"Jetty(9.3.11.v20160721)"
+						]
+					}
+				},
+				"request": {
+					"path": {
+						"exactMatch": ""
+					},
+					"method": {
+						"exactMatch": "GET"
+					},
+					"scheme": {
+						"exactMatch": "http"
+					},
+					"query": {
+						"exactMatch": ""
+					},
+					"body": {
+						"exactMatch": ""
+					}
+				}
+			}
+		],
+		"globalActions": {
+			"delays": []
+		}
+	},
+	"meta": {
+		"schemaVersion": "v2"
+	}
+}

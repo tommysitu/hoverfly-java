@@ -31,6 +31,14 @@ dependencies {
     testCompile 'com.squareup.okhttp3:okhttp:3.8.0'
     testCompile 'net.javacrumbs.json-unit:json-unit:1.17.0'
     testCompile 'net.javacrumbs.json-unit:json-unit-fluent:1.17.0'
+    testCompile 'org.springframework:spring-web:4.3.8.RELEASE'
+    testCompile 'org.assertj:assertj-core:3.6.1'
+    testCompile 'org.skyscreamer:jsonassert:1.4.0'
+    testCompile 'com.google.guava:guava:20.0'
+    testCompile 'com.sun.jersey:jersey-client:1.19.3'
+    testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
+    testCompile 'org.eclipse.jetty:jetty-server:9.3.11.v20160721'
+    testCompile 'org.apache.httpcomponents:httpclient:4.5.2'
 
     // Only needed to run tests in an IntelliJ IDEA that bundles an older version
     testRuntime("org.junit.platform:junit-platform-launcher:1.0.0-M5")
